@@ -51,6 +51,7 @@ public:
     /// <param name="tag">tag to search for</param>
     /// <returns></returns>
     SCPHeaderField GetField(byte tag);
+#if 0//TODO
     /// <summary>
     /// Get encoding for text from language support code.
     /// </summary>
@@ -68,6 +69,7 @@ public:
     /// <param name="enc">encoding to set lsc with.</param>
     /// <returns>0 if successfull</returns>
     int setLanguageSupportCode(System.Text.Encoding enc);
+#endif
     /// <summary>
     /// Function to get Protocol Compatability Level.
     /// </summary>

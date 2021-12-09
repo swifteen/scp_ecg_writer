@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 
 
@@ -306,5 +308,5 @@ void SCPSection6::setBimodal(bool bimodal)
 {
     _Bimodal = (byte) (bimodal ? 1 : 0);
 }
-
+}
 }

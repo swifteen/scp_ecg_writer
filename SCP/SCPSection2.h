@@ -121,5 +121,5 @@ private:
     SCPHuffmanStruct[][] _Tables;
 };
 }
-
+}
 #endif  /*#ifndef _SCPSECTION2_CPP_*/

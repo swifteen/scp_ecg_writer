@@ -30,5 +30,5 @@ private:
     SCPStatement[] _Statements;
 };
 }
-
+}
 #endif  /*#ifndef _SCPSECTION11_H_*/

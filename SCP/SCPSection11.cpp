@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// class for Universal ECG interpretive statements from SCP.
@@ -170,5 +172,6 @@ bool SCPSection11::Works()
         return true;
     }
     return false;
+}
 }
 }

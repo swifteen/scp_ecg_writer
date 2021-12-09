@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 
 class SCPSection7::SCPExtraMeasurements
@@ -532,5 +534,5 @@ int SCPSection7::setGlobalMeasurements(GlobalMeasurements mes)
     }
     return 1;
 }
-
+}
 }

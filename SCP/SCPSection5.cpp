@@ -5,7 +5,9 @@
 using namespace Communication_IO_Tools;
 
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 ushort SCPSection5::_SectionID = 5;
 
@@ -218,5 +220,6 @@ void SCPSection5::setSamplesPerSecond(int sps)
     {
         _TimeInterval = (ushort) (1000000 / sps);
     }
+}
 }
 }

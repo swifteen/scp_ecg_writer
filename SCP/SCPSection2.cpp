@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class that contains a SCP Huffman struct
@@ -653,5 +655,6 @@ void SCPSection2::UseStandard()
 void SCPSection2::UseNoHuffman()
 {
     _NrTables = 0;
+}
 }
 }

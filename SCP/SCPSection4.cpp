@@ -3,7 +3,9 @@
 #include "BytesTool.h"
 
 using namespace Communication_IO_Tools;
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class containing SCP QRS subtraction zone.
@@ -582,5 +584,6 @@ int SCPSection4::setSignals(Signals signals)
         return 0;
     }
     return 1;
+}
 }
 }

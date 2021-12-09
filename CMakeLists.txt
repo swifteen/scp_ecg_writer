@@ -13,7 +13,12 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDiagnostic ECGDiagnostic_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGGlobalMeasurements ECGGlobalMeasurements_FILES) 
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGLeadMeasurements ECGLeadMeasurements_FILES)                                            
 #aux_source_directory(${PROJECT_SOURCE_DIR}/SCP SCP_FILES)
-SET(SCP_FILES  	SCP/SCPSection.cpp SCP/SCPSection0.cpp ) 
+SET(SCP_FILES  	
+				SCP/SCPSection.cpp 
+				SCP/SCPSection0.cpp 
+				SCP/SCPTime.cpp
+				SCP/SCPDate.cpp
+				) 
 
 message("vecg_files ${VECG_FILES}")
 message("Tools_FILES ${Tools_FILES}")

@@ -1,7 +1,10 @@
 #ifndef _SCPTIME_H_
 #define _SCPTIME_H_
+#include "ScpGlobal.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// class containing time in SCP format.
@@ -9,6 +12,7 @@ namespace ECGConversion.SCP
 class SCPTime
 {
 public:
+	SCPTime();
     /// <summary>
     /// Constructor of a SCP time.
     /// </summary>
@@ -23,11 +27,13 @@ public:
     /// <param name="buffer">byte array to write into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(byte[] buffer, int offset);
+    int Write(uchar* buffer,int bufferLength, int offset);
 public:
     const int Size;
-    byte Hour ;
-    byte Min ;
-    byte Sec ;
+    uchar Hour ;
+    uchar Min ;
+    uchar Sec ;
 };
 }
+}
+#endif

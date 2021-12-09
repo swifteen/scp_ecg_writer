@@ -1,7 +1,10 @@
 #ifndef _SCPDATE_H_
 #define _SCPDATE_H_
+#include "ScpGlobal.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// class containing date in SCP format.
@@ -26,12 +29,14 @@ public:
     /// <param name="buffer">byte array to write in</param>
     /// <param name="offset">position to start writing</param>
     /// <returns></returns>
-    int Write(byte[] buffer, int offset);
+    int Write(uchar* buffer, int bufferLength, int offset);
 public:
     const int Size;
     // data structure of SCP date.
     ushort Year;
-    byte Month;
-    byte Day;
+    uchar Month;
+    uchar Day;
 };
 }
+}
+#endif

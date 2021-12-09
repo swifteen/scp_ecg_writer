@@ -27,5 +27,5 @@ private:
     byte[] _Data;
 };
 }
-
+}
 #endif  /*#ifndef _SCPSECTIONUNKOWN_H_*/

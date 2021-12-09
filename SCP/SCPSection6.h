@@ -3,7 +3,9 @@
 #include "SCPSection.h"
 
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 6 (Rhythm data section).
@@ -84,5 +86,5 @@ private:
     ushort[] _DataLength;
     byte[][] _Data;
 };
-
+}
 }

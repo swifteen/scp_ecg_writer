@@ -1,6 +1,10 @@
 #include "SCPDate.h"
+#include "BytesTool.h"
 
-namespace ECGConversion.SCP
+using namespace Communication_IO_Tools;
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// class containing date in SCP format.
@@ -22,11 +26,11 @@ SCPDate::SCPDate():Size(4)
 /// <param name="year">number of year</param>
 /// <param name="month">number of month</param>
 /// <param name="day">number of day</param>
-SCPDate::SCPDate(int year, int month, int day)
+SCPDate::SCPDate(int year, int month, int day):Size(4)
 {
     Year = (ushort) year;
-    Month = (byte) month;
-    Day = (byte) day;
+    Month = (uchar) month;
+    Day = (uchar) day;
 }
 
 /// <summary>
@@ -35,21 +39,22 @@ SCPDate::SCPDate(int year, int month, int day)
 /// <param name="buffer">byte array to write in</param>
 /// <param name="offset">position to start writing</param>
 /// <returns></returns>
-int SCPDate::Write(byte[] buffer, int offset)
+int SCPDate::Write(uchar* buffer, int bufferLength,int offset)
 {
-    if ((offset + Size) > buffer.Length)
+    if ((offset + Size) > bufferLength)
     {
         return 0x1;
     }
 
-    BytesTool.writeBytes(Year, buffer, offset, Marshal.SizeOf(Year), true);
-    offset += Marshal.SizeOf(Year);
-    BytesTool.writeBytes(Month, buffer, offset, Marshal.SizeOf(Month), true);
-    offset += Marshal.SizeOf(Month);
-    BytesTool.writeBytes(Day, buffer, offset, Marshal.SizeOf(Day), true);
-    offset += Marshal.SizeOf(Day);
+    BytesTool::writeBytes(Year, buffer, bufferLength,offset, sizeof(Year), true);
+    offset += sizeof(Year);
+    BytesTool::writeBytes(Month, buffer, bufferLength,offset, sizeof(Month), true);
+    offset += sizeof(Month);
+    BytesTool::writeBytes(Day, buffer, bufferLength,offset, sizeof(Day), true);
+    offset += sizeof(Day);
 
     return 0x0;
 }
 
+}
 }

@@ -3,7 +3,9 @@
 #include "SCPSection.h"
 #include "ILeadMeasurement.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 10 (contains the Lead Measurements Result section).
@@ -33,5 +35,5 @@ private:
     SCPLeadMeasurements[] _LeadMeasurements;
 };
 }
-
+}
 #endif  /*#ifndef _SCPSECTION10_H_*/

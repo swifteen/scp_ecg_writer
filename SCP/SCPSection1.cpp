@@ -5,7 +5,9 @@
 using namespace Communication_IO_Tools;
 using namespace ECGConversion.ECGDemographics;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class for a header field.
@@ -367,6 +369,7 @@ static bool SCPSection1::isException(byte[] condition, byte tag)
     return (m >= 0) && (m < condition.Length) && (condition[m] == tag);
 }
 
+#if 0
 /// <summary>
 /// Get encoding for text from language support code.
 /// </summary>
@@ -500,6 +503,7 @@ int SCPSection1::setLanguageSupportCode(System.Text.Encoding enc)
 
     return ret;
 }
+#endif
 
 /// <summary>
 /// Function to get Protocol Compatability Level.

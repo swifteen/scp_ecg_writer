@@ -5,7 +5,9 @@
 using namespace Communication_IO_Tools;
 
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// class for Lead Measurements from SCP.
@@ -287,5 +289,6 @@ int SCPSection10::setLeadMeasurements(LeadMeasurements mes)
     }
 
     return 1;
+}
 }
 }

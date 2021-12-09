@@ -2,7 +2,9 @@
 #define _SCPSECTION5_H_
 
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 5 (Reference beat data section).
@@ -76,6 +78,6 @@ private:
     byte[][] _Data ;
 };
 }
-
+}
 
 #endif  /*#ifndef _SCPSECTION5_H_*/

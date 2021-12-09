@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// SCP Unknown Section. this class is for reading and writing SCP formats without having to implement the sections that aren't needed at all.
@@ -57,5 +59,6 @@ bool SCPSectionUnknown::Works()
 void SCPSectionUnknown::setInternalData(byte[] InternalData)
 {
     _Data = InternalData;
+}
 }
 }

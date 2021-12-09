@@ -120,5 +120,5 @@ private:
     SCPQRSProtected[] _Protected;
 };
 }
-
+}
 #endif  /*#ifndef _SCPSECTION4_H_*/

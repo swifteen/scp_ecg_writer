@@ -4,7 +4,9 @@
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 
 /// <summary>
@@ -252,5 +254,5 @@ int SCPSection8::setDiagnosticStatements(Statements stat)
     }
     return 1;
 }
-
+}
 }

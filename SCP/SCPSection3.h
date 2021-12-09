@@ -118,3 +118,4 @@ private:
     bool _isSimultaneously();
 };
 }
+}
