@@ -8,6 +8,9 @@
 #ifndef HAVE_NO_TYPEDEF_UCHAR
 #define HAVE_NO_TYPEDEF_UCHAR
 typedef unsigned char uchar;
+typedef unsigned short ushort;
+
+
 #endif
 
 #ifndef HAVE_NO_TYPEDEF_NULL

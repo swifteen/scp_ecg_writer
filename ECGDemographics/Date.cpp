@@ -1,17 +1,23 @@
 
 #include "Date.h"
 
-namespace ECGConversion.ECGDemographics
+
+namespace ECGConversion
 {
+
+
+namespace ECGDemographics
+	{
+
 /// <summary>
 /// Class containing a date (format is equal to SCP).
 /// </summary>
 
 
-ushort Date::_DaysInMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+ uchar Date::_DaysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 // Static information for check.
-int Date::_LeapMonth = 2;
-byte Date::_DaysInLeapMonth = 29;
+ int Date::_LeapMonth = 2;
+ uchar Date::_DaysInLeapMonth = 29;
 
 
 /// <summary>
@@ -31,7 +37,7 @@ Date::Date()
 /// <param name="year">number of year</param>
 /// <param name="month">number of month</param>
 /// <param name="day">number of day</param>
-Date::Date(ushort year, byte month, byte day)
+Date::Date(ushort year, uchar month, uchar day)
 {
     Year = year;
     Month = month;
@@ -64,5 +70,5 @@ bool Date::isExistingDate()
     }
     return false;
 }
-
+}
 }

@@ -1,9 +1,14 @@
 #ifndef _DRUG_H_
 #define _DRUG_H_
+#include "ScpGlobal.h"
 
 
-namespace ECGConversion.ECGDemographics
+namespace ECGConversion
 {
+
+namespace ECGDemographics
+{
+
 /// <summary>
 /// A class to store a drug (is very close to the implementation of both SCP and UNIPRO).
 /// </summary>
@@ -11,10 +16,13 @@ class Drug
 {
 public:
     Drug();
-    Drug(byte drugClass,byte ClassCode,string TextDesciption);
+    Drug(uchar drugClass,uchar ClassCode,std::string TextDesciption);
 public:
-    byte DrugClass;
-    byte ClassCode;
-    string TextDesciption;
+    uchar DrugClass;
+    uchar ClassCode;
+    std::string TextDesciption;
 };
 }
+}
+#endif  /*#ifndef _DRUG_H_*/
+
