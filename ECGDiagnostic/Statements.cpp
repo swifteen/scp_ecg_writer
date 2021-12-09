@@ -1,18 +1,22 @@
 #include "Statements.h"
 
 
-namespace ECGConversion.ECGDiagnostic
+namespace ECGConversion
 {
-/// <summary>
-/// Class containing diagnostic statements.
-/// </summary>
+	namespace ECGDiagnostic
+	{
+	/// <summary>
+	/// Class containing diagnostic statements.
+	/// </summary>
 
-Statements::Statements()
-{
-    confirmed = false;
-    interpreted = false;
-    time = DateTime.MinValue;
-    statement = null;
-}
+		Statements::Statements()
+		{
+		    confirmed = false;
+		    interpreted = false;
+			
+//		    time = DateTime.MinValue; TODO
+		     
+		}
 
+	}
 }
