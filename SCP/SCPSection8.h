@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION8_H_
-#define _ZQ_SCPSECTION8_H_
+#ifndef _SCPSECTION8_H_
+#define _SCPSECTION8_H_
 #include "SCPSection.h"
 #include "IDiagnostic.h"    
 #include "Statements.h"    

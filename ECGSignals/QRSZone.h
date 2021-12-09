@@ -1,5 +1,5 @@
-#ifndef _ZQ_QRSZONE_H_
-#define _ZQ_QRSZONE_H_
+#ifndef _QRSZONE_H_
+#define _QRSZONE_H_
 
 
 namespace ECGConversion.ECGSignals

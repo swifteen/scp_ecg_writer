@@ -29,7 +29,7 @@ AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
         ManufactorID = (byte) DeviceManufactor.Unknown;
         DeviceCapabilities = 0x8;
         ACFrequencyEnvironment = 1;
-        Communication.IO.Tools.BytesTool.writeString("MCONV", ModelDescription, 0, ModelDescription.Length);
+        Communication_IO_Tools.BytesTool.writeString("MCONV", ModelDescription, 0, ModelDescription.Length);
     }
     _ModelDescription = new byte[_ModelDescriptionLen];
 }

@@ -1,5 +1,5 @@
-#ifndef _ZQ_LEADTYPE_H_
-#define _ZQ_LEADTYPE_H_
+#ifndef _LEADTYPE_H_
+#define _LEADTYPE_H_
 
 namespace ECGConversion.ECGSignals
 {

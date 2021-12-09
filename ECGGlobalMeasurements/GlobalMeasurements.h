@@ -1,5 +1,5 @@
-#ifndef _ZQ_GLOBALMEASUREMENTS_H_
-#define _ZQ_GLOBALMEASUREMENTS_H_
+#ifndef _GLOBALMEASUREMENTS_H_
+#define _GLOBALMEASUREMENTS_H_
 #include "Spike.h"
 
 namespace ECGConversion.ECGGlobalMeasurements

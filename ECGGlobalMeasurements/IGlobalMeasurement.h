@@ -1,5 +1,5 @@
-#ifndef _ZQ_IGLOBALMEASUREMENT_CS_
-#define _ZQ_IGLOBALMEASUREMENT_CS_
+#ifndef _IGLOBALMEASUREMENT_CS_
+#define _IGLOBALMEASUREMENT_CS_
     
 
 namespace ECGConversion.ECGGlobalMeasurements
@@ -25,4 +25,4 @@ namespace ECGConversion.ECGGlobalMeasurements
 }
 
 
-#endif  /*#ifndef _ZQ_IGLOBALMEASUREMENT_CS_*/
+#endif  /*#ifndef _IGLOBALMEASUREMENT_CS_*/

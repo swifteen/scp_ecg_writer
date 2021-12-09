@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION11_H_
-#define _ZQ_SCPSECTION11_H_
+#ifndef _SCPSECTION11_H_
+#define _SCPSECTION11_H_
 #include "SCPSection.h"
 
 namespace ECGConversion.SCP
@@ -31,4 +31,4 @@ private:
 };
 }
 
-#endif  /*#ifndef _ZQ_SCPSECTION11_H_*/
+#endif  /*#ifndef _SCPSECTION11_H_*/

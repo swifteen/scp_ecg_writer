@@ -43,4 +43,99 @@ public static bool writeBytes(long values, byte[] buffer, int offset, int bytes,
 }
 ```
 
+转换为C++后
+
+1. 将参数 byte[] buffer替换为两个参数 uchar* buffer,int bufferLength,
+2. 将buffer.Length 替换为新添加的输入参数bufferLength
+3. 将byte修改为uchar类型，在ScpGlobal.h文件中定义
+
+```c++
+bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offset, int bytes, bool littleEndian)
+{
+    if ((buffer != null)
+            &&  (offset + bytes) <= bufferLength
+            &&  (bytes <= 8)
+            &&  (bytes > 0))
+    {
+        for (int read=0;read < bytes;read++)
+        {
+            buffer[offset + (littleEndian ? read : (bytes-read-1))] = (uchar) ((values >> (read << 3)) & 0xff);
+        }
+        return true;
+    }
+    return false;
+}
+```
+
+ScpGlobal.h文件如下，用来定义类型和包含公共的头文件
+
+```c++
+#ifndef _SCPGLOBAL_H_
+#define _SCPGLOBAL_H_
+//公共的头文件
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <memory.h>
+
+//定义类型
+#ifndef HAVE_NO_TYPEDEF_UCHAR
+#define HAVE_NO_TYPEDEF_UCHAR
+typedef unsigned char uchar;
+#endif
+
+#ifndef HAVE_NO_TYPEDEF_NULL
+#define HAVE_NO_TYPEDEF_NULL
+#define null             0L
+#endif
+
+#endif  /*#ifndef _SCPGLOBAL_H_*/
+```
+
+## 批量替换目录下所有字符串
+
+```shell
+sed -i "s/Communication.IO.Tools/Communication::IO::Tools/g" `grep "Communication.IO.Tools" -rl ./`
+```
+
+命令分解：
+
+1、获取当前目录下所有包含“Communication.IO.Tools"字符串的文件
+
+```shell
+grep "Communication.IO.Tools" -rl ./
+```
+
+2、将文件$file中的“Communication.IO.Tools"字符串替换为”Communication::IO::Tools“
+
+```shell
+sed -i "s/Communication.IO.Tools/Communication::IO::Tools/g"  $file
+```
+
 ## System.Text.Encoding处理
+
+将字符集相关的代码放到最后再做，如下，先用#if0包起来，注释为TODO
+
+```c++
+#if 0 //TODO
+    /// <summary>
+    ///	Function to write a string too a byte array at a given offset
+    /// </summary>
+    /// <param name="src">to read from</param>
+    /// <param name="buffer">to write the string too</param>
+    /// <param name="offset">position to start reading</param>
+    /// <param name="length">max length of string</param>
+    static void writeString(string src, byte[] buffer, int offset, int length);
+
+    /// <summary>
+    ///	Function to write a string too a byte array at a given offset
+    /// </summary>
+    /// <param name="enc">enconding type</param>
+    /// <param name="src">to read from</param>
+    /// <param name="buffer">to write the string too</param>
+    /// <param name="offset">position to start reading</param>
+    /// <param name="length">max length of string</param>
+    static void writeString(Encoding enc, string src, byte[] buffer, int offset, int length);
+#endif
+```
+

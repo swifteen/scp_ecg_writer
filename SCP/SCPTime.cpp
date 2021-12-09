@@ -1,7 +1,7 @@
 #include "SCPTime.h"
 #include "BytesTool.h"
 
-using namespace Communication.IO.Tools;
+using namespace Communication_IO_Tools;
 
 namespace ECGConversion.SCP
 {

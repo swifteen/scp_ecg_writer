@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION10_H_
-#define _ZQ_SCPSECTION10_H_
+#ifndef _SCPSECTION10_H_
+#define _SCPSECTION10_H_
 #include "SCPSection.h"
 #include "ILeadMeasurement.h"
 
@@ -34,4 +34,4 @@ private:
 };
 }
 
-#endif  /*#ifndef _ZQ_SCPSECTION10_H_*/
+#endif  /*#ifndef _SCPSECTION10_H_*/

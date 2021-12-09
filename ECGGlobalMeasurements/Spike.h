@@ -1,5 +1,5 @@
-#ifndef _ZQ_SPIKE_H_
-#define _ZQ_SPIKE_H_
+#ifndef _SPIKE_H_
+#define _SPIKE_H_
 
 namespace ECGConversion.ECGGlobalMeasurements
 {

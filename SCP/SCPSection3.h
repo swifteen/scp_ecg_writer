@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION3_H_
-#define _ZQ_SCPSECTION3_H_
+#ifndef _SCPSECTION3_H_
+#define _SCPSECTION3_H_
 #include "SCPSection.h"
 
 namespace ECGConversion.SCP

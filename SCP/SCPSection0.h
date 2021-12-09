@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION0_H_
-#define _ZQ_SCPSECTION0_H_
+#ifndef _SCPSECTION0_H_
+#define _SCPSECTION0_H_
 #include "SCPSection.h"
 
 
@@ -93,4 +93,4 @@ private:
 };
 }
 
-#endif  /*#ifndef _ZQ_SCPSECTION0_H_*/
+#endif  /*#ifndef _SCPSECTION0_H_*/

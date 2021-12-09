@@ -1,5 +1,5 @@
-#ifndef _ZQ_ILEADMEASUREMENT_CS_
-#define _ZQ_ILEADMEASUREMENT_CS_
+#ifndef _ILEADMEASUREMENT_CS_
+#define _ILEADMEASUREMENT_CS_
     
 
 namespace ECGConversion.ECGLeadMeasurements
@@ -24,4 +24,4 @@ namespace ECGConversion.ECGLeadMeasurements
 	};
 }
 
-#endif  /*#ifndef _ZQ_ILEADMEASUREMENT_CS_*/
+#endif  /*#ifndef _ILEADMEASUREMENT_CS_*/

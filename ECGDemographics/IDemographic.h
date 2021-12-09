@@ -1,5 +1,5 @@
-#ifndef _ZQ_IDEMOGRAPHIC_CS_
-#define _ZQ_IDEMOGRAPHIC_CS_
+#ifndef _IDEMOGRAPHIC_CS_
+#define _IDEMOGRAPHIC_CS_
     
 namespace ECGConversion.ECGDemographics
 {
@@ -48,4 +48,4 @@ namespace ECGConversion.ECGDemographics
 }
 
 
-#endif  /*#ifndef _ZQ_IDEMOGRAPHIC_CS_*/
+#endif  /*#ifndef _IDEMOGRAPHIC_CS_*/

@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION5_H_
-#define _ZQ_SCPSECTION5_H_
+#ifndef _SCPSECTION5_H_
+#define _SCPSECTION5_H_
 
 
 namespace ECGConversion.SCP
@@ -78,4 +78,4 @@ private:
 }
 
 
-#endif  /*#ifndef _ZQ_SCPSECTION5_H_*/
+#endif  /*#ifndef _SCPSECTION5_H_*/

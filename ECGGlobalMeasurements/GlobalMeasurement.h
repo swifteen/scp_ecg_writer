@@ -1,5 +1,5 @@
-#ifndef _ZQ_GLOBALMEASUREMENT_H_
-#define _ZQ_GLOBALMEASUREMENT_H_
+#ifndef _GLOBALMEASUREMENT_H_
+#define _GLOBALMEASUREMENT_H_
 
 namespace ECGConversion.ECGGlobalMeasurements
 {

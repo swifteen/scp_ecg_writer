@@ -1,5 +1,5 @@
-#ifndef _ZQ_MORPHOLOGY_H_
-#define _ZQ_MORPHOLOGY_H_
+#ifndef _MORPHOLOGY_H_
+#define _MORPHOLOGY_H_
 
 
 namespace ECGConversion.ECGLeadMeasurements

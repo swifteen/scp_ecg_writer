@@ -9,6 +9,8 @@ SET(out_dir "${PROJECT_SOURCE_DIR}/build")
 aux_source_directory(${PROJECT_SOURCE_DIR} VECG_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/Tools Tools_FILES)
 
+#SET(Tools_FILES  	Tools/BytesTool.cpp )  
+
 message("vecg_files ${VECG_FILES}")
 message("Tools_FILES ${Tools_FILES}")
 
@@ -21,7 +23,7 @@ include_directories(${PROJECT_SOURCE_DIR}
 
 #add_definitions(-DBUILDING_DLL)
 
-add_executable(${PROJECT_NAME} ${VECG_FILES} ${Tools_FILES})
+add_library(${PROJECT_NAME} ${VECG_FILES} ${Tools_FILES})
 
 #target_link_libraries(${PROJECT_NAME}  json-c)
 

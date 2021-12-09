@@ -1,6 +1,6 @@
 #include "CRCTool.h"
 
-namespace Communication.IO.Tools
+namespace Communication_IO_Tools
 {
 /// <summary>
 /// Tool to calculate and add CRC codes to a string
@@ -34,6 +34,7 @@ CRCTool::CRCTool()
     crcinit_nondirect;
     crctab = new ulong[256];
 }
+
 CRCTool::~CRCTool()
 {
 	if(crctab != null)
@@ -47,13 +48,13 @@ void CRCTool::Init(CRCCode CodingType)
 {
     switch( CodingType )
     {
-    case CRCCode::CRC_CCITT:
+    case CRC_CCITT:
         order = 16; direct=1; polynom=0x1021; crcinit = 0xFFFF; crcxor=0; refin =0; refout=0;
         break;
-    case CRCCode::CRC16:
+    case CRC16:
         order = 16; direct=1; polynom=0x8005; crcinit = 0x0; crcxor=0x0; refin =1; refout=1;
         break;
-    case CRCCode::CRC32:
+    case CRC32:
         order = 32; direct=1; polynom=0x4c11db7; crcinit = 0xFFFFFFFF; crcxor=0xFFFFFFFF; refin =1; refout=1;
         break;
     }
@@ -110,7 +111,7 @@ void CRCTool::Init(CRCCode CodingType)
 /// It is included to demonstrate that although it looks different it is the same
 /// routine as the crcbitbybit* functions. But it is optimized and preconfigured for CRCITT.
 /// </summary>
-ushort CRCTool::CalcCRCITT(byte[] p, int offset, int length)
+ushort CRCTool::CalcCRCITT(uchar* p, int pLength,int offset, int length)
 {
     // Works like CalcCRCITT(byte[] p), except you now calculate a CRC for a specific part of the byte array.
     int iBufferIndex = 0;
@@ -122,8 +123,8 @@ ushort CRCTool::CalcCRCITT(byte[] p, int offset, int length)
         iBufferIndex = offset;
         length += offset;
     }
-    if (length > p.Length)
-        length = p.Length;
+    if (length > pLength)
+        length = pLength;
 
     for (; iBufferIndex < length; iBufferIndex++)
     {

@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPFORMAT_H_
-#define _ZQ_SCPFORMAT_H_
+#ifndef _SCPFORMAT_H_
+#define _SCPFORMAT_H_
 #include "IECGFormat.h"    
 #include "ISignal.h"    
 #include "IDemographic.h"    
@@ -94,4 +94,4 @@ private:
 };
 }
 
-#endif  /*#ifndef _ZQ_SCPFORMAT_H_*/
+#endif  /*#ifndef _SCPFORMAT_H_*/

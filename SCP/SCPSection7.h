@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION7_H_
-#define _ZQ_SCPSECTION7_H_
+#ifndef _SCPSECTION7_H_
+#define _SCPSECTION7_H_
 #include "SCPSection.h"
 #include "IGlobalMeasurement.h" 
 #include "GlobalMeasurements.h"

@@ -1,5 +1,5 @@
-#ifndef _ZQ_DATE_H_
-#define _ZQ_DATE_H_
+#ifndef _DATE_H_
+#define _DATE_H_
 
 namespace ECGConversion.ECGDemographics
 {

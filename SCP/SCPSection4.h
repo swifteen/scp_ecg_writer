@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION4_H_
-#define _ZQ_SCPSECTION4_H_
+#ifndef _SCPSECTION4_H_
+#define _SCPSECTION4_H_
 
 
 
@@ -121,4 +121,4 @@ private:
 };
 }
 
-#endif  /*#ifndef _ZQ_SCPSECTION4_H_*/
+#endif  /*#ifndef _SCPSECTION4_H_*/

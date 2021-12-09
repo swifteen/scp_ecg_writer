@@ -1,5 +1,5 @@
-#ifndef _ZQ_ISIGNAL_CS_
-#define _ZQ_ISIGNAL_CS_
+#ifndef _ISIGNAL_CS_
+#define _ISIGNAL_CS_
     
 
 namespace ECGConversion.ECGSignals
@@ -31,4 +31,4 @@ namespace ECGConversion.ECGSignals
 }
 
 
-#endif  /*#ifndef _ZQ_ISIGNAL_CS_*/
+#endif  /*#ifndef _ISIGNAL_CS_*/

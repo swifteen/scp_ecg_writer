@@ -1,5 +1,5 @@
-#ifndef _ZQ_LEADMEASUREMENTS_H_
-#define _ZQ_LEADMEASUREMENTS_H_
+#ifndef _LEADMEASUREMENTS_H_
+#define _LEADMEASUREMENTS_H_
 #include "LeadMeasurement.h"
 
 namespace ECGConversion.ECGLeadMeasurements

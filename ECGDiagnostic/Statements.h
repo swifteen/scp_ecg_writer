@@ -1,5 +1,5 @@
-#ifndef _ZQ_STATEMENTS_H_
-#define _ZQ_STATEMENTS_H_
+#ifndef _STATEMENTS_H_
+#define _STATEMENTS_H_
 
 
 namespace ECGConversion.ECGDiagnostic

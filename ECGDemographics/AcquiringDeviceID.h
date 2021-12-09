@@ -1,5 +1,5 @@
-#ifndef _ZQ_ACQUIRINGDEVICEID_H_
-#define _ZQ_ACQUIRINGDEVICEID_H_
+#ifndef _ACQUIRINGDEVICEID_H_
+#define _ACQUIRINGDEVICEID_H_
 
 namespace ECGConversion.ECGDemographics
 {

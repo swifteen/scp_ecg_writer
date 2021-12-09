@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION_H_
-#define _ZQ_SCPSECTION_H_
+#ifndef _SCPSECTION_H_
+#define _SCPSECTION_H_
 #include "ScpGlobal.h"
 
 namespace ECGConversion.SCP
@@ -103,4 +103,4 @@ private:
 
 }
 
-#endif  /*#ifndef _ZQ_SCPSECTION_H_*/
+#endif  /*#ifndef _SCPSECTION_H_*/

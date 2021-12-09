@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPDATE_H_
-#define _ZQ_SCPDATE_H_
+#ifndef _SCPDATE_H_
+#define _SCPDATE_H_
 
 namespace ECGConversion.SCP
 {

@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION1_H_
-#define _ZQ_SCPSECTION1_H_
+#ifndef _SCPSECTION1_H_
+#define _SCPSECTION1_H_
 #include "SCPSection.h"
 #include "IDemographic.h"    
 #include"Drug.h"
@@ -167,4 +167,4 @@ private:
     SCPHeaderField[] _Fields;
 };
 }
-#endif  /*#ifndef _ZQ_SCPSECTION1_H_*/
+#endif  /*#ifndef _SCPSECTION1_H_*/

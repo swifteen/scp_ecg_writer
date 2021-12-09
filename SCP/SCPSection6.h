@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPSECTION6_H_
-#define _ZQ_SCPSECTION6_H_
+#ifndef _SCPSECTION6_H_
+#define _SCPSECTION6_H_
 #include "SCPSection.h"
 
 

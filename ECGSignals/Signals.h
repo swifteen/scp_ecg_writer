@@ -1,5 +1,5 @@
-#ifndef _ZQ_SIGNALS_H_
-#define _ZQ_SIGNALS_H_
+#ifndef _SIGNALS_H_
+#define _SIGNALS_H_
 #include "Signal.h"
 
 namespace ECGConversion.ECGSignals
@@ -150,4 +150,4 @@ private:
 }
 
 
-#endif  /*#ifndef _ZQ_SIGNALS_H_*/
+#endif  /*#ifndef _SIGNALS_H_*/

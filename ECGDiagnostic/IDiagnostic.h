@@ -1,5 +1,5 @@
-#ifndef _ZQ_IDIAGNOSTIC_CS_
-#define _ZQ_IDIAGNOSTIC_CS_
+#ifndef _IDIAGNOSTIC_CS_
+#define _IDIAGNOSTIC_CS_
 
 namespace ECGConversion.ECGDiagnostic
 {
@@ -24,4 +24,4 @@ namespace ECGConversion.ECGDiagnostic
 }
 
 
-#endif  /*#ifndef _ZQ_IDIAGNOSTIC_CS_*/
+#endif  /*#ifndef _IDIAGNOSTIC_CS_*/

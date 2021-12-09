@@ -1,6 +1,6 @@
 #include "BytesTool.h"
 
-namespace Communication.IO.Tools
+namespace Communication_IO_Tools
 {
 /// <summary>
 /// Function to write an integer to a buffer at an offset.
@@ -11,21 +11,22 @@ namespace Communication.IO.Tools
 /// <param name="bytes">nr bytes to write</param>
 /// <param name="littleEndian">little endian or big endian integer</param>
 /// <returns></returns>
-static bool BytesTool::writeBytes(long values, byte[] buffer, int offset, int bytes, bool littleEndian)
+bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offset, int bytes, bool littleEndian)
 {
     if ((buffer != null)
-            &&  (offset + bytes) <= buffer.Length
+            &&  (offset + bytes) <= bufferLength
             &&  (bytes <= 8)
             &&  (bytes > 0))
     {
         for (int read=0;read < bytes;read++)
         {
-            buffer[offset + (littleEndian ? read : (bytes-read-1))] = (byte) ((values >> (read << 3)) & 0xff);
+            buffer[offset + (littleEndian ? read : (bytes-read-1))] = (uchar) ((values >> (read << 3)) & 0xff);
         }
         return true;
     }
     return false;
 }
+#if 0//TODO
 /// <summary>
 ///	Function to write a string too a byte array at a given offset
 /// </summary>
@@ -47,8 +48,7 @@ static void BytesTool::writeString(string src, byte[] buffer, int offset, int le
 /// <param name="length">max length of string</param>
 static void BytesTool::writeString(Encoding enc, string src, byte[] buffer, int offset, int length)
 {
-    if ((src != null)
-            &&	(buffer != null))
+    if ((src != null) && (buffer != null))
     {
         int nrChars = enc.GetMaxCharCount((buffer.Length < (offset + length)) ? buffer.Length - offset : length);
 
@@ -58,6 +58,7 @@ static void BytesTool::writeString(Encoding enc, string src, byte[] buffer, int 
             enc.GetBytes(src, 0, nrChars, buffer, offset);
     }
 }
+#endif
 /// <summary>
 /// Function to copy content of one buffer to another.
 /// </summary>
@@ -66,10 +67,10 @@ static void BytesTool::writeString(Encoding enc, string src, byte[] buffer, int 
 /// <param name="src">source buffer</param>
 /// <param name="offsrc">offset in source buffer</param>
 /// <param name="length">number bytes to copy</param>
-static int BytesTool::copy(byte[] dst, int offdst, byte[] src, int offsrc, int length)
+int BytesTool::copy(uchar* dst,int dstLength, int offdst, uchar* src, int srcLength, int offsrc, int length)
 {
     int loper=0;
-    for (;(loper < length) && ((offdst + loper) < dst.Length) && ((offsrc + loper) < src.Length);loper++)
+    for (;(loper < length) && ((offdst + loper) < dstLength) && ((offsrc + loper) < srcLength);loper++)
     {
         dst[offdst + loper] = src[offsrc + loper];
     }
@@ -82,9 +83,9 @@ static int BytesTool::copy(byte[] dst, int offdst, byte[] src, int offsrc, int l
 /// <param name="offset">offset in buffer</param>
 /// <param name="nrbytes">number byte to empty</param>
 /// <param name="type">number to empty to</param>
-static void BytesTool::emptyBuffer(byte[] buffer, int offset, int nrbytes, byte type)
+void BytesTool::emptyBuffer(uchar* buffer,int bufferLength, int offset, int nrbytes, uchar type)
 {
-    for (int x=0;(x < nrbytes)&&((x + offset) < buffer.Length);x++)
+    for (int x=0;(x < nrbytes)&&((x + offset) < bufferLength);x++)
     {
         buffer[offset + x] = type;
     }

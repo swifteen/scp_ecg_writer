@@ -1,13 +1,13 @@
-#ifndef _ZQ_CRCTOOL_H_
-#define _ZQ_CRCTOOL_H_
+#ifndef _CRCTOOL_H_
+#define _CRCTOOL_H_
 #include "ScpGlobal.h"
 
-namespace Communication.IO.Tools
+namespace Communication_IO_Tools
 {
 /// <summary>
 /// Tool to calculate and add CRC codes to a string
 /// </summary>
-public class CRCTool
+class CRCTool
 {
     // Enumeration used in the init function to specify which CRC algorithm to use
 public:
@@ -22,7 +22,7 @@ public:
     /// It is included to demonstrate that although it looks different it is the same
     /// routine as the crcbitbybit* functions. But it is optimized and preconfigured for CRCITT.
     /// </summary>
-    ushort CalcCRCITT(byte[] p, int offset, int length);
+    ushort CalcCRCITT(uchar* p, int pLength, int offset, int length);
 private:
     //region subroutines
     ulong reflect (ulong crc, int bitnum);
@@ -53,8 +53,8 @@ private:
     ulong crchighbit;
     ulong crcinit_direct;
     ulong crcinit_nondirect;
-    ulong [] crctab;
+    ulong* crctab;
 };
 }
 
-#endif  /*#ifndef _ZQ_CRCTOOL_H_*/
+#endif  /*#ifndef _CRCTOOL_H_*/

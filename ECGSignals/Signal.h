@@ -1,5 +1,5 @@
-#ifndef _ZQ_SIGNAL_H_
-#define _ZQ_SIGNAL_H_
+#ifndef _SIGNAL_H_
+#define _SIGNAL_H_
 
 namespace ECGConversion.ECGSignals
 {

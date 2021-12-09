@@ -1,5 +1,5 @@
-#ifndef _ZQ_SCPGLOBAL_H_
-#define _ZQ_SCPGLOBAL_H_
+#ifndef _SCPGLOBAL_H_
+#define _SCPGLOBAL_H_
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -15,4 +15,4 @@ typedef unsigned char uchar;
 #define null             0L
 #endif
 
-#endif  /*#ifndef _ZQ_SCPGLOBAL_H_*/
+#endif  /*#ifndef _SCPGLOBAL_H_*/

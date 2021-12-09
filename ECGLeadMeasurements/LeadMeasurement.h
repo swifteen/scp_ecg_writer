@@ -1,5 +1,5 @@
-#ifndef _ZQ_LEADMEASUREMENT_H_
-#define _ZQ_LEADMEASUREMENT_H_
+#ifndef _LEADMEASUREMENT_H_
+#define _LEADMEASUREMENT_H_
 
 
 namespace ECGConversion.ECGLeadMeasurements

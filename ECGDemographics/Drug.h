@@ -1,5 +1,5 @@
-#ifndef _ZQ_DRUG_H_
-#define _ZQ_DRUG_H_
+#ifndef _DRUG_H_
+#define _DRUG_H_
 
 
 namespace ECGConversion.ECGDemographics

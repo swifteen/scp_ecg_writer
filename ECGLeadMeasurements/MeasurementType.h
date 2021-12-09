@@ -1,5 +1,5 @@
-#ifndef _ZQ_MEASUREMENTTYPE_H_
-#define _ZQ_MEASUREMENTTYPE_H_
+#ifndef _MEASUREMENTTYPE_H_
+#define _MEASUREMENTTYPE_H_
     
 
 namespace ECGConversion.ECGLeadMeasurements
@@ -64,4 +64,4 @@ enum MeasurementType
 }
 
 
-#endif  /*#ifndef _ZQ_MEASUREMENTTYPE_H_*/
+#endif  /*#ifndef _MEASUREMENTTYPE_H_*/

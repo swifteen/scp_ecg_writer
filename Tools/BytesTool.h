@@ -1,21 +1,12 @@
-#ifndef _ZQ_BYTESTOOL_H_
-#define _ZQ_BYTESTOOL_H_    
+#ifndef _BYTESTOOL_H_
+#define _BYTESTOOL_H_    
+#include "ScpGlobal.h"
 
-
-namespace Communication.IO.Tools
+namespace Communication_IO_Tools
 {
 class BytesTool
 {
 public:
-	/// <summary>
-	/// Function to read a integer from a buffer at an offset.
-	/// </summary>
-	/// <param name="buffer">source buffer</param>
-	/// <param name="offset"></param>
-	/// <param name="bytes">length of integer</param>
-	/// <param name="littleEndian">little endian or big endian integer</param>
-	/// <returns>read integer</returns>
-	static long readBytes(byte[] buffer, int offset, int bytes, bool littleEndian);
     /// <summary>
     /// Function to write an integer to a buffer at an offset.
     /// </summary>
@@ -25,8 +16,9 @@ public:
     /// <param name="bytes">nr bytes to write</param>
     /// <param name="littleEndian">little endian or big endian integer</param>
     /// <returns></returns>
-    static bool writeBytes(long values, byte[] buffer, int offset, int bytes, bool littleEndian);
+    static bool writeBytes(long values, uchar* buffer,int bufferLength, int offset, int bytes, bool littleEndian);
 
+#if 0 //TODO
     /// <summary>
     ///	Function to write a string too a byte array at a given offset
     /// </summary>
@@ -45,6 +37,7 @@ public:
     /// <param name="offset">position to start reading</param>
     /// <param name="length">max length of string</param>
     static void writeString(Encoding enc, string src, byte[] buffer, int offset, int length);
+#endif
 
     /// <summary>
     /// Function to copy content of one buffer to another.
@@ -54,7 +47,7 @@ public:
     /// <param name="src">source buffer</param>
     /// <param name="offsrc">offset in source buffer</param>
     /// <param name="length">number bytes to copy</param>
-    static int copy(byte[] dst, int offdst, byte[] src, int offsrc, int length);
+    static int copy(uchar* dst,int dstLength, int offdst, uchar* src, int srcLength, int offsrc, int length);
 
     /// <summary>
     /// Function to empty a buffer to a defined number.
@@ -63,9 +56,9 @@ public:
     /// <param name="offset">offset in buffer</param>
     /// <param name="nrbytes">number byte to empty</param>
     /// <param name="type">number to empty to</param>
-    static void emptyBuffer(byte[] buffer, int offset, int nrbytes, byte type);
+    static void emptyBuffer(uchar* buffer,int bufferLength, int offset, int nrbytes, uchar type);
 };
 }
 
 
-#endif  /*#ifndef _ZQ_BYTESTOOL_H_*/
+#endif  /*#ifndef _BYTESTOOL_H_*/

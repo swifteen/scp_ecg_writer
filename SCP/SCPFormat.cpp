@@ -15,7 +15,7 @@
 #include "BytesTool.h"
 
 using namespace ECGConversion.ECGSignals;
-using namespace Communication.IO.Tools;
+using namespace Communication_IO_Tools;
 
 namespace ECGConversion.SCP
 {

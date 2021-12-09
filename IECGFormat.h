@@ -1,5 +1,5 @@
-#ifndef _ZQ_IECGFORMAT_H_
-#define _ZQ_IECGFORMAT_H_
+#ifndef _IECGFORMAT_H_
+#define _IECGFORMAT_H_
 #include "ISignal.h"    
 #include "IDemographic.h"    
 #include "IDiagnostic.h"    
@@ -69,4 +69,4 @@ public:
 }
 
 
-#endif  /*#ifndef _ZQ_IECGFORMAT_H_*/
+#endif  /*#ifndef _IECGFORMAT_H_*/
