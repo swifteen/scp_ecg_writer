@@ -4,12 +4,15 @@
 #include "IDemographic.h"    
 #include"Drug.h"
 
+using namespace std;
 using namespace ECGConversion::ECGDemographics;
 
 namespace ECGConversion
 {
 namespace SCP
 {
+
+class SCPHeaderField;
 
 /// <summary>
 /// Class contains section 1 (Header Information).
@@ -19,8 +22,6 @@ class SCPSection1 : SCPSection, IDemographic
 public:
     enum ProtocolCompatibility
     {CatI = 0x90, CatII = 0xa0, CatIII = 0xb0, CatIV = 0xc0};
-private:
-    class SCPHeaderField;
 public:
     SCPSection1();
     ushort getSectionID();
@@ -40,7 +41,7 @@ public:
     /// </summary>
     /// <param name="tag">tag of field.</param>
     /// <returns>0 on success</returns>
-    int Remove(byte tag);
+    int Remove(uchar tag);
     /// <summary>
     /// Function to resize the space for header fields.
     /// </summary>
@@ -50,7 +51,7 @@ public:
     /// </summary>
     /// <param name="tag">tag to search for</param>
     /// <returns></returns>
-    SCPHeaderField GetField(byte tag);
+    SCPHeaderField GetField(uchar tag);
 #if 0//TODO
     /// <summary>
     /// Get encoding for text from language support code.
@@ -88,7 +89,7 @@ public:
     /// <param name="tag">id of tag</param>
     /// <param name="text">a string</param>
     /// <returns>0 on success</returns>
-    int setText(byte tag, const string& text);
+    int setText(uchar tag, const string& text);
 
     // Getting Demographics information
     void setLastName(const string& value);
@@ -123,7 +124,7 @@ public:
     void setRoomDescription(string RoomDescription);
     void setStatCode(byte StatCode);
 protected:
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer,int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
@@ -132,13 +133,13 @@ private:
     /// </summary>
     /// <param name="tag">tag to search for</param>
     /// <returns>position of this field</returns>
-    int _SearchField(byte tag);
+    int _SearchField(uchar tag);
     /// <summary>
     /// Function to find position to insert a field with a certain tag.
     /// </summary>
     /// <param name="tag">tag to search on.</param>
     /// <returns>position to insert</returns>
-    int _InsertSearch(byte tag);
+    int _InsertSearch(uchar tag);
     /// <summary>
     /// Function to check wheter the used fields are indeed sorted.
     /// </summary>
@@ -149,26 +150,24 @@ private:
     /// <param name="condition">condition</param>
     /// <param name="tag">value of tag</param>
     /// <returns>is exception then true</returns>
-    static bool isException(byte[] condition, byte tag);
+    static bool isException(uchar* condition, int conditionLength, uchar tag);
 private:
-    // Fields that must be made empty for anonymous. (must be sorted from low to high)
-    static byte[] _AnonymousFields;
     // Defined in SCP.
-    static byte[] _MustBePresent; // defined in paragraph 5.4.3.1 of SCP
-    static byte[] _MultipleInstanceFields; // Must be sorted
+    static uchar _MustBePresent[4]; // defined in paragraph 5.4.3.1 of SCP
+    static uchar _MultipleInstanceFields[5]; // Must be sorted
     static ushort _MaximumFieldLength;
-    static byte[] _MaximumLengthExceptions; // Must be sorted
+    static uchar _MaximumLengthExceptions[5]; // Must be sorted
     static ushort _ExceptionsMaximumLength; // should be 80, but some scp file doen't use this maximum. apparantly 128 wasn't enough as well
-    static byte _ManufactorField;
+    static uchar _ManufactorField;
     static ushort _SectionID;
-    static byte _DemographicTerminator;
+    static uchar _DemographicTerminator;
 
     // ResizeSpeed for the array to store the Fields.
     static int _ResizeSpeed;
 
     // Part of the stored Data Structure.
     int _NrFields;
-    SCPHeaderField[] _Fields;
+    std::vector<SCPHeaderField> _Fields;
 };
 }
 }
