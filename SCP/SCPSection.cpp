@@ -1,11 +1,13 @@
 #include "SCPSection.h"
-#include "SCPFormat.h"
+//#include "SCPFormat.h"//TODO
 #include "CRCTool.h"
 #include "BytesTool.h"
 
 using namespace Communication_IO_Tools;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 int SCPSection::Size = 16;
 int SCPSection::_ReservedLength = 6;
@@ -14,12 +16,23 @@ int SCPSection::_ReservedLength = 6;
 /// </summary>
 SCPSection::SCPSection()
 {
-    _Encoding = System.Text.Encoding.Default;
+//    _Encoding = System.Text.Encoding.Default;//TODO
     SectionID = 0;
-    Reserved = new byte[_ReservedLength];
+    Reserved = new uchar[_ReservedLength];
     SectionID = getSectionID();
     Empty();
 }
+
+SCPSection::~SCPSection()
+{
+	if(Reserved != null)
+	{
+		delete [] Reserved;
+		Reserved = null;
+	}
+}
+
+#if 0//TODO
 /// <summary>
 /// Set encoding used for section.
 /// </summary>
@@ -28,7 +41,9 @@ void SCPSection::SetEncoding(System.Text.Encoding enc)
 {
     _Encoding = enc;
 }
+#endif
 
+#if 0
 /// <summary>
 /// Function to write an SCP Section.
 /// </summary>
@@ -61,6 +76,7 @@ int SCPSection::Write(out byte[] buffer)
     }
     return 0x1;
 }
+#endif
 /// <summary>
 /// Function to write an SCP Section.
 /// </summary>
@@ -71,7 +87,7 @@ int SCPSection::Write(out byte[] buffer)
 /// 0x01) section incorrect
 /// 0x02) no buffer provided or buffer to small for header
 /// rest) Section specific error </returns>
-int SCPSection::Write(byte[] buffer, int offset)
+int SCPSection::Write(uchar* buffer, int bufferLength,int offset)
 {
     Length = _getLength() + Size;
 
@@ -81,28 +97,28 @@ int SCPSection::Write(byte[] buffer, int offset)
     if (Works())
     {
         if ((buffer != null)
-                &&	((offset + Length) <= buffer.Length))
+                &&	((offset + Length) <= bufferLength))
         {
             int crcoffset = offset;
             offset += sizeof(CRC);
             SectionID = getSectionID();
-            BytesTool::writeBytes(SectionID, buffer, offset, sizeof(SectionID), true);
+            BytesTool::writeBytes(SectionID, buffer, bufferLength,offset, sizeof(SectionID), true);
             offset += sizeof(SectionID);
-            BytesTool::writeBytes(Length, buffer, offset, sizeof(Length), true);
+            BytesTool::writeBytes(Length, buffer, bufferLength,offset, sizeof(Length), true);
             offset += sizeof(Length);
-            BytesTool::writeBytes(SectionVersionNr, buffer, offset, sizeof(SectionVersionNr), true);
+            BytesTool::writeBytes(SectionVersionNr, buffer, bufferLength,offset, sizeof(SectionVersionNr), true);
             offset += sizeof(SectionVersionNr);
-            BytesTool::writeBytes(ProtocolVersionNr, buffer, offset, sizeof(ProtocolVersionNr), true);
+            BytesTool::writeBytes(ProtocolVersionNr, buffer, bufferLength,offset, sizeof(ProtocolVersionNr), true);
             offset += sizeof(ProtocolVersionNr);
-            offset += BytesTool::copy(buffer, offset, Reserved, 0, _ReservedLength);
+            offset += BytesTool::copy(buffer, bufferLength,offset, Reserved, _ReservedLength,0, _ReservedLength);
 
-            int err = _Write(buffer, offset);
+            int err = _Write(buffer, bufferLength,offset);
             if (err == 0)
             {
                 CRCTool crc;
-                crc.Init(CRCTool::CRCCode::CRC_CCITT);
-                CRC = crc.CalcCRCITT(buffer, crcoffset + sizeof(CRC), Length - sizeof(CRC));
-                BytesTool::writeBytes(CRC, buffer, crcoffset, sizeof(CRC), true);
+                crc.Init(CRCTool::CRC_CCITT);
+                CRC = crc.CalcCRCITT(buffer, bufferLength,crcoffset + sizeof(CRC), Length - sizeof(CRC));
+                BytesTool::writeBytes(CRC, buffer, bufferLength,crcoffset, sizeof(CRC), true);
             }
             return err << 2;
         }
@@ -118,8 +134,10 @@ void SCPSection::Empty()
     CRC = 0;
     SectionID = getSectionID();
     Length = 0;
+#if 0//TODO
     SectionVersionNr = SCPFormat::DefaultSectionVersion;
     ProtocolVersionNr = SCPFormat::DefaultProtocolVersion;
+#endif
     Reserved[0] = 0; Reserved[1] = 0; Reserved[2] = 0;
     Reserved[3] = 0; Reserved[4] = 0; Reserved[5] = 0;
     _Empty();
@@ -132,5 +150,6 @@ int SCPSection::getLength()
 {
     int len = _getLength();
     return (len == 0 ? 0 : len + Size);
+}
 }
 }

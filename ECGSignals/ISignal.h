@@ -4,8 +4,8 @@
 
 namespace ECGConversion
 {
-  namespace  ECGSignals
-   {
+namespace ECGSignals
+{
 	/// <summary>
 	/// Interface for manupalation of the signals.
 	/// </summary>
@@ -30,8 +30,7 @@ namespace ECGConversion
 		/// <returns>0 on success</returns>
 		virtual int setSignals(Signals signals) = 0;
 	};
-    	}
 }
-
+}
 
 #endif  /*#ifndef _ISIGNAL_CS_*/

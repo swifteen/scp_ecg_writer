@@ -4,9 +4,11 @@
 #include "IDemographic.h"    
 #include"Drug.h"
 
-using namespace ECGConversion.ECGDemographics;
+using namespace ECGConversion::ECGDemographics;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 
 /// <summary>
@@ -166,5 +168,6 @@ private:
     int _NrFields;
     SCPHeaderField[] _Fields;
 };
+}
 }
 #endif  /*#ifndef _SCPSECTION1_H_*/

@@ -7,6 +7,7 @@
 #include "IGlobalMeasurement.h"    
 #include "ILeadMeasurement.h"    
 #include "SCPSection.h"    
+#include "ScpGlobal.h"
 
 using namespace ECGConversion.ECGSignals;
 using namespace ECGConversion.ECGDemographics;
@@ -72,8 +73,8 @@ private:
     void EmptyFormat();
 public:
     // Static settings of format.
-    static byte DefaultSectionVersion;
-    static byte DefaultProtocolVersion;
+    static uchar DefaultSectionVersion;
+    static uchar DefaultProtocolVersion;
 private:
     // settings for support with other readers.
     bool _QRSSubtractionSupport;

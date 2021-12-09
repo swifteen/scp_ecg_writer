@@ -23,8 +23,8 @@ namespace ECGConversion.SCP
 /// Class containing the entire SCP format.
 /// </summary>
 // Static settings of format.
-byte SCPFormat::DefaultSectionVersion = 20;
-byte SCPFormat::DefaultProtocolVersion = 20;
+uchar SCPFormat::DefaultSectionVersion = 20;
+uchar SCPFormat::DefaultProtocolVersion = 20;
 
 SCPFormat::SCPFormat()
 {

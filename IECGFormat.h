@@ -1,16 +1,17 @@
 #ifndef _IECGFORMAT_H_
 #define _IECGFORMAT_H_
+#include "ScpGlobal.h"
 #include "ISignal.h"    
 #include "IDemographic.h"    
 #include "IDiagnostic.h"    
 #include "IGlobalMeasurement.h"    
 #include "ILeadMeasurement.h"    
 
-using namespace ECGConversion.ECGDemographics;
-using namespace ECGConversion.ECGDiagnostic;
-using namespace ECGConversion.ECGGlobalMeasurements;
-using namespace ECGConversion.ECGLeadMeasurements;
-using namespace ECGConversion.ECGSignals;
+using namespace ECGConversion::ECGDemographics;
+using namespace ECGConversion::ECGDiagnostic;
+using namespace ECGConversion::ECGGlobalMeasurements;
+using namespace ECGConversion::ECGLeadMeasurements;
+using namespace ECGConversion::ECGSignals;
 
 namespace ECGConversion
 {
@@ -23,7 +24,7 @@ public:
     /// <param name="buffer">byte array to write to</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    virtual int Write(byte[] buffer, int offset) = 0;
+    virtual int Write(uchar* buffer,int bufferLength, int offset) = 0;
     /// <summary>
     /// Function to get IDemographic class.
     /// </summary>

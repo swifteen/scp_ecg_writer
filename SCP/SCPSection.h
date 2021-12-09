@@ -2,7 +2,9 @@
 #define _SCPSECTION_H_
 #include "ScpGlobal.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// abstract class describing basic form of a section.
@@ -14,11 +16,15 @@ public:
     /// Constructor for a SCP Section.
     /// </summary>
     SCPSection();
+    virtual ~SCPSection();
+#if 0//TODO
     /// <summary>
     /// Set encoding used for section.
     /// </summary>
     /// <param name="enc">encoding to use in section.</param>
     void SetEncoding(System.Text.Encoding enc);
+#endif
+#if 0
     /// <summary>
     /// Function to write an SCP Section.
     /// </summary>
@@ -29,6 +35,7 @@ public:
     /// 0x02) no buffer provided or buffer to small for header
     /// rest) Section specific error </returns>
     int Write(out byte[] buffer);
+#endif
     /// <summary>
     /// Function to write an SCP Section.
     /// </summary>
@@ -39,7 +46,7 @@ public:
     /// 0x01) section incorrect
     /// 0x02) no buffer provided or buffer to small for header
     /// rest) Section specific error </returns>
-    int Write(byte[] buffer, int offset);
+    int Write(uchar* buffer, int bufferLength, int offset);
     /// <summary>
     /// Function to empty a SCP section.
     /// </summary>
@@ -53,7 +60,7 @@ public:
     /// Function to get section ID of section.
     /// </summary>
     /// <returns>section id</returns>
-    ushort getSectionID() = 0;
+    virtual ushort getSectionID() = 0;
     /// <summary>
     /// Function to check working of section.
     /// </summary>
@@ -62,19 +69,12 @@ public:
     virtual bool Works() = 0;
 protected:
     /// <summary>
-    /// Hidden read function is called by Read().
-    /// </summary>
-    /// <param name="buffer">byte array to read from</param>
-    /// <param name="offset">position to start reading</param>
-    /// <returns>0 on success</returns>
-    virtual int _Read(byte[] buffer, int offset) = 0;
-    /// <summary>
     /// Hidden write function is called by Write().
     /// </summary>
     /// <param name="buffer">byte array to write into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    virtual int _Write(byte[] buffer, int offset) = 0;
+    virtual int _Write(uchar* buffer, int bufferLength, int offset) = 0;
     /// <summary>
     /// Hidden empty function is called by Empty().
     /// </summary>
@@ -87,20 +87,21 @@ protected:
 public:
     static int Size;
 protected:
+#if 0//TODO
     // encoding of scp file
     System.Text.Encoding _Encoding;
+#endif
 
     // Content of Header of section.
     ushort CRC;
     ushort SectionID;
     int Length;
-    byte SectionVersionNr;
-    byte ProtocolVersionNr;
-    byte[] Reserved;
-private:
+    uchar SectionVersionNr;
+    uchar ProtocolVersionNr;
+    uchar* Reserved;
     static int _ReservedLength;
 };
 
 }
-
+}
 #endif  /*#ifndef _SCPSECTION_H_*/

@@ -3,15 +3,18 @@
 #include "SCPSection.h"
 
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 0 (Pointer section).
 /// </summary>
-public class SCPSection0 : SCPSection
+class SCPSection0 : public SCPSection
 {
 public:
     SCPSection0();
+	~SCPSection0();	
     ushort getSectionID();
     bool Works();
     /// <summary>
@@ -30,12 +33,6 @@ public:
     /// <param name="nr">pointer number to get section id from</param>
     /// <returns>id of section</returns>
     ushort getSectionID(int nr);
-    /// <summary>
-    /// Function to set section id of a pointer.
-    /// </summary>
-    /// <param name="nr">number of pointer to set</param>
-    /// <param name="ID">id of section</param>
-    void setSectionID(int nr, ushort ID);
     /// <summary>
     /// Function to get index of a pointer.
     /// </summary>
@@ -77,20 +74,20 @@ public:
     /// <param name="index">index of section</param>
     void setPointer(int nr, ushort id, int length, int index);
 protected:		
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
     // Defined in SCP.
-    static byte[] _Reserved;
+    static uchar _Reserved[6];
     static ushort _SectionID;
     static int _NrMandatory;
 
     class SCPPointer;
     // Part of the stored Data Structure.
-    SCPPointer[] _MandatoryPointers;
-    SCPPointer[] _OptionalPointers;
+    SCPPointer* _MandatoryPointers;
 };
+}
 }
 
 #endif  /*#ifndef _SCPSECTION0_H_*/
