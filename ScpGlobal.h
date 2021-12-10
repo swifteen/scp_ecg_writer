@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <string>
 #include <memory.h>
+#include <vector>
 
+using namespace std;
 #ifndef HAVE_NO_TYPEDEF_UCHAR
 #define HAVE_NO_TYPEDEF_UCHAR
 typedef unsigned char uchar;

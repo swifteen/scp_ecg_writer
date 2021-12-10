@@ -14,7 +14,7 @@ enum Sex
     kSexUnspecified = 0,
     kSexMale,
     kSexFemale,
-    kSexNullSex = 0xff
+    kSexNull = 0xff
 };
 /// <summary>
 /// An Enumration to determine the race.

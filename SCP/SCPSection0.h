@@ -1,7 +1,6 @@
 #ifndef _SCPSECTION0_H_
 #define _SCPSECTION0_H_
 #include "SCPSection.h"
-#include <vector>
 
 namespace ECGConversion
 {

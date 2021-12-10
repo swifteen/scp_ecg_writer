@@ -34,12 +34,13 @@ public:
     {
         Tag = tag;
         Length = (value == null ? (ushort)0 : length);
+		Value = null;
 		if(Length > 0 )
 		{
 			Value = new uchar[Length];
 			if(Value != null)
 			{
-				memcpy(Value,length);
+				memcpy(Value,value,length);
 			}
 		}
     }
@@ -55,6 +56,7 @@ public:
         if( &rhs != this )
         {
 			delete[] this->Value;
+			this->Value = null;
 			deepCopy(rhs);
         }
         return *this;
@@ -67,7 +69,6 @@ public:
 	
 	void deepCopy(const SCPHeaderField& rhs)
     {
-		this->Value = null;
 		this->Length = rhs.Length;
 		if((rhs.Length > 0) && (rhs.Value != null))
 		{
@@ -107,11 +108,6 @@ SCPSection1::SCPSection1():
     _Fields.clear();
 }
 
-SCPSection1::~SCPSection1()
-{
-	_Empty();
-}
-
 int SCPSection1::_Write(uchar* buffer,int bufferLength, int offset)
 {
     for (int loper=0;loper < _NrFields;loper++)
@@ -120,7 +116,7 @@ int SCPSection1::_Write(uchar* buffer,int bufferLength, int offset)
         offset += sizeof(_Fields[loper].Tag);
         BytesTool::writeBytes(_Fields[loper].Length , buffer,bufferLength, offset, sizeof(_Fields[loper].Length), true);
         offset += sizeof(_Fields[loper].Length);
-        offset += BytesTool::copy(buffer,bufferLength, offset, _Fields[loper].Value, 0, _Fields[loper].Length);
+        offset += BytesTool::copy(buffer,bufferLength, offset, _Fields[loper].Value, _Fields[loper].Length,0, _Fields[loper].Length);
     }
     return 0x0;
 }
@@ -156,8 +152,7 @@ bool SCPSection1::Works()
     {
         for (int loper=0;loper < _NrFields;loper++)
         {
-            if ((_Fields[loper] == null)
-                    ||  ((_Fields[loper].Value == null) && (_Fields[loper].Length != 0))
+            if (((_Fields[loper].Value == null) && (_Fields[loper].Length != 0))
                     ||  ((_Fields[loper].Length > _MaximumFieldLength) 
                     		&& (_Fields[loper].Tag < _ManufactorField) 
                     		&& (!isException(_MaximumLengthExceptions,sizeof(_MaximumLengthExceptions), _Fields[loper].Tag) 
@@ -186,9 +181,7 @@ void SCPSection1::Init()
 {
     _Empty();
 	_Fields.reserve(_ResizeSpeed);
-    _Fields[_NrFields++] = new SCPHeaderField(_DemographicTerminator, 0, null);
-	delete _Fields[0];
-	_Fields[_NrFields] = new SCPHeaderField(_DemographicTerminator, 0, null);
+    _Fields[_NrFields++] = SCPHeaderField(_DemographicTerminator, 0, null);
 }
 
 /// <summary>
@@ -196,27 +189,23 @@ void SCPSection1::Init()
 /// </summary>
 /// <param name="field">field to insert</param>
 /// <returns>0 on success</returns>
-int SCPSection1::Insert(SCPHeaderField field)
+int SCPSection1::Insert(const SCPHeaderField& field)
 {
-    if ((field != null)
-            &&  (field.Tag != _DemographicTerminator)
-            &&	(_Fields != null)
-            &&  (_NrFields <= _Fields.Length)
+    if ((field.Tag != _DemographicTerminator)
+            &&  (_NrFields <= _Fields.size())
             &&  (_Fields[_NrFields - 1].Tag == _DemographicTerminator))
     {
-        if ((field.Length == 0)
-                ||	((field.Value != null)
-                     &&	 (field.Length <= field.Value.Length)))
+        if (field.Length > 0)
         {
             int p1 = _SearchField(field.Tag);
             // If field exist must override or can be an multiple instances.
             if (p1 >= 0)
             {
                 // If multiple instaces field, add field as last of this kind of field.
-                if (isException(_MultipleInstanceFields, field.Tag))
+                if (isException(_MultipleInstanceFields, sizeof(_MultipleInstanceFields),field.Tag))
                 {
                     // Resize if space is needed.
-                    if (_NrFields == _Fields.Length)
+                    if (_NrFields == _Fields.size())
                     {
                         Resize();
                     }
@@ -239,7 +228,7 @@ int SCPSection1::Insert(SCPHeaderField field)
             else
             {
                 // Resize if space is needed
-                if (_NrFields == _Fields.Length)
+                if (_NrFields == _Fields.size())
                 {
                     Resize();
                 }
@@ -267,8 +256,7 @@ int SCPSection1::Insert(SCPHeaderField field)
 int SCPSection1::Remove(uchar tag)
 {
     if ((tag != _DemographicTerminator)
-            &&  (_Fields != null)
-            &&  (_NrFields <= _Fields.length()))
+            &&  (_NrFields <= _Fields.size()))
     {
         int p = _SearchField(tag);
         if (p >= 0)
@@ -290,32 +278,29 @@ int SCPSection1::Remove(uchar tag)
 /// </summary>
 void SCPSection1::Resize()
 {
-    SCPHeaderField[] temp = new SCPHeaderField[_NrFields + _ResizeSpeed];
-    for (int loper=0;loper < _NrFields;loper++)
-    {
-        temp[loper] = _Fields[loper];
-    }
-    _Fields = temp;
+	_Fields.resize(_NrFields + _ResizeSpeed);//additional default-inserted elements are appended
 }
 
+#if 0
 /// <summary>
 /// Function to get a field from this section
 /// </summary>
 /// <param name="tag">tag to search for</param>
 /// <returns></returns>
-SCPHeaderField SCPSection1::GetField(uchar tag)
+SCPHeaderField& SCPSection1::GetField(uchar tag)
 {
     int pos = _SearchField(tag);
 
     if ((_Fields != null)
             &&	(pos >= 0)
-            &&	(pos < _Fields.Length))
+            &&	(pos < _Fields.size()))
     {
         return _Fields[pos];
     }
 
     return null;
 }
+#endif
 
 /// <summary>
 /// Function to search for a field with a certain tag.
@@ -370,16 +355,13 @@ int SCPSection1::_InsertSearch(uchar tag)
 /// </summary>
 bool SCPSection1::CheckInstances()
 {
-    if ((_Fields != null)
-            &&  (_NrFields > 0)
-            &&  (_NrFields <= _Fields.Length)
-            &&  (_Fields[0] != null))
+    if ((_NrFields > 0)  &&  (_NrFields <= _Fields.size()))
     {
         uchar prev = _Fields[0].Tag;
         for (int loper=1;loper < _NrFields;loper++)
         {
             if ((prev == _Fields[loper].Tag)
-                    &&  !isException(_MultipleInstanceFields, prev))
+                    &&  !isException(_MultipleInstanceFields,sizeof(_MultipleInstanceFields), prev))
             {
                 return false;
             }
@@ -396,7 +378,7 @@ bool SCPSection1::CheckInstances()
 /// <param name="condition">condition</param>
 /// <param name="tag">value of tag</param>
 /// <returns>is exception then true</returns>
-static bool SCPSection1::isException(uchar* condition, int conditionLength,uchar tag)
+bool SCPSection1::isException(uchar* condition, int conditionLength,uchar tag)
 {
     if (condition == null)
     {
@@ -557,27 +539,6 @@ int SCPSection1::setLanguageSupportCode(System.Text.Encoding enc)
 #endif
 
 /// <summary>
-/// Function to get Protocol Compatability Level.
-/// </summary>
-/// <param name="pc">Protocol Compatability Level</param>
-/// <returns>0 on succes</returns>
-int SCPSection1::getProtocolCompatibilityLevel(out ProtocolCompatibility pc)
-{
-    pc = 0;
-    int p = _SearchField(14);
-    if ((p >= 0)
-            &&	(_Fields[p] != null)
-            &&  (_Fields[p].Value != null)
-            &&  (_Fields[p].Length <= _Fields[p].Value.Length)
-            &&  (_Fields[p].Length > 15))
-    {
-        pc = (ProtocolCompatibility) _Fields[p].Value[15];
-        return 0;
-    }
-    return 1;
-}
-
-/// <summary>
 /// Function to set Protocol Compatability Level.
 /// </summary>
 /// <param name="pc">Protocol Compatability Level</param>
@@ -586,9 +547,7 @@ int SCPSection1::setProtocolCompatibilityLevel(ProtocolCompatibility pc)
 {
     int p = _SearchField(14);
     if ((p >= 0)
-            &&	(_Fields[p] != null)
             &&  (_Fields[p].Value != null)
-		/*			   &&  (_Fields[p].Length <= _Fields[p].Value.Length) */
             &&  (_Fields[p].Length > 15))
     {
         _Fields[p].Value[15] = (uchar) pc;
@@ -605,9 +564,9 @@ int SCPSection1::setProtocolCompatibilityLevel(ProtocolCompatibility pc)
 /// <returns>0 on success</returns>
 int SCPSection1::setText(uchar tag, const string& text)
 {
-    if (text != null)
+    if (text.length() > 0)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = tag;
         field.Length = (ushort) (text.length() >= _MaximumFieldLength ? _MaximumFieldLength :  text.length() + 1);
         field.Value = new uchar[field.Length];
@@ -640,25 +599,24 @@ void SCPSection1::setSecondLastName(const string& value)
 
 int SCPSection1::setPatientAge(ushort val, AgeDefinition def)
 {
-    SCPHeaderField field = new SCPHeaderField();
+    SCPHeaderField field;
     field.Tag = 4;
     field.Length = (ushort) (sizeof(val) + sizeof(uchar));
     field.Value = new uchar[field.Length];
-    BytesTool::writeBytes(val, field.Value, 0, sizeof(val), true);
-    BytesTool::writeBytes((uchar)def, field.Value, sizeof(val), sizeof(uchar), true);
+    BytesTool::writeBytes(val, field.Value,field.Length, 0, sizeof(val), true);
+    BytesTool::writeBytes((uchar)def, field.Value,field.Length, sizeof(val), sizeof(uchar), true);
     return Insert(field) << 1;
 }
 
-void SCPSection1::setPatientBirthDate(Date PatientBirthDate)
+void SCPSection1::setPatientBirthDate(const Date& PatientBirthDate)
 {
-    if ((PatientBirthDate != null)
-            &&	(PatientBirthDate.isExistingDate()))
+    if (PatientBirthDate.isExistingDate())
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 5;
         field.Length = (ushort) SCPDate.Size;
         field.Value = new uchar[field.Length];
-        SCPDate scpdate = new SCPDate();
+        SCPDate scpdate;
         scpdate.Year = PatientBirthDate.Year;
         scpdate.Month = PatientBirthDate.Month;
         scpdate.Day = PatientBirthDate.Day;
@@ -670,199 +628,212 @@ void SCPSection1::setPatientBirthDate(Date PatientBirthDate)
 
 int SCPSection1::setPatientHeight(ushort val, HeightDefinition def)
 {
-    SCPHeaderField field = new SCPHeaderField();
+    SCPHeaderField field;
     field.Tag = 6;
     field.Length = (ushort) (sizeof(val) + sizeof(uchar));
     field.Value = new uchar[field.Length];
-    BytesTool::writeBytes(val, field.Value, 0, sizeof(val), true);
-    BytesTool::writeBytes((uchar)def, field.Value, sizeof(val), 1, true);
+    BytesTool::writeBytes(val, field.Value,field.Length, 0, sizeof(val), true);
+    BytesTool::writeBytes((uchar)def, field.Value,field.Length, sizeof(val), 1, true);
     return Insert(field) << 1;
 }
 
 int SCPSection1::setPatientWeight(ushort val, WeightDefinition def)
 {
-    SCPHeaderField field = new SCPHeaderField();
+    SCPHeaderField field;
     field.Tag = 7;
     field.Length = (ushort) (sizeof(val) + sizeof(uchar));
     field.Value = new uchar[field.Length];
-    BytesTool::writeBytes(val, field.Value, 0, sizeof(val), true);
-    BytesTool::writeBytes((uchar)def, field.Value, sizeof(val), sizeof(uchar), true);
+    BytesTool::writeBytes(val, field.Value,field.Length, 0, sizeof(val), true);
+    BytesTool::writeBytes((uchar)def, field.Value,field.Length, sizeof(val), sizeof(uchar), true);
     return Insert(field) << 1;
 }
 
 void SCPSection1::setGender(Sex Gender)
 {
-    if (Gender != Sex.Null)
+    if (Gender != ECGDemographics::kSexNull)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 8;
         field.Length = (ushort) sizeof(uchar);
         field.Value = new uchar[field.Length];
-        BytesTool::writeBytes((uchar)Gender, field.Value, 0, sizeof(uchar), true);
+        BytesTool::writeBytes((uchar)Gender, field.Value,field.Length, 0, sizeof(uchar), true);
         Insert(field);
     }
 }
 
 void SCPSection1::setPatientRace(Race PatientRace)
 {
-    if (PatientRace != Race.Null)
+    if (PatientRace != ECGDemographics::kRaceNull)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 9;
         field.Length = (ushort) sizeof(uchar);
         field.Value = new uchar[field.Length];
-        BytesTool::writeBytes((uchar)PatientRace, field.Value, 0, sizeof(uchar), true);
+        BytesTool::writeBytes((uchar)PatientRace, field.Value,field.Length, 0, sizeof(uchar), true);
         Insert(field);
     }
 }
 
-void SCPSection1::setAcqMachineID(AcquiringDeviceID AcqMachineID)
+void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
 {
-    AcquiringDeviceID id = value;
+    SCPHeaderField field;
+    string deviceManufactor = (id.ManufactorID == 0 ? 
+											"defaultManufactorID" : 
+											((DeviceManufactor)id.ManufactorID).ToString());
+	string SoftwareName = "scp-ecg writer";
+    string unknown = "unknown";
+    field.Tag = 14;
+    field.Length = (ushort) (41 + (SoftwareName.length() > 24 ? 
+							24 : SoftwareName.length()) + deviceManufactor.Length + (3 * unknown.length()));
+    field.Value = new uchar[field.Length];
+    int offset = 0;
+    BytesTool::writeBytes(id.InstitutionNr, field.Value, field.Length,offset, sizeof(id.InstitutionNr), true);
+    offset += sizeof(id.InstitutionNr);
+    BytesTool::writeBytes(id.DepartmentNr, field.Value,field.Length, offset, sizeof(id.DepartmentNr), true);
+    offset += sizeof(id.DepartmentNr);
+    BytesTool::writeBytes(id.DeviceID, field.Value, field.Length,offset, sizeof(id.DeviceID), true);
+    offset += sizeof(id.DeviceID);
+    BytesTool::writeBytes(id.DeviceType, field.Value, field.Length,offset, sizeof(id.DeviceType), true);
+    offset += sizeof(id.DeviceType);
+    BytesTool::writeBytes((id.ManufactorID == 0 ? (uchar) 0xff : id.ManufactorID), 
+							field.Value, 
+							field.Length,
+							offset, 
+							sizeof(id.ManufactorID), 
+							true);
+    offset += sizeof(id.ManufactorID);
+    offset += BytesTool::copy(field.Value,field.Length, offset, id.ModelDescription, 0, sizeof(id.ModelDescription));
+    field.Value[offset++] = ProtocolVersionNr;
+    field.Value[offset++] = 0x00;
+    field.Value[offset++] = 0x00;
+    field.Value[offset++] = (id.DeviceCapabilities == 0 ? (uchar) 0x8 : id.DeviceCapabilities);
+    field.Value[offset++] = id.ACFrequencyEnvironment;
 
-    if ((id != null)
-            &&  (id.ModelDescription != null))
-    {
-        SCPHeaderField field = new SCPHeaderField();
-        string deviceManufactor = (id.ManufactorID == 0 ? ECGConverter.SoftwareName : ((DeviceManufactor)id.ManufactorID).ToString());
-        string unknown = "unknown";
-        field.Tag = 14;
-        field.Length = (ushort) (41 + (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + deviceManufactor.Length + (3 * unknown.Length));
-        field.Value = new uchar[field.Length];
-        int offset = 0;
-        BytesTool::writeBytes(id.InstitutionNr, field.Value, offset, sizeof(id.InstitutionNr), true);
-        offset += sizeof(id.InstitutionNr);
-        BytesTool::writeBytes(id.DepartmentNr, field.Value, offset, sizeof(id.DepartmentNr), true);
-        offset += sizeof(id.DepartmentNr);
-        BytesTool::writeBytes(id.DeviceID, field.Value, offset, sizeof(id.DeviceID), true);
-        offset += sizeof(id.DeviceID);
-        BytesTool::writeBytes(id.DeviceType, field.Value, offset, sizeof(id.DeviceType), true);
-        offset += sizeof(id.DeviceType);
-        BytesTool::writeBytes((id.ManufactorID == 0 ? (uchar) 0xff : id.ManufactorID), field.Value, offset, sizeof(id.ManufactorID), true);
-        offset += sizeof(id.ManufactorID);
-        offset += BytesTool::copy(field.Value, offset, id.ModelDescription, 0, id.ModelDescription.Length);
-        field.Value[offset++] = ProtocolVersionNr;
-        field.Value[offset++] = 0x00;
-        field.Value[offset++] = 0x00;
-        field.Value[offset++] = (id.DeviceCapabilities == 0 ? (uchar) 0x8 : id.DeviceCapabilities);
-        field.Value[offset++] = id.ACFrequencyEnvironment;
+    // Skip Reserved for Future field
+    offset += 16;
 
-        // Skip Reserved for Future field
-        offset += 16;
-
-        field.Value[offset++] = (uchar) (unknown.Length + 1);
+    field.Value[offset++] = (uchar) (unknown.length() + 1);
 
 #if 0//TODO
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, ECGConverter.SoftwareName, field.Value, offset, (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + 1);
-        offset+= (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + 1;
+    BytesTool::writeString(_Encoding, 
+							SoftwareName, 
+							field.Value, 
+							offset, 
+							(SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1);
+    offset+= (SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1;
 
-        BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.Length + 1);
-        offset+= deviceManufactor.Length + 1;
+    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, field.Length,offset, deviceManufactor.Length + 1);
+    offset+= deviceManufactor.Length + 1;
 #endif
 
-        int ret = Insert(field);
+    int ret = Insert(field);
 
-        if (ret == 0)
-            ret = setLanguageSupportCode(_Encoding);
-    }
+#if 0//TODO
+    if (ret == 0)
+        ret = setLanguageSupportCode(_Encoding);
+#endif
 }
 
-void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID AnalyzingMachineID)
+void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID id)
 {
-    AcquiringDeviceID id = AnalyzingMachineID;
+    SCPHeaderField field;
+	string SoftwareName = "scp-ecg writer";
+    string deviceManufactor = (id.ManufactorID == 0 ? SoftwareName : ((DeviceManufactor)id.ManufactorID).ToString());
+    string unknown = "unknown";
+    field.Tag = 15;
+    field.Length = (ushort) (41 + (SoftwareName.length() > 24 ? 
+								24 : SoftwareName.length()) 
+									+ deviceManufactor.Length 
+									+ (3 * unknown.length()));
+    field.Value = new uchar[field.Length];
+    int offset = 0;
+    BytesTool::writeBytes(id.InstitutionNr, field.Value, field.Length,offset, sizeof(id.InstitutionNr), true);
+    offset += sizeof(id.InstitutionNr);
+    BytesTool::writeBytes(id.DepartmentNr, field.Value, field.Length,offset, sizeof(id.DepartmentNr), true);
+    offset += sizeof(id.DepartmentNr);
+    BytesTool::writeBytes(id.DeviceID, field.Value, field.Length,offset, sizeof(id.DeviceID), true);
+    offset += sizeof(id.DeviceID);
+    BytesTool::writeBytes(id.DeviceType, field.Value,field.Length, offset, sizeof(id.DeviceType), true);
+    offset += sizeof(id.DeviceType);
+    BytesTool::writeBytes(id.ManufactorID == 0 ? (uchar)0xff : id.ManufactorID, 
+								field.Value, 
+								offset, 
+								sizeof(id.ManufactorID), 
+								true);
+    offset += sizeof(id.ManufactorID);
+    offset += BytesTool::copy(field.Value, field.Length,offset, id.ModelDescription, 0, id.ModelDescription.Length);
+    field.Value[offset++] = ProtocolVersionNr;
+    field.Value[offset++] = 0x00;
+    field.Value[offset++] = 0x00;
+    field.Value[offset++] = (id.DeviceCapabilities == 0 ? (uchar) 0x8 : id.DeviceCapabilities);
+    field.Value[offset++] = id.ACFrequencyEnvironment;
 
-    if ((id != null)
-            &&  (id.ModelDescription != null))
-    {
-        SCPHeaderField field = new SCPHeaderField();
-        string deviceManufactor = (id.ManufactorID == 0 ? ECGConverter.SoftwareName : ((DeviceManufactor)id.ManufactorID).ToString());
-        string unknown = "unknown";
-        field.Tag = 15;
-        field.Length = (ushort) (41 + (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + deviceManufactor.Length + (3 * unknown.Length));
-        field.Value = new byte[field.Length];
-        int offset = 0;
-        BytesTool::writeBytes(id.InstitutionNr, field.Value, offset, sizeof(id.InstitutionNr), true);
-        offset += sizeof(id.InstitutionNr);
-        BytesTool::writeBytes(id.DepartmentNr, field.Value, offset, sizeof(id.DepartmentNr), true);
-        offset += sizeof(id.DepartmentNr);
-        BytesTool::writeBytes(id.DeviceID, field.Value, offset, sizeof(id.DeviceID), true);
-        offset += sizeof(id.DeviceID);
-        BytesTool::writeBytes(id.DeviceType, field.Value, offset, sizeof(id.DeviceType), true);
-        offset += sizeof(id.DeviceType);
-        BytesTool::writeBytes(id.ManufactorID == 0 ? (byte)0xff : id.ManufactorID, field.Value, offset, sizeof(id.ManufactorID), true);
-        offset += sizeof(id.ManufactorID);
-        offset += BytesTool::copy(field.Value, offset, id.ModelDescription, 0, id.ModelDescription.Length);
-        field.Value[offset++] = ProtocolVersionNr;
-        field.Value[offset++] = 0x00;
-        field.Value[offset++] = 0x00;
-        field.Value[offset++] = (id.DeviceCapabilities == 0 ? (byte) 0x8 : id.DeviceCapabilities);
-        field.Value[offset++] = id.ACFrequencyEnvironment;
+    // Skip Reserved for Future field
+    offset += 16;
 
-        // Skip Reserved for Future field
-        offset += 16;
+    field.Value[offset++] = (uchar) (unknown.length() + 1);
 
-        field.Value[offset++] = (byte) (unknown.Length + 1);
+#if 0//TODO
+    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    offset+= unknown.length() + 1;
 
-        BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.Length + 1);
-        offset+= unknown.Length + 1;
+    BytesTool::writeString(_Encoding, ECGConverter.SoftwareName, field.Value, offset, (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1);
+    offset+= (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1;
 
-        BytesTool::writeString(_Encoding, ECGConverter.SoftwareName, field.Value, offset, (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + 1);
-        offset+= (ECGConverter.SoftwareName.Length > 24 ? 24 : ECGConverter.SoftwareName.Length) + 1;
+    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.Length + 1);
+    offset+= deviceManufactor.Length + 1;
+#endif
 
-        BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.Length + 1);
-        offset+= deviceManufactor.Length + 1;
+    int ret = Insert(field);
 
-        int ret = Insert(field);
-
-        if (ret == 0)
-            ret = setLanguageSupportCode(_Encoding);
-    }
+#if 0//TODO
+    if (ret == 0)
+        ret = setLanguageSupportCode(_Encoding);
+#endif
 }
 
-void SCPSection1::setTimeAcquisition(DateTime TimeAcquisition)
+void SCPSection1::setTimeAcquisition(DateTime time)
 {
-    DateTime time = value;
-
     if (time.Year > 1000)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 25;
         field.Length = (ushort) SCPDate.Size;
-        field.Value = new byte[field.Length];
-        SCPDate scpdate = new SCPDate();
+        field.Value = new uchar[field.Length];
+        SCPDate scpdate;
         scpdate.Year = (ushort) time.Year;
-        scpdate.Month = (byte) time.Month;
-        scpdate.Day = (byte) time.Day;
+        scpdate.Month = (uchar) time.Month;
+        scpdate.Day = (uchar) time.Day;
         scpdate.Write(field.Value, 0);
         int ret = Insert(field);
 
         if (ret != 0)
             return;
-
-        field = new SCPHeaderField();
-        field.Tag = 26;
-        field.Length = (ushort) SCPTime.Size;
-        field.Value = new byte[field.Length];
-        SCPTime scptime = new SCPTime();
-        scptime.Hour = (byte) time.Hour;
-        scptime.Min = (byte) time.Minute;
-        scptime.Sec = (byte) time.Second;
-        scptime.Write(field.Value, 0);
+		
+        SCPHeaderField time_field;
+        time_field.Tag = 26;
+        time_field.Length = (ushort) SCPTime.Size;
+        time_field.Value = new uchar[time_field.Length];
+        SCPTime scptime;
+        scptime.Hour = (uchar) time.Hour;
+        scptime.Min = (uchar) time.Minute;
+        scptime.Sec = (uchar) time.Second;
+        scptime.Write(time_field.Value, 0);
 
         Insert(field);
     }
@@ -870,178 +841,176 @@ void SCPSection1::setTimeAcquisition(DateTime TimeAcquisition)
 
 void SCPSection1::setBaselineFilter(ushort BaselineFilter)
 {
-    SCPHeaderField field = new SCPHeaderField();
+    SCPHeaderField field;
     field.Tag = 27;
-    field.Length = (ushort) sizeof(value);
-    field.Value = new byte[field.Length];
-    BytesTool::writeBytes(value, field.Value, 0, sizeof(value), true);
+    field.Length = (ushort) sizeof(BaselineFilter);
+    field.Value = new uchar[field.Length];
+    BytesTool::writeBytes(BaselineFilter, field.Value,field.Length, 0, sizeof(BaselineFilter), true);
     Insert(field);
 }
 
 void SCPSection1::setLowpassFilter(ushort LowpassFilter)
 {
-    SCPHeaderField field = new SCPHeaderField();
+    SCPHeaderField field;
     field.Tag = 28;
-    field.Length = (ushort) sizeof(value);
-    field.Value = new byte[field.Length];
-    BytesTool::writeBytes(value, field.Value, 0, sizeof(value), true);
+    field.Length = (ushort) sizeof(LowpassFilter);
+    field.Value = new uchar[field.Length];
+    BytesTool::writeBytes(LowpassFilter, field.Value, field.Length,0, sizeof(LowpassFilter), true);
     Insert(field);
 }
 
-void SCPSection1::setFilterBitmap(byte FilterBitmap)
+void SCPSection1::setFilterBitmap(uchar FilterBitmap)
 {
-    if (value != 0)
+    if (FilterBitmap != 0)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 29;
-        field.Length = (ushort) sizeof(value);
-        field.Value = new byte[field.Length];
-        BytesTool::writeBytes(value, field.Value, 0, sizeof(value), true);
+        field.Length = (ushort) sizeof(FilterBitmap);
+        field.Value = new uchar[field.Length];
+        BytesTool::writeBytes(FilterBitmap, field.Value,field.Length, 0, sizeof(FilterBitmap), true);
         Insert(field);
     }
 }
 
-void SCPSection1::setFreeTextFields(string[] FreeTextFields)
+void SCPSection1::setFreeTextFields(const std::vector<string>& FreeTextFields)
 {
-    if (value != null)
+	int size = FreeTextFields.size();
+    for (int loper=0;loper < size;loper++)
     {
-        for (int loper=0;loper < value.Length;loper++)
+        if (FreeTextFields[loper] != null)
         {
-            if (value[loper] != null)
-            {
-                SCPHeaderField field = new SCPHeaderField();
-                field.Tag = 30;
-                field.Length = (ushort) (value[loper].Length >= _ExceptionsMaximumLength ? _ExceptionsMaximumLength : value[loper].Length + 1);
-                field.Value = new byte[field.Length];
-                BytesTool::writeString(_Encoding, value[loper], field.Value, 0, field.Length);
-                Insert(field);
-            }
+            SCPHeaderField field;
+            field.Tag = 30;
+            field.Length = (ushort) (FreeTextFields[loper].Length >= _ExceptionsMaximumLength ? _ExceptionsMaximumLength : value[loper].Length + 1);
+            field.Value = new uchar[field.Length];
+#if 0//TODO
+            BytesTool::writeString(_Encoding, FreeTextFields[loper], field.Value, 0, field.Length);
+#endif
+            Insert(field);
         }
     }
 }
 
-void SCPSection1::setSequenceNr(string SequenceNr)
+void SCPSection1::setSequenceNr(const string& SequenceNr)
 {
-    setText(31, value);
+    setText(31, SequenceNr);
 }
 
-void SCPSection1::setAcqInstitution(string AcqInstitution)
+void SCPSection1::setAcqInstitution(const string&  AcqInstitution)
 {
-    setText(16, value);
+    setText(16, AcqInstitution);
 }
 
-void SCPSection1::setAnalyzingInstitution(string AnalyzingInstitution)
+void SCPSection1::setAnalyzingInstitution(const string&  AnalyzingInstitution)
 {
-    setText(17, value);
+    setText(17, AnalyzingInstitution);
 }
 
-void SCPSection1::setAcqDepartment(string AcqDepartment)
+void SCPSection1::setAcqDepartment(const string&  AcqDepartment)
 {
-    setText(18, value);
+    setText(18, AcqDepartment);
 }
 
-void SCPSection1::setAnalyzingDepartment(string AnalyzingDepartment)
+void SCPSection1::setAnalyzingDepartment(const string&  AnalyzingDepartment)
 {
-    setText(19, value);
+    setText(19, AnalyzingDepartment);
 }
 
-void SCPSection1::setReferringPhysician(string ReferringPhysician)
+void SCPSection1::setReferringPhysician(const string&  ReferringPhysician)
 {
-    setText(20, value);
+    setText(20, ReferringPhysician);
 }
 
-void SCPSection1::setOverreadingPhysician(string OverreadingPhysician)
+void SCPSection1::setOverreadingPhysician(const string&  OverreadingPhysician)
 {
-    setText(21, value);
+    setText(21, OverreadingPhysician);
 }
 
-void SCPSection1::setTechnicianDescription(string TechnicianDescription)
+void SCPSection1::setTechnicianDescription(const string&  TechnicianDescription)
 {
-    setText(22, value);
+    setText(22, TechnicianDescription);
 }
 
 void SCPSection1::setSystolicBloodPressure(ushort SystolicBloodPressure)
 {
-    if (value != 0)
+    if (SystolicBloodPressure != 0)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 11;
-        field.Length = (ushort) sizeof(typeof(ushort));
-        field.Value = new byte[field.Length];
-        BytesTool::writeBytes(value, field.Value, 0, field.Length, true);
+        field.Length = (uchar) sizeof(SystolicBloodPressure);
+        field.Value = new uchar[field.Length];
+        BytesTool::writeBytes(SystolicBloodPressure, field.Value,field.Length, 0, field.Length, true);
         Insert(field);
     }
 }
 
 void SCPSection1::setDiastolicBloodPressure(ushort DiastolicBloodPressure)
 {
-    if (value != 0)
+    if (DiastolicBloodPressure != 0)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 12;
-        field.Length = (ushort) sizeof(typeof(ushort));
-        field.Value = new byte[field.Length];
-        BytesTool::writeBytes(value, field.Value, 0, field.Length, true);
+        field.Length = (ushort) sizeof(DiastolicBloodPressure);
+        field.Value = new uchar[field.Length];
+        BytesTool::writeBytes(DiastolicBloodPressure, field.Value, field.Length,0, field.Length, true);
         Insert(field);
     }
 }
 
 void SCPSection1::setDrugs(std::vector<Drug> Drugs)
 {
-    if (value != null)
+	int size = Drugs.size();
+    for (int loper=0;loper < size;loper++)
     {
-        for (int loper=0;loper < value.Length;loper++)
-        {
-            if (value[loper] != null)
-            {
-                SCPHeaderField field = new SCPHeaderField();
-                field.Tag = 10;
-                field.Length = (ushort) (4 + (value[loper].TextDesciption != null ? value[loper].TextDesciption.Length : 0));
-                field.Value = new byte[field.Length];
-                field.Value[0] = 0;
-                field.Value[1] = value[loper].DrugClass;
-                field.Value[2] = value[loper].ClassCode;
-                BytesTool::writeString(_Encoding, value[loper].TextDesciption, field.Value, 3, field.Length - 3);
+        SCPHeaderField field;
+        field.Tag = 10;
+        field.Length = (ushort) (4 + Drugs[loper].TextDesciption.length());//TODO 这里字符串的长度是否需要加1
+        field.Value = new uchar[field.Length];
+        field.Value[0] = 0;
+        field.Value[1] = Drugs[loper].DrugClass;
+        field.Value[2] = Drugs[loper].ClassCode;
+#if 0//TODO
+        BytesTool::writeString(_Encoding, Drugs[loper].TextDesciption, field.Value,field.Length, 3, field.Length - 3);
+#endif
 
-                Insert(field);
-            }
+        Insert(field);
+    }
+}
+
+void SCPSection1::setReferralIndication(const std::vector<string>& ReferralIndication)
+{
+	int size = ReferralIndication.size();
+    for (int loper=0;loper < size;loper++)
+    {
+        if (ReferralIndication[loper] != null)
+        {
+            SCPHeaderField field;
+            field.Tag = 13;
+            field.Length = (ushort) (ReferralIndication[loper].length() >= _ExceptionsMaximumLength ?
+							_ExceptionsMaximumLength : ReferralIndication[loper].length() + 1);
+            field.Value = new uchar[field.Length];
+#if 0//TODO
+            BytesTool::writeString(_Encoding, value[loper], field.Value,field.Length, 0, field.Length);
+#endif
+            Insert(field);
         }
     }
 }
 
-void SCPSection1::setReferralIndication(string[] ReferralIndication)
+void SCPSection1::setRoomDescription(const string& RoomDescription)
 {
-    if (value != null)
-    {
-        for (int loper=0;loper < value.Length;loper++)
-        {
-            if (value[loper] != null)
-            {
-                SCPHeaderField field = new SCPHeaderField();
-                field.Tag = 13;
-                field.Length = (ushort) (value[loper].Length >= _ExceptionsMaximumLength ? _ExceptionsMaximumLength : value[loper].Length + 1);
-                field.Value = new byte[field.Length];
-                BytesTool::writeString(_Encoding, value[loper], field.Value, 0, field.Length);
-                Insert(field);
-            }
-        }
-    }
+    setText(23, RoomDescription);
 }
 
-void SCPSection1::setRoomDescription(string RoomDescription)
+void SCPSection1::setStatCode(uchar StatCode)
 {
-    setText(23, value);
-}
-
-void SCPSection1::setStatCode(byte StatCode)
-{
-    if (value != 0xff)
+    if (StatCode != 0xff)
     {
-        SCPHeaderField field = new SCPHeaderField();
+        SCPHeaderField field;
         field.Tag = 24;
-        field.Length = (ushort) sizeof(value);
-        field.Value = new byte[field.Length];
-        BytesTool::writeBytes(value, field.Value, 0, sizeof(value), true);
+        field.Length = (ushort) sizeof(StatCode);
+        field.Value = new uchar[field.Length];
+        BytesTool::writeBytes(StatCode, field.Value, field.Length,0, sizeof(StatCode), true);
         Insert(field);
     }
 }

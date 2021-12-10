@@ -16,7 +16,6 @@ class AcquiringDeviceID
 public:
     AcquiringDeviceID();
     AcquiringDeviceID(bool bNoDeviceId);
-    uchar* getModelDescription();
 public:
     ushort InstitutionNr;
     ushort DepartmentNr;
@@ -25,9 +24,7 @@ public:
     uchar ManufactorID;
     uchar DeviceCapabilities ; // Is defined in SCP Section1 tag 14 uchar 18.
     uchar ACFrequencyEnvironment; // Is defined in SCP Section1 tag 14 uchar 19.
-    static int _ModelDescriptionLen ;
-private:   
-    uchar *_ModelDescription ;
+    uchar ModelDescription[6];
 };
 }
 }

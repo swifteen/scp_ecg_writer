@@ -436,17 +436,18 @@ bool Signals::IsTwelveLeads()
 /// <returns>true if twelve lead signal.</returns>
 bool Signals::IsFifteenLeads()
 {
-    LeadType[][] lts = new LeadType[][] { new LeadType[] { LeadType.I, LeadType.II, LeadType.III,
+    LeadType[][15] lts = { { LeadType.I, LeadType.II, LeadType.III,
                     LeadType.aVR, LeadType.aVL, LeadType.aVF,
                     LeadType.V1, LeadType.V2, LeadType.V3,
                     LeadType.V4, LeadType.V5, LeadType.V6,
                     LeadType.V7, LeadType.V3R, LeadType.V4R },
-        new LeadType[] { LeadType.I, LeadType.II, LeadType.III,
+        { LeadType.I, LeadType.II, LeadType.III,
                     LeadType.aVR, LeadType.aVL, LeadType.aVF,
                     LeadType.V1, LeadType.V2, LeadType.V3,
                     LeadType.V4, LeadType.V5, LeadType.V6,
                     LeadType.V7, LeadType.V8, LeadType.V9 } };
 
+	int size = sizeof(lts)/sizeof(lts[0]);
     int nrSim = NrSimultaneosly();
 
     if (nrSim != _Lead.Length)

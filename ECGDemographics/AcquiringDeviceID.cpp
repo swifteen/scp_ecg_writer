@@ -8,7 +8,6 @@ namespace ECGDemographics
 
 /// <summary>
 /// Device information that can be imported and exported in both SCP and UNIPRO.
-int AcquiringDeviceID::_ModelDescriptionLen = 6;
 
 AcquiringDeviceID::AcquiringDeviceID()
 {
@@ -19,7 +18,7 @@ AcquiringDeviceID::AcquiringDeviceID()
 	ManufactorID = (uchar) kDeviceManufactorUnknown;
 	DeviceCapabilities = 0; // Is defined in SCP Section1 tag 14 byte 18.
 	ACFrequencyEnvironment = 0; // Is defined in SCP Section1 tag 14 byte 19.
-	_ModelDescription = new uchar[_ModelDescriptionLen];
+	memset(ModelDescription,0,sizeof(ModelDescription));
 }
 
 AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
@@ -37,13 +36,9 @@ AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
         Communication_IO_Tools.BytesTool.writeString("MCONV", ModelDescription, 0, ModelDescription.Length);
 #endif
     }
-    _ModelDescription = new uchar[_ModelDescriptionLen];
+	memset(ModelDescription,0,sizeof(ModelDescription));
 }
 
-uchar* AcquiringDeviceID::getModelDescription()
-{
-    return _ModelDescription;
-}
 }
 
 }

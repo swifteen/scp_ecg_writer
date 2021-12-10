@@ -3,6 +3,8 @@
 #include "SCPSection.h"
 #include "IDemographic.h"    
 #include"Drug.h"
+#include "SCPDate.h"
+#include "SCPTime.h"
 
 using namespace std;
 using namespace ECGConversion::ECGDemographics;
@@ -35,7 +37,7 @@ public:
     /// </summary>
     /// <param name="field">field to insert</param>
     /// <returns>0 on success</returns>
-    int Insert(SCPHeaderField field);
+    int Insert(const SCPHeaderField& field);
     /// <summary>
     /// Function to remove a certain field from section.
     /// </summary>
@@ -46,12 +48,14 @@ public:
     /// Function to resize the space for header fields.
     /// </summary>
     void Resize();
+#if 0
     /// <summary>
     /// Function to get a field from this section
     /// </summary>
     /// <param name="tag">tag to search for</param>
     /// <returns></returns>
     SCPHeaderField GetField(uchar tag);
+#endif
 #if 0//TODO
     /// <summary>
     /// Get encoding for text from language support code.
@@ -72,12 +76,6 @@ public:
     int setLanguageSupportCode(System.Text.Encoding enc);
 #endif
     /// <summary>
-    /// Function to get Protocol Compatability Level.
-    /// </summary>
-    /// <param name="pc">Protocol Compatability Level</param>
-    /// <returns>0 on succes</returns>
-    int getProtocolCompatibilityLevel(out ProtocolCompatibility pc);
-    /// <summary>
     /// Function to set Protocol Compatability Level.
     /// </summary>
     /// <param name="pc">Protocol Compatability Level</param>
@@ -97,32 +95,32 @@ public:
     void setPatientID(const string& value);
     void setSecondLastName(const string& value);
     int setPatientAge(ushort val, AgeDefinition def);
-    void setPatientBirthDate(Date PatientBirthDate);
+    void setPatientBirthDate(const Date& PatientBirthDate);
     int setPatientHeight(ushort val, HeightDefinition def);
     int setPatientWeight(ushort val, WeightDefinition def);
     void setGender(Sex Gender);
     void setPatientRace(Race PatientRace);
     void setAcqMachineID(AcquiringDeviceID AcqMachineID);
     void setAnalyzingMachineID(AcquiringDeviceID AnalyzingMachineID);
-    void setTimeAcquisition(DateTime TimeAcquisition);
+    void setTimeAcquisition(DateTime time);
     void setBaselineFilter(ushort BaselineFilter);
     void setLowpassFilter(ushort LowpassFilter);
-    void setFilterBitmap(byte FilterBitmap);
-    void setFreeTextFields(string[] FreeTextFields);
-    void setSequenceNr(string SequenceNr);
-    void setAcqInstitution(string AcqInstitution);
-    void setAnalyzingInstitution(string AnalyzingInstitution);
-    void setAcqDepartment(string AcqDepartment);
-    void setAnalyzingDepartment(string AnalyzingDepartment);
-    void setReferringPhysician(string ReferringPhysician);
-    void setOverreadingPhysician(string OverreadingPhysician);
-    void setTechnicianDescription(string TechnicianDescription);
+    void setFilterBitmap(uchar FilterBitmap);
+    void setFreeTextFields(const std::vector<string>&      FreeTextFields);
+    void setSequenceNr(const string& SequenceNr);
+    void setAcqInstitution(const string& AcqInstitution);
+    void setAnalyzingInstitution(const string& AnalyzingInstitution);
+    void setAcqDepartment(const string& AcqDepartment);
+    void setAnalyzingDepartment(const string& AnalyzingDepartment);
+    void setReferringPhysician(const string& ReferringPhysician);
+    void setOverreadingPhysician(const string& OverreadingPhysician);
+    void setTechnicianDescription(const string& TechnicianDescription);
     void setSystolicBloodPressure(ushort SystolicBloodPressure);
     void setDiastolicBloodPressure(ushort DiastolicBloodPressure);
-    void setDrugs(Drug[] Drugs);
-    void setReferralIndication(string[] ReferralIndication);
-    void setRoomDescription(string RoomDescription);
-    void setStatCode(byte StatCode);
+    void setDrugs(std::vector<Drug> Drugs);
+    void setReferralIndication(const std::vector<string>& ReferralIndication);
+    void setRoomDescription(const string& RoomDescription);
+    void setStatCode(uchar StatCode);
 protected:
     int _Write(uchar* buffer,int bufferLength, int offset);
     void _Empty();
