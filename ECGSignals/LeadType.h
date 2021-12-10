@@ -1,8 +1,12 @@
 #ifndef _LEADTYPE_H_
 #define _LEADTYPE_H_
 
-namespace ECGConversion.ECGSignals
+namespace ECGConversion
 {
+
+namespace ECGSignals
+{
+
 /// <summary>
 /// Enumaration for lead types.
 /// </summary>
@@ -130,3 +134,5 @@ enum LeadTypeVitalRefId
     MDC_ECG_LEAD_V10
 };
 }
+}
+#endif

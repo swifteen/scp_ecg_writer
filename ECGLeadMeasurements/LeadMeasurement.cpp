@@ -1,58 +1,99 @@
 #include "LeadMeasurement.h"
 
-namespace ECGConversion.ECGLeadMeasurements
+
+using namespace ECGConversion::ECGSignals;
+
+namespace ECGConversion
 {
+
+  namespace ECGLeadMeasurements
+  	{
+
 
 short LeadMeasurement::NoValue = 29999;
 
 LeadMeasurement::LeadMeasurement()
 {
-    LeadType = LeadType.Unknown;
-    _List = new SortedList();
+   // leadType = LeadType::Unknown; TODO
+    //_List = new SortedList();
 }
 
 LeadMeasurement::LeadMeasurement(LeadType lt)
 {
-    LeadType = lt;
+    leadType = lt;
 }
 
 short LeadMeasurement::getMeasurementType(MeasurementType mt)
 {
-    int index = _List.IndexOfKey((int) mt);
-    return index >= 0 ? (short) _List.GetByIndex(index) : NoValue;
+   int index =-1;
+
+    for(int i=0;i<_List.size();i++)
+    {
+        if(_List.at(i)==mt)
+        {
+           index =i;
+		   break;
+        }
+    }
+   getValue=index >= 0 ? (short) _List.at(index) : NoValue;
+   // int index = _List.IndexOfKey((int) mt);
+    return  getValue;
+    
 }
 
 short LeadMeasurement::setMeasurementType(MeasurementType mt)
 {
-    int index = _List.IndexOfKey((int) mt);
 
-    if (value == NoValue)
+	std::map<int,int>::iterator  it;
+
+	int index =-1;
+	
+		for(int i=0;i<_List.size();i++)
+		{
+			if(_List.at(i)==mt)
+			{
+			   index =i;
+			   break;
+			}
+		}
+
+
+//    int index = _List.IndexOfKey((int) mt);
+
+    if (getValue == NoValue)
     {
         if (index >= 0)
-            _List.RemoveAt(index);
+        {
+			it=_List.find(index);
+            _List.erase(it);
+        }
     }
     else
     {
         if (index >= 0)
-            _List.SetByIndex(index, value);
+			_List[index] =getValue;
+           // _List.SetByIndex(index, value);
         else
-            _List.Add((int) mt, value);
+			_List[mt] =getValue;
+            //_List.insert((int) mt, (int)getValue);
     }
 }
 
 int LeadMeasurement::getMeasurementCount()
 {
-    return _List.Count;
+    return _List.size();
 }
 
 short LeadMeasurement::getValueByIndex(int index)
 {
-    return (index >= 0) && (index < _List.Count) ? (short) _List.GetByIndex(index) : NoValue;
+   return (index >= 0) && (index < _List.size()) ? (short) _List.at(index) : NoValue;
 }
 
 MeasurementType  LeadMeasurement::getKeyByIndex(int index)
 {
-    return (index >= 0) && (index < _List.Count) ? (MeasurementType) ((int) _List.GetKey(index)) : MeasurementType.None;
+   return (index >= 0) && (index < _List.size()) ? (MeasurementType) ((int) _List.at(index)) :(MeasurementType) -1;
 }
 
+
+  	}
 }

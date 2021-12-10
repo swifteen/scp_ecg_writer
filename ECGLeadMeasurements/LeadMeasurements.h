@@ -1,15 +1,26 @@
 #ifndef _LEADMEASUREMENTS_H_
 #define _LEADMEASUREMENTS_H_
 #include "LeadMeasurement.h"
+#include <vector>
 
-namespace ECGConversion.ECGLeadMeasurements
+
+
+namespace ECGConversion
 {
+
+namespace ECGLeadMeasurements
+{
+
 class LeadMeasurements
 {
 public:
     LeadMeasurements();
     LeadMeasurements(int nr);
 public:
-    LeadMeasurement[] Measurements;
+    std::vector<LeadMeasurement *> Measurements;
 };
+
+
 }
+}
+#endif 

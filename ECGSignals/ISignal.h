@@ -2,8 +2,10 @@
 #define _ISIGNAL_CS_
     
 
-namespace ECGConversion.ECGSignals
+namespace ECGConversion
 {
+  namespace  ECGSignals
+   {
 	/// <summary>
 	/// Interface for manupalation of the signals.
 	/// </summary>
@@ -28,6 +30,7 @@ namespace ECGConversion.ECGSignals
 		/// <returns>0 on success</returns>
 		virtual int setSignals(Signals signals) = 0;
 	};
+    	}
 }
 
 

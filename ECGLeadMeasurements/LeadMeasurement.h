@@ -1,9 +1,20 @@
 #ifndef _LEADMEASUREMENT_H_
 #define _LEADMEASUREMENT_H_
+#include "MeasurementType.h"
+#include "../ECGSignals/LeadType.h"
+#include <vector>
+#include <map>
 
+using namespace ECGConversion::ECGSignals;
 
-namespace ECGConversion.ECGLeadMeasurements
+namespace ECGConversion
 {
+
+namespace ECGLeadMeasurements
+{
+
+
+
 class LeadMeasurement
 {
 public:
@@ -16,9 +27,12 @@ public:
     short getValueByIndex(int index);
     MeasurementType getKeyByIndex(int index);
 public:
-    LeadType LeadType ;
+    LeadType leadType ; 
     static short NoValue ;
+	short getValue; 
 private:
-    SortedList _List;
+    std::map <int,int> _List; 
 };
 }
+}
+#endif

@@ -10,25 +10,30 @@ aux_source_directory(${PROJECT_SOURCE_DIR} VECG_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/Tools Tools_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDemographics ECGDemographics_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDiagnostic ECGDiagnostic_FILES)
+#aux_source_directory(${PROJECT_SOURCE_DIR}/ECGGlobalMeasurements ECGGlobalMeasurements_FILES) 
+aux_source_directory(${PROJECT_SOURCE_DIR}/ECGLeadMeasurements ECGLeadMeasurements_FILES)                                            
 #SET(Tools_FILES  	Tools/BytesTool.cpp )  
 
 message("vecg_files ${VECG_FILES}")
 message("Tools_FILES ${Tools_FILES}")
 message("ECGDemographics_FILES ${ECGDemographics_FILES}")
 message("ECGDiagnostic_FILES ${ECGDiagnostic_FILES}")
-
+#message("ECGDiagnostic_FILES ${ECGGlobalMeasurements_FILES}")
+message("ECGDiagnostic_FILES ${ECGLeadMeasurements_FILES}")
 #添加头文件查找目录
 include_directories(${PROJECT_SOURCE_DIR} 
 					${PROJECT_SOURCE_DIR}/Tools
 					${PROJECT_SOURCE_DIR}/ECGDemographics
-					${PROJECT_SOURCE_DIR}/ECGDiagnostic)
+					${PROJECT_SOURCE_DIR}/ECGDiagnostic
+					${PROJECT_SOURCE_DIR}/ECGLeadMeasurements
+					${PROJECT_SOURCE_DIR}/ECGSignals)
 					
 #设置库目录，必须放在add_library和add_executable之前
 #link_directories(${PROJECT_SOURCE_DIR}/../output)
 
 #add_definitions(-DBUILDING_DLL)
 
-add_library(${PROJECT_NAME} ${VECG_FILES} ${Tools_FILES} ${ECGDemographics_FILES} ${ECGDiagnostic_FILES})
+add_library(${PROJECT_NAME} ${VECG_FILES} ${Tools_FILES} ${ECGDemographics_FILES} ${ECGDiagnostic_FILES} ${ECGLeadMeasurements_FILES})
 
 #target_link_libraries(${PROJECT_NAME}  json-c)
 

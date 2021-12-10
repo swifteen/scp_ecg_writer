@@ -2,7 +2,10 @@
 #define _MEASUREMENTTYPE_H_
     
 
-namespace ECGConversion.ECGLeadMeasurements
+namespace ECGConversion
+{
+
+namespace ECGLeadMeasurements
 {
 /// <summary>
 /// Enumration MeasurementType for lead measurements.
@@ -61,6 +64,10 @@ enum MeasurementType
     SSonset = RRoffset,
     RRRonset = SSoffset,
 };
+
+
+
+}
 }
 
 

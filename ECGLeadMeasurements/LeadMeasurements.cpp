@@ -1,18 +1,22 @@
 #include "LeadMeasurements.h"
 
-namespace ECGConversion.ECGLeadMeasurements
+namespace ECGConversion
 {
 
-LeadMeasurements::LeadMeasurements()
-{
-	Measurements = null;
-}
+ namespace ECGLeadMeasurements
+ {
 
-LeadMeasurements::LeadMeasurements(int nr)
-{
-    Measurements = new LeadMeasurement[nr];
+	LeadMeasurements::LeadMeasurements()
+	{
+		//Measurements = null;
+	}
 
-    for (int i=0;i < Measurements.Length;i++)
-        Measurements[i] = new LeadMeasurement();
-}
+	LeadMeasurements::LeadMeasurements(int nr)
+	{
+	   Measurements.resize(nr);
+
+	    for (int i=0;i < nr;i++)
+	        Measurements[i] = new LeadMeasurement();
+	}
+ }
 }
