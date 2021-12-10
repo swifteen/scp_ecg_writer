@@ -1,7 +1,7 @@
 #ifndef _SCPSECTION0_H_
 #define _SCPSECTION0_H_
 #include "SCPSection.h"
-
+#include <vector>
 
 namespace ECGConversion
 {
@@ -12,9 +12,13 @@ namespace SCP
 /// </summary>
 class SCPSection0 : public SCPSection
 {
+private:
+	enum
+	{
+		kNrMandatory = 12,
+	};
 public:
     SCPSection0();
-	~SCPSection0();	
     ushort getSectionID();
     bool Works();
     /// <summary>
@@ -85,7 +89,7 @@ private:
 
     class SCPPointer;
     // Part of the stored Data Structure.
-    SCPPointer* _MandatoryPointers;
+    std::vector<SCPPointer> _MandatoryPointers;
 };
 }
 }

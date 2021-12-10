@@ -10,7 +10,6 @@ namespace ECGConversion
 namespace SCP
 {
 int SCPSection::Size = 16;
-int SCPSection::_ReservedLength = 6;
 /// <summary>
 /// Constructor for a SCP Section.
 /// </summary>
@@ -18,18 +17,9 @@ SCPSection::SCPSection()
 {
 //    _Encoding = System.Text.Encoding.Default;//TODO
     SectionID = 0;
-    Reserved = new uchar[_ReservedLength];
+	memset(Reserved,0,sizeof(Reserved));
     SectionID = getSectionID();
     Empty();
-}
-
-SCPSection::~SCPSection()
-{
-	if(Reserved != null)
-	{
-		delete [] Reserved;
-		Reserved = null;
-	}
 }
 
 #if 0//TODO
@@ -110,7 +100,7 @@ int SCPSection::Write(uchar* buffer, int bufferLength,int offset)
             offset += sizeof(SectionVersionNr);
             BytesTool::writeBytes(ProtocolVersionNr, buffer, bufferLength,offset, sizeof(ProtocolVersionNr), true);
             offset += sizeof(ProtocolVersionNr);
-            offset += BytesTool::copy(buffer, bufferLength,offset, Reserved, _ReservedLength,0, _ReservedLength);
+            offset += BytesTool::copy(buffer, bufferLength,offset, Reserved, kReservedLength,0, kReservedLength);
 
             int err = _Write(buffer, bufferLength,offset);
             if (err == 0)

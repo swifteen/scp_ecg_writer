@@ -12,11 +12,14 @@ namespace SCP
 class SCPSection
 {
 public:
+	enum
+	{
+		kReservedLength = 6,
+	};
     /// <summary>
     /// Constructor for a SCP Section.
     /// </summary>
     SCPSection();
-    virtual ~SCPSection();
 #if 0//TODO
     /// <summary>
     /// Set encoding used for section.
@@ -98,8 +101,7 @@ protected:
     int Length;
     uchar SectionVersionNr;
     uchar ProtocolVersionNr;
-    uchar* Reserved;
-    static int _ReservedLength;
+    uchar Reserved[kReservedLength];
 };
 
 }
