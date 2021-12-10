@@ -1,8 +1,12 @@
 #ifndef _SCPSECTION11_H_
 #define _SCPSECTION11_H_
 #include "SCPSection.h"
+#include "SCPDate.h"
+#include "SCPTime.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 11 (contains the Universal ECG interpretive statements section).
@@ -10,11 +14,11 @@ namespace ECGConversion.SCP
 class SCPSection11 : public SCPSection
 {
 public:
+	SCPSection11();
     ushort getSectionID();
     bool Works();
 protected:
-    int _Read(byte[] buffer, int offset);
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
@@ -22,12 +26,12 @@ private:
     static ushort _SectionID;
 
     // Part of the stored Data Structure.
-    byte _Confirmed;
+    uchar _Confirmed;
     SCPDate _Date;
     SCPTime _Time;
-    byte _NrStatements;
+    uchar _NrStatements;
     class SCPStatement;
-    SCPStatement[] _Statements;
+    std::vector<SCPStatement> _Statements;
 };
 }
 }

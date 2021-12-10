@@ -1,6 +1,6 @@
 #ifndef _SCPSECTION5_H_
 #define _SCPSECTION5_H_
-
+#include "SCPSection.h"
 
 namespace ECGConversion
 {
@@ -21,14 +21,6 @@ public:
     /// <param name="nrleads">nr of leads in section</param>
     void setNrLeads(ushort nrleads);
     /// <summary>
-    /// Function to decode data in this section.
-    /// </summary>
-    /// <param name="tables">Huffman table to use during deconding</param>
-    /// <param name="length">nr of samples in encoded data</param>
-    /// <returns>decoded leads</returns>
-    short[][] DecodeData(SCPSection2 tables, ushort length);
-
-    /// <summary>
     /// Function to encode data in this section.
     /// </summary>
     /// <param name="data">Rhythm data to encode</param>
@@ -36,7 +28,7 @@ public:
     /// <param name="medianLength">contains length of median data in msec</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
-    int EncodeData(short[][] data, SCPSection2 tables, ushort medianLength, byte difference);
+    int EncodeData(short[][] data, SCPSection2 tables, ushort medianLength, uchar difference);
     /// <summary>
     /// Function to get AVM.
     /// </summary>
@@ -59,7 +51,7 @@ public:
     void setSamplesPerSecond(int sps);
 protected:
 
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength,int offset);
     void _Empty();
     int _getLength();
 private:

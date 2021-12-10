@@ -23,6 +23,7 @@ SET(SCP_FILES
 				SCP/SCPSection1.cpp
 				SCP/SCPSection2.cpp
 				SCP/SCPSection8.cpp
+				SCP/SCPSection11.cpp
 				) 
 
 message("vecg_files ${VECG_FILES}")

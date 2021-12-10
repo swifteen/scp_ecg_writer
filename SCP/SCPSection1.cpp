@@ -64,7 +64,7 @@ public:
 	
     ~SCPHeaderField()
     {
-		delete[] Value;//析构函数不必检查 Value 是否为 NULL
+		delete[] Value;
     }
 	
 	void deepCopy(const SCPHeaderField& rhs)
@@ -73,7 +73,7 @@ public:
 		if((rhs.Length > 0) && (rhs.Value != null))
 		{
 			this->Value = new uchar[rhs.Length];
-			if(Value != null)
+			if(this->Value != null)
 			{
 				memcpy(this->Value,rhs.Value,rhs.Length);
 			}
