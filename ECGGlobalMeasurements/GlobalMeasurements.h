@@ -35,15 +35,16 @@ class GlobalMeasurements
 	    void setQTdur(ushort QTdur);
 	    void setQTc(ushort QTc);
 	    void setQTcType(ushort QTcType);
+
 	private:
 	    ushort _QTc;
 	    ushort _VentRate;
 	    ushort AvgRR;
 	    ushort AvgPP;
 
-		 std::vector<GlobalMeasurement *> measurment;
+	    std::vector<GlobalMeasurement> measurment;
 	   // GlobalMeasurement[] measurment;
-	  //  std::vector<Spike *> spike;
+	    std::vector<Spike> spike;
 	   // Spike[] spike;
 	};
  }

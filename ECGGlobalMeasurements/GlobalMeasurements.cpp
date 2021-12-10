@@ -26,18 +26,15 @@ void GlobalMeasurements::setVentRate(ushort VentRate)
 
 void GlobalMeasurements::setPdur(ushort Pdur)
 {
-
-
-
     if (measurment.size() == 0)
     {
 
 		measurment.resize(1);
         //measurment = new GlobalMeasurement[1];
-        measurment[0] = new GlobalMeasurement();
+      //  measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->setPdur(Pdur);
+    measurment[0].setPdur(Pdur);
 }
 
 void GlobalMeasurements::setPRint(ushort PRint)
@@ -47,10 +44,10 @@ void GlobalMeasurements::setPRint(ushort PRint)
     {
         measurment.resize(1);
         //measurment = new GlobalMeasurement[1];
-        measurment[0] = new GlobalMeasurement();
+      //  measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->setPRint(PRint);
+    measurment[0].setPRint(PRint);
     
 }
 
@@ -61,10 +58,10 @@ void GlobalMeasurements::setQRSdur(ushort QRSdur)
     {
        measurment.resize(1);
         //measurment = new GlobalMeasurement[1];
-        measurment[0] = new GlobalMeasurement();
+       // measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->setQRSdur(QRSdur);
+    measurment[0].setQRSdur(QRSdur);
     
 }
 
@@ -76,10 +73,10 @@ void GlobalMeasurements::setQTdur(ushort QTdur)
     {
        measurment.resize(1);
         //measurment = new GlobalMeasurement[1];
-        measurment[0] = new GlobalMeasurement();
+       // measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->setQTdur(QTdur);
+    measurment[0].setQTdur(QTdur);
     
 }
 void GlobalMeasurements::setQTc(ushort QTc)
@@ -99,22 +96,19 @@ void GlobalMeasurements::setQTcType(ushort QTcType)
 GlobalMeasurements GlobalMeasurements::Clone()
 {
 
-GlobalMeasurements ret;
-
-/* TODO
-	GlobalMeasurements ret = new GlobalMeasurements();
-
+	GlobalMeasurements ret ;
     ret._QTc = _QTc;
-    ret._VentRate = VentRate;
+    ret._VentRate = _VentRate;
     ret.AvgPP = AvgPP;
     ret.AvgRR = AvgRR;
 
-    if (measurment != null)
+    if (measurment.size()!=0)
     {
-        ret.measurment = new GlobalMeasurement[measurment.Length];
-        for (int i=0;i < measurment.Length;i++)
+      //  ret.measurment = new GlobalMeasurement[measurment.Length];
+       ret.measurment.resize(measurment.size()); 
+        for (int i=0;i < measurment.size();i++)
         {
-            ret.measurment[i] = new GlobalMeasurement();
+            //ret.measurment[i] = new GlobalMeasurement();
 
             ret.measurment[i].Ponset = measurment[i].Ponset;
             ret.measurment[i].Poffset = measurment[i].Poffset;
@@ -128,17 +122,18 @@ GlobalMeasurements ret;
         }
     }
 
-    if (spike != null)
+    if (spike.size() != 0)
     {
-        ret.spike = new Spike[spike.Length];
-        for (int i=0;i < spike.Length;i++)
+       // ret.spike = new Spike[spike.Length];
+       ret.spike.resize(spike.size());
+        for (int i=0;i < spike.size();i++)
         {
-            ret.spike[i] = new Spike();
+          //  ret.spike[i] = new Spike();
             ret.spike[i].Amplitude = spike[i].Amplitude;
             ret.spike[i].Time = spike[i].Time;
         }
     }
-*/
+
     return ret;
 }
 }
