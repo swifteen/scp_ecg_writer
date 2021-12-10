@@ -54,6 +54,7 @@ public:
         // Prevent self-assignment
         if( &rhs != this )
         {
+			delete[] this->Value;
 			deepCopy(rhs);
         }
         return *this;
@@ -66,7 +67,6 @@ public:
 	
 	void deepCopy(const SCPHeaderField& rhs)
     {
-		delete[] this->Value;
 		this->Value = null;
 		this->Length = rhs.Length;
 		if((rhs.Length > 0) && (rhs.Value != null))

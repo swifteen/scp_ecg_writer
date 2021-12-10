@@ -1,7 +1,9 @@
 #ifndef _IDEMOGRAPHIC_CS_
 #define _IDEMOGRAPHIC_CS_
     
-namespace ECGConversion.ECGDemographics
+namespace ECGConversion
+{
+namespace ECGDemographics
 {
 	/// <summary>
 	/// Interface for manupalation of demograpics information.
@@ -46,6 +48,6 @@ namespace ECGConversion.ECGDemographics
 		virtual void setStatCode(byte StatCode) = 0;
 	};
 }
-
+}
 
 #endif  /*#ifndef _IDEMOGRAPHIC_CS_*/

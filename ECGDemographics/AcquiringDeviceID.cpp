@@ -1,8 +1,8 @@
 #include "AcquiringDeviceID.h"
+#include "DemographicEnumrations.h"
 
 namespace ECGConversion
 {
-
 namespace ECGDemographics
 {
 
@@ -16,9 +16,7 @@ AcquiringDeviceID::AcquiringDeviceID()
 	DepartmentNr = 0;
 	DeviceID = 0;
 	DeviceType = 0;
-#if 0 // todo	
-	ManufactorID = (uchar) DeviceManufactor::Unknown;
-#endif
+	ManufactorID = (uchar) kDeviceManufactorUnknown;
 	DeviceCapabilities = 0; // Is defined in SCP Section1 tag 14 byte 18.
 	ACFrequencyEnvironment = 0; // Is defined in SCP Section1 tag 14 byte 19.
 	_ModelDescription = new uchar[_ModelDescriptionLen];
@@ -31,10 +29,8 @@ AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
         InstitutionNr = 0;
         DepartmentNr = 11;
         DeviceID = 51;
-#if 0   //todo		
-        DeviceType = (uchar) ECGConversion.ECGDemographics.DeviceType.System;
-        ManufactorID = (uchar) DeviceManufactor::Unknown;
-#endif		
+        DeviceType = (uchar) kDeviceTypeSystem;
+        ManufactorID = (uchar) kDeviceManufactorUnknown;
         DeviceCapabilities = 0x8;
         ACFrequencyEnvironment = 1;
 #if 0	//todo	

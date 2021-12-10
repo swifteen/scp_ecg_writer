@@ -26,20 +26,22 @@ GlobalMeasurement::GlobalMeasurement()
     Taxis = NoAxisValue;
 }
 
-ushort GlobalMeasurement::Pdur_get()
+ushort GlobalMeasurement::getPdur()
 {
-    return (ushort) ((Poffset != NoValue) && (Ponset != NoValue) && (Ponset < Poffset) ? (Poffset - Ponset) : NoValue);
+	return (ushort) ((Poffset != NoValue) 
+						&& (Ponset != NoValue) 
+						&& (Ponset < Poffset) ? (Poffset - Ponset) : NoValue);
 }
 
-ushort GlobalMeasurement::Pdur_set(ushort value)
+void GlobalMeasurement::setPdur(ushort Pdur)
 {
-    if ((value > 0)
-            &&	(value != NoValue))
+    if ((Pdur > 0)
+            &&	(Pdur != NoValue))
     {
         if (Ponset == NoValue)
             Ponset = 100;
 
-        Poffset = (ushort) (value + Ponset);
+        Poffset = (ushort) (Pdur + Ponset);
     }
     else
     {
@@ -48,15 +50,15 @@ ushort GlobalMeasurement::Pdur_set(ushort value)
     }
 }
 
-ushort GlobalMeasurement::PRint_get()
+ushort GlobalMeasurement::getPRint()
 {
-    return (ushort) ((QRSonset != NoValue) && (Ponset != NoValue) ? (QRSonset - Ponset) : NoValue);
+	return (ushort) ((QRSonset != NoValue) && (Ponset != NoValue) ? (QRSonset - Ponset) : NoValue);
 }
 
-ushort GlobalMeasurement::PRint_set(ushort value)
+void GlobalMeasurement::setPRint(ushort PRint)
 {
-    if ((value > 0)
-            &&	(value != NoValue))
+    if ((PRint > 0)
+            &&	(PRint != NoValue))
     {
         if (Ponset == NoValue)
         {
@@ -64,19 +66,19 @@ ushort GlobalMeasurement::PRint_set(ushort value)
             Poffset = NoValue;
         }
 
-        QRSonset = (ushort) (value + Ponset);
+        QRSonset = (ushort) (PRint + Ponset);
     }
 }
 
-ushort GlobalMeasurement::QRSdur_get()
+ushort GlobalMeasurement::getQRSdur()
 {
-    return (ushort) ((QRSoffset != NoValue) && (QRSonset != NoValue) ? (QRSoffset - QRSonset) : NoValue);
+	return (ushort) ((QRSoffset != NoValue) && (QRSonset != NoValue) ? (QRSoffset - QRSonset) : NoValue);
 }
 
-ushort GlobalMeasurement::QRSdur_set(ushort value)
+void GlobalMeasurement::setQRSdur(ushort QRSdur)
 {
-    if ((value != NoValue)
-            &&	(value != 0))
+    if ((QRSdur != NoValue)
+            &&	(QRSdur != 0))
     {
         if ((QRSonset == NoValue)
                 ||	(QRSonset == 0))
@@ -87,28 +89,52 @@ ushort GlobalMeasurement::QRSdur_set(ushort value)
             QRSonset = 400;
         }
 
-        QRSoffset = (ushort) (value + QRSonset);
+        QRSoffset = (ushort) (QRSdur + QRSonset);
     }
 }
 
-ushort GlobalMeasurement::Tdur_get()
+ushort GlobalMeasurement::getTdur()
 {
-    return (ushort) ((Toffset != NoValue) && (Ponset != NoValue) ? (Toffset - QRSoffset) : NoValue);
+	return (ushort) ((Toffset != NoValue) && (Ponset != NoValue) ? (Toffset - QRSoffset) : NoValue);
 }
 
-ushort GlobalMeasurement::QTdur_get()
+void GlobalMeasurement::setTdur(ushort Tdur)
 {
-    return (ushort) ((Toffset != NoValue) && (QRSonset != NoValue) ? (Toffset - QRSonset) : NoValue);
+#if 0
+	if ((value != NoValue)
+	&&	(value != 0))
+	{
+		if ((Toffset != NoValue)
+		&&	(Toffset != 0))
+		{
+			Tonset = Toffset - value;
+		}
+		else
+		{
+			throw new Exception("You should set QTdur(ation) or Toffset before setting Tdur(ation)! ");
+		}
+	}
+	else
+	{
+		Tonset = NoValue;
+		Toffset = NoValue;
+	}
+#endif
 }
 
-ushort GlobalMeasurement::QTdur_set(ushort value)
+ushort GlobalMeasurement::getQTdur()
 {
-    if ((value != NoValue)
-            &&	(value != 0)
+	return (ushort) ((Toffset != NoValue) && (QRSonset != NoValue) ? (Toffset - QRSonset) : NoValue);
+}
+
+void GlobalMeasurement::setQTdur(ushort QTdur)
+{
+    if ((QTdur != NoValue)
+            &&	(QTdur != 0)
             &&	(QRSonset != NoValue)
             &&	(QRSonset != 0))
     {
-        Toffset = (ushort) (QRSonset + value);
+        Toffset = (ushort) (QRSonset + QTdur);
     }
     else
     {
@@ -120,7 +146,7 @@ ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType)
 {
     if ((AvgRR == 0)
             ||	(AvgRR == NoValue)
-            ||	(QTdur == NoValue))
+            ||	(getQTdur() == NoValue))
         return NoValue;
 
     ushort ret = NoValue;
@@ -128,16 +154,16 @@ ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType)
     switch (calcType)
     {
     case Bazett:
-        ret = (ushort) (QTdur / sqrt(AvgRR * 0.001));
+        ret = (ushort) (getQTdur() / sqrt(AvgRR * 0.001));
         break;
     case Fridericia:
-        ret = (ushort) (QTdur / pow(AvgRR * 0.001, 1.0/3.0));
+        ret = (ushort) (getQTdur() / pow(AvgRR * 0.001, 1.0/3.0));
         break;
     case Framingham:
-        ret = (ushort) (QTdur + (154 * (1 - (AvgRR * 0.001))));
+        ret = (ushort) (getQTdur() + (154 * (1 - (AvgRR * 0.001))));
         break;
     case Hodges:
-        ret = (ushort) (QTdur + (1.75 * (HR - 60)));
+        ret = (ushort) (getQTdur() + (1.75 * (HR - 60)));
         break;
     default:break;
     }

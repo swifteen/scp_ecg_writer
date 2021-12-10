@@ -1,122 +1,127 @@
 #ifndef _DEMOGRAPHICENUMRATIONS_H_
 #define _DEMOGRAPHICENUMRATIONS_H_
 
-namespace ECGConversion.ECGDemographics
+namespace ECGConversion
 {
+namespace ECGDemographics
+{
+
 /// <summary>
 /// An Enumration to determine the sex.
 /// </summary>
 enum Sex
 {
-    Unspecified = 0,
-    Male,
-    Female,
-    Null = 0xff
+    kSexUnspecified = 0,
+    kSexMale,
+    kSexFemale,
+    kSexNullSex = 0xff
 };
 /// <summary>
 /// An Enumration to determine the race.
 /// </summary>
 enum Race
 {
-    Unspecified = 0,
-    Caucasian,
-    Black,
-    Oriental,
-    Null = 0xff
+    kRaceUnspecified = 0,
+    kRaceCaucasian,
+    kRaceBlack,
+    kRaceOriental,
+    kRaceNull = 0xff
 };
 /// <summary>
 /// An Enumration to determine the age definition.
 /// </summary>
 enum AgeDefinition
 {
-    Unspecified = 0,
-    Years,
-    Months,
-    Weeks,
-    Days,
-    Hours
+    kAgeUnspecified = 0,
+    kAgeYears,
+    kAgeMonths,
+    kAgeWeeks,
+    kAgeDays,
+    kAgeHours
 };
 /// <summary>
 /// An Enumration to determine the height definition.
 /// </summary>
 enum HeightDefinition
 {
-    Unspecified = 0,
-    Centimeters,
-    Inches,
-    Millimeters
+    kHeightUnspecified = 0,
+    kHeightCentimeters,
+    kHeightInches,
+    kHeightMillimeters
 };
 /// <summary>
 /// An Enumration to determine the weight definition.
 /// </summary>
 enum WeightDefinition
 {
-    Unspecified = 0,
-    Kilogram,
-    Gram,
-    Pound,
-    Ounce
+    kWeightUnspecified = 0,
+    kWeightKilogram,
+    kWeightGram,
+    kWeightPound,
+    kWeightOunce
 };
 /// <summary>
 /// An Enumration to determine the device type.
 /// </summary>
 enum DeviceType
 {
-    Cart = 0,
-    System
+    kDeviceTypeCart = 0,
+    kDeviceTypeSystem
 };
 /// <summary>
 /// An Enumration to determine the device manufactor.
 /// </summary>
 enum DeviceManufactor
 {
-    Unknown = 0,
-    Burdick,
-    Cambridge,
-    Compumed,
-    Datamed,
-    Fukuda,
-    HewlettPackard,
-    MarquetteElectronics,
-    MortaraInstruments,
-    NihonKohden,
-    Okin,
-    Quintin,
-    Siemens,
-    SpaceLabs,
-    Telemed,
-    Hellige,
-    ESAOTE,
-    Schiller,
-    PickerSchwarzer,
-    ElettronicTrentina,
-    Zwonitz,
-    Other = 100
+    kDeviceManufactorUnknown = 0,
+    kDeviceManufactorBurdick,
+    kDeviceManufactorCambridge,
+    kDeviceManufactorCompumed,
+    kDeviceManufactorDatamed,
+    kDeviceManufactorFukuda,
+    kDeviceManufactorHewlettPackard,
+    kDeviceManufactorMarquetteElectronics,
+    kDeviceManufactorMortaraInstruments,
+    kDeviceManufactorNihonKohden,
+    kDeviceManufactorOkin,
+    kDeviceManufactorQuintin,
+    kDeviceManufactorSiemens,
+    kDeviceManufactorSpaceLabs,
+    kDeviceManufactorTelemed,
+    kDeviceManufactorHellige,
+    kDeviceManufactorESAOTE,
+    kDeviceManufactorSchiller,
+    kDeviceManufactorPickerSchwarzer,
+    kDeviceManufactorElettronicTrentina,
+    kDeviceManufactorZwonitz,
+    kDeviceManufactorOther = 100
 };
 /// <summary>
 /// An Enumration for Electrode Configurations for 12-lead ECG
 /// </summary>
 enum ElectrodeConfigCodeTwelveLead
 {
-    Unspecified = 0,
-    StandardTwelveLead,
-    MasonLikarAndIndividual,
-    MasonLikarAndPadded,
-    AllLeadPadded,
-    TwelveLeadDerivedXYZ,
-    TwelveLeadDerivedNonStandard
+    kElectrodeTwelveLeadUnspecified = 0,
+    kElectrodeTwelveLeadStandardTwelveLead,
+    kElectrodeTwelveLeadMasonLikarAndIndividual,
+    kElectrodeTwelveLeadMasonLikarAndPadded,
+    kElectrodeTwelveLeadAllLeadPadded,
+    kElectrodeTwelveLeadTwelveLeadDerivedXYZ,
+    kElectrodeTwelveLeadTwelveLeadDerivedNonStandard
 };
 /// <summary>
 /// An Enumration for Electrode Configurations for XYZ ECG
 /// </summary>
 enum ElectrodeConfigCodeXYZ
 {
-    Unspecified = 0,
-    Frank,
-    McFeeParungao,
-    Cube,
-    BipolarUncorrected,
-    PseudoOrthogonal,
-    XYZDerivedTwelveLead
+    kElectrodeXYZUnspecified = 0,
+    kElectrodeXYZFrank,
+    kElectrodeXYZMcFeeParungao,
+    kElectrodeXYZCube,
+    kElectrodeXYZBipolarUncorrected,
+    kElectrodeXYZPseudoOrthogonal,
+    kElectrodeXYZXYZDerivedTwelveLead
 };
 }
+}
+#endif

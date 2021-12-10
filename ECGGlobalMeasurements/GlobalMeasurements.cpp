@@ -37,7 +37,7 @@ void GlobalMeasurements::setPdur(ushort Pdur)
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->Pdur = Pdur;
+    measurment[0]->setPdur(Pdur);
 }
 
 void GlobalMeasurements::setPRint(ushort PRint)
@@ -50,7 +50,7 @@ void GlobalMeasurements::setPRint(ushort PRint)
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->PRint = PRint;
+    measurment[0]->setPRint(PRint);
     
 }
 
@@ -64,7 +64,7 @@ void GlobalMeasurements::setQRSdur(ushort QRSdur)
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->QRSdur = QRSdur;
+    measurment[0]->setQRSdur(QRSdur);
     
 }
 
@@ -79,7 +79,7 @@ void GlobalMeasurements::setQTdur(ushort QTdur)
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0]->QTdur = QTdur;
+    measurment[0]->setQTdur(QTdur);
     
 }
 void GlobalMeasurements::setQTc(ushort QTc)

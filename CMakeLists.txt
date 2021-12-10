@@ -18,7 +18,6 @@ SET(SCP_FILES
 				SCP/SCPDate.cpp
 				SCP/SCPSection.cpp 
 				SCP/SCPSection0.cpp 
-				SCP/SCPSection1.cpp
 				) 
 
 message("vecg_files ${VECG_FILES}")
