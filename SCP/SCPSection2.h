@@ -1,9 +1,13 @@
 #ifndef _SCPSECTION2_H_
 #define _SCPSECTION2_H_
+#include "SCPSection.h"
 
-
-namespace ECGConversion.SCP
+namespace ECGConversion
 {
+namespace SCP
+{
+class SCPHuffmanStruct;
+
 /// <summary>
 /// Class contains section 2 (HuffmanTables).
 /// </summary>
@@ -16,6 +20,7 @@ namespace ECGConversion.SCP
 class SCPSection2 : public SCPSection
 {
 public:
+	SCPSection2();
     ushort getSectionID();
     bool Works();
 
@@ -27,8 +32,7 @@ public:
     /// <param name="usedTable">table to use for encoding</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-    byte[] Encode(short[] data, int time, short usedTable, byte difference);
-
+	uchar* Encode(short* data, int dataLength,int time, short usedTable, uchar difference);
     /// <summary>
     /// Function to encode signal using the default huffman table (using optimized code).
     /// </summary>
@@ -36,8 +40,8 @@ public:
     /// <param name="time">number of samples to use</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-    static byte[] InhouseEncode(short[] data, int time, byte difference);
-
+	static uchar* InhouseEncode(short* data, int dataLength,int time, uchar difference);
+#if 0
     /// <summary>
     /// Function to store signal using no compression.
     /// </summary>
@@ -46,7 +50,8 @@ public:
     /// <param name="quanta">sample distance in signal</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-    static byte[] NoEncode(short[] data, int time, byte difference);
+    static byte[] NoEncode(short[] data, int time, uchar difference);
+#endif
 
     /// <summary>
     /// Resets the current selected HuffmanTable
@@ -64,11 +69,10 @@ public:
     void UseNoHuffman();
 
 protected:
-    int _Read(byte[] buffer, int offset);
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
-
+#if 0
     /// <summary>
     /// Find next hit in byte array starting at an offset in bits.
     /// </summary>
@@ -86,7 +90,7 @@ protected:
     /// <param name="usedTable">table to use for encoding</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-    byte[] HuffmanTableEncode(short[] data, int time, short usedTable, byte difference);
+    byte[] HuffmanTableEncode(short[] data, int time, short usedTable, uchar difference);
 
     /// <summary>
     /// Function to find corresponding HuffmanStruct with value.
@@ -101,6 +105,7 @@ protected:
     /// <param name="table">prefered table</param>
     /// <returns>position in current table</returns>
     int getTableSwap(int table);
+#endif
 
     /// <summary>
     /// Function to get binary length of worst case of selected table.
@@ -117,8 +122,9 @@ private:
 
     // Part of the stored Data Structure.
     ushort _NrTables;
-    class SCPHuffmanStruct;
+#if 0 //use DefaultTable
     SCPHuffmanStruct[][] _Tables;
+#endif
 };
 }
 }

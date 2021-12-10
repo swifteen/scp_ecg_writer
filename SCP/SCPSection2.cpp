@@ -1,6 +1,7 @@
 #include "SCPSection2.h"
 #include "CRCTool.h"
 #include "BytesTool.h"
+#include <stdlib.h>
 
 using namespace Communication_IO_Tools;
 
@@ -11,17 +12,17 @@ namespace SCP
 /// <summary>
 /// Class that contains a SCP Huffman struct
 /// </summary>
-class SCPSection2::SCPHuffmanStruct
+class SCPHuffmanStruct
 {
-    SCPHuffmanStruct():Size(9)
+    SCPHuffmanStruct()
     {}
-    SCPHuffmanStruct(byte prefix, byte entire, byte tablemode, short value, uint code)
+    SCPHuffmanStruct(uchar prefix, uchar entire, uchar tablemode, short value, uint code)
     {
-        this.prefix = prefix;
-        this.entire = entire;
-        this.tablemode = tablemode;
-        this.value = value;
-        this.code = code;
+        this->prefix = prefix;
+        this->entire = entire;
+        this->tablemode = tablemode;
+        this->value = value;
+        this->code = code;
     }
 
     /// <summary>
@@ -30,20 +31,20 @@ class SCPSection2::SCPHuffmanStruct
     /// <param name="buffer">byte array to write into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(byte[] buffer, int offset)
+    int Write(uchar* buffer, int bufferLength,int offset)
     {
-        if ((offset + Size) > buffer.Length)
+        if ((offset + Size) > bufferLength)
         {
             return 0x1;
         }
 
-        BytesTool::writeBytes(prefix, buffer, offset, sizeof(prefix), true);
+        BytesTool::writeBytes(prefix, buffer, bufferLength,offset, sizeof(prefix), true);
         offset += sizeof(prefix);
-        BytesTool::writeBytes(entire, buffer, offset, sizeof(entire), true);
+        BytesTool::writeBytes(entire, buffer, bufferLength,offset, sizeof(entire), true);
         offset += sizeof(entire);
-        BytesTool::writeBytes(tablemode, buffer, offset, sizeof(tablemode), true);
+        BytesTool::writeBytes(tablemode, buffer, bufferLength,offset, sizeof(tablemode), true);
         offset += sizeof(tablemode);
-        BytesTool::writeBytes(value, buffer, offset, sizeof(value), true);
+        BytesTool::writeBytes(this->value, buffer, bufferLength,offset, sizeof(this->value), true);
         offset += sizeof(value);
 
         // Have to reverse the code, becaus SCP stores it that way.
@@ -56,20 +57,22 @@ class SCPSection2::SCPHuffmanStruct
             tempCode1 >>= 1;
         }
 
-        BytesTool::writeBytes((int)tempCode2, buffer, offset, sizeof(code), true);
+        BytesTool::writeBytes((int)tempCode2, buffer, bufferLength,offset, sizeof(code), true);
         offset += sizeof(code);
 
         return 0x0;
     }
 public:
-    const int Size;
+    static int Size;
 
-    byte prefix;
-    byte entire;
-    byte tablemode;
+    uchar prefix;
+    uchar entire;
+    uchar tablemode;
     short value;
     uint code;
 };
+
+int SCPHuffmanStruct::Size = 9;
 
 // Defined in SCP.
 ushort SCPSection2::_SectionID = 2;
@@ -90,35 +93,41 @@ SCPSection2::SCPSection2()
 
     // Part of the stored Data Structure.
     _NrTables = 0;
+#if 0 //use DefaultTable
     _Tables = null;
+#endif
 }
 
-int SCPSection2::_Write(byte[] buffer, int offset)
+int SCPSection2::_Write(uchar* buffer, int bufferLength,int offset)
 {
-    BytesTool::writeBytes(_NrTables, buffer, offset, sizeof(_NrTables), true);
+    BytesTool::writeBytes(_NrTables, buffer, bufferLength,offset, sizeof(_NrTables), true);
     offset += sizeof(_NrTables);
+#if 0 //use DefaultTable
     if (_NrTables < _DefaultTable)
     {
         for (int table=0;table < _NrTables;table++)
         {
-            BytesTool::writeBytes(_Tables[table].Length, buffer, offset, sizeof(_NrTables), true);
+            BytesTool::writeBytes(_Tables[table].Length, buffer, bufferLength,offset, sizeof(_NrTables), true);
             offset += sizeof(_NrTables);
             for (int loper=0;loper < _Tables[table].Length;loper++)
             {
-                int err = _Tables[table][loper].Write(buffer, offset);
+                int err = _Tables[table][loper].Write(buffer,bufferLength, offset);
                 if (err != 0)
                 {
                     return err << table;
                 }
-                offset += SCPHuffmanStruct.Size;
+                offset += SCPHuffmanStruct::Size;
             }
         }
     }
+#endif
     return 0x0;
 }
 void SCPSection2::_Empty()
 {
+#if 0 //use DefaultTable
     _Tables = null;
+#endif
     _NrTables = 0;
 }
 int SCPSection2::_getLength()
@@ -126,13 +135,15 @@ int SCPSection2::_getLength()
     if (Works())
     {
         int sum = sizeof(_NrTables);
+#if 0 //use DefaultTable
         if (_NrTables != _DefaultTable)
         {
             for (int table=0;table < _NrTables;table++)
             {
-                sum += sizeof(_NrTables) + (_Tables[table].Length * SCPHuffmanStruct.Size);
+                sum += sizeof(_NrTables) + (_Tables[table].Length * SCPHuffmanStruct::Size);
             }
         }
+#endif
         return ((sum % 2) == 0 ? sum : sum + 1);
     }
     return 0;
@@ -143,6 +154,8 @@ ushort SCPSection2::getSectionID()
 }
 bool SCPSection2::Works()
 {
+	return true;
+#if 0 //use DefaultTable
     if ((_Tables != null)
             &&  (_NrTables == _Tables.Length))
     {
@@ -168,8 +181,10 @@ bool SCPSection2::Works()
     {
         return true;
     }
-    return false;
+	return false;
+#endif
 }
+#if 0 //use DefaultTable
 /// <summary>
 /// Find next hit in byte array starting at an offset in bits.
 /// </summary>
@@ -200,6 +215,7 @@ SCPHuffmanStruct SCPSection2::InterpettingData(byte[] buffer, int offset)
     }
     return null;
 }
+#endif
 /// <summary>
 /// Function to encode data.
 /// </summary>
@@ -208,14 +224,15 @@ SCPHuffmanStruct SCPSection2::InterpettingData(byte[] buffer, int offset)
 /// <param name="usedTable">table to use for encoding</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-byte[] SCPSection2::Encode(short[] data, int time, short usedTable, byte difference)
+uchar* SCPSection2::Encode(short* data, int dataLength,int time, short usedTable, uchar difference)
 {
     if (Works() || _NrTables == 0)
     {
         if (_NrTables == _DefaultTable)
         {
-            return InhouseEncode(data, time, difference);
+            return InhouseEncode(data, dataLength,time, difference);
         }
+#if 0 //use DefaultTable
         else if (_NrTables == 0)
         {
             return NoEncode(data, time, difference);
@@ -224,6 +241,7 @@ byte[] SCPSection2::Encode(short[] data, int time, short usedTable, byte differe
         {
             return HuffmanTableEncode(data, time, usedTable, difference);
         }
+#endif
     }
     return null;
 }
@@ -234,19 +252,19 @@ byte[] SCPSection2::Encode(short[] data, int time, short usedTable, byte differe
 /// <param name="time">number of samples to use</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference)
+uchar* SCPSection2::InhouseEncode(short* data, int dataLength,int time, uchar difference)
 {
-    byte[] ret = null;
+    uchar* ret = null;
 
     // Check if input makes sense
     if ((data != null)
-            &&	(time <= data.Length))
+            &&	(time <= dataLength))
     {
         // Initialize some handy variables
         int currentBit = 0;
 
         // Make buffer for worst case.
-        byte[] buffer = new byte[((time * 26) >> 3) + 1];
+        uchar* buffer = new uchar[((time * 26) >> 3) + 1];
 
         // For each sample do encode.
         for (int currentTime=0;currentTime < time;currentTime++)
@@ -273,7 +291,7 @@ static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference
             // Do inhouse encode
             //System.Diagnostics.Debug.WriteLine("Begin inhouse!"+code.ToString());
             if ( code == -32768) code = 32767;
-            if (Math.Abs(code) <= 8)
+            if (abs(code) <= 8)
             {
                 //  System.Diagnostics.Debug.WriteLine("Begin !");
                 // if code 0 then add one 0 bit.
@@ -285,7 +303,7 @@ static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference
                 else
                 {
                     // add absolute number of 1 bits.
-                    int codeAbs = Math.Abs(code);
+                    int codeAbs = abs(code);
                     for (int loper=0;loper < codeAbs;loper++)
                     {
                         buffer[currentBit >> 3] <<= 1;
@@ -331,7 +349,7 @@ static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference
                 for (extraLength--;extraLength >= 0;extraLength--)
                 {
                     buffer[currentBit >> 3] <<= 1;
-                    buffer[currentBit >> 3] |= (byte)((code >> extraLength) & 0x1);
+                    buffer[currentBit >> 3] |= (uchar)((code >> extraLength) & 0x1);
                     currentBit++;
                     int currentBitShift = currentBit >> 3;
                 }
@@ -351,16 +369,22 @@ static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference
         }
 
         // Allocate a fitting buffer
-        ret = new byte[(currentBit >> 3)];
+        int retLength = currentBit >> 3;
+        ret = new uchar[retLength];
 
         // Copy worst case buffer in fitting buffer.
-        for (int loper = 0;loper < ret.Length;loper++)
+#if 0
+        for (int loper = 0;loper < retLength;loper++)
         {
             ret[loper] = buffer[loper];
         }
+#else		
+		memcpy(ret,buffer,retLength*sizeof(uchar));
+#endif
     }
     return ret;
 }
+#if 0 //use DefaultTable
 /// <summary>
 /// Function to encode signal using the huffman table.
 /// </summary>
@@ -370,7 +394,7 @@ static byte[] SCPSection2::InhouseEncode(short[] data, int time, byte difference
 /// <param name="usedTable">table to use for encoding</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-byte[] SCPSection2::HuffmanTableEncode(short[] data, int time, short usedTable, byte difference)
+byte[] SCPSection2::HuffmanTableEncode(short[] data, int time, short usedTable, uchar difference)
 {
     byte[] ret = null;
 
@@ -412,7 +436,7 @@ byte[] SCPSection2::HuffmanTableEncode(short[] data, int time, short usedTable, 
             for (len--;len >= 0;len--)
             {
                 buffer[currentBit >> 3] <<= 1;
-                buffer[currentBit >> 3] |= (byte)((code >> len) & 0x1);
+                buffer[currentBit >> 3] |= (uchar)((code >> len) & 0x1);
                 currentBit++;
             }
         }
@@ -456,7 +480,7 @@ byte[] SCPSection2::HuffmanTableEncode(short[] data, int time, short usedTable, 
             for (int loper=(h.prefix-1);loper >= 0;loper--)
             {
                 buffer[currentBit >> 3] <<= 1;
-                buffer[currentBit >> 3] |= (byte)((h.code >> loper) & 0x1);
+                buffer[currentBit >> 3] |= (uchar)((h.code >> loper) & 0x1);
                 currentBit++;
             }
 
@@ -465,7 +489,7 @@ byte[] SCPSection2::HuffmanTableEncode(short[] data, int time, short usedTable, 
             for (int loper=(h.entire - h.prefix - 1);loper >= 0;loper--)
             {
                 buffer[currentBit >> 3] <<= 1;
-                buffer[currentBit >> 3] |= (byte)((code >> loper) & 0x1);
+                buffer[currentBit >> 3] |= (uchar)((code >> loper) & 0x1);
                 currentBit++;
             }
         }
@@ -537,7 +561,7 @@ SCPHuffmanStruct SCPSection2::InterpettingData(short value)
 /// <param name="quanta">sample distance in signal</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-static byte[] SCPSection2::NoEncode(short[] data, int time, byte difference)
+static byte[] SCPSection2::NoEncode(short[] data, int time, uchar difference)
 {
     // Check if input data makes sense.
     if ((data != null)
@@ -580,6 +604,7 @@ static byte[] SCPSection2::NoEncode(short[] data, int time, byte difference)
     }
     return null;
 }
+#endif
 /// <summary>
 /// Resets the current selected HuffmanTable
 /// </summary>
@@ -590,6 +615,7 @@ void SCPSection2::ResetSelect()
         _Selected = 0;
     }
 }
+#if 0 //use DefaultTable
 /// <summary>
 /// Function to get position of table swap.
 /// </summary>
@@ -612,6 +638,7 @@ int SCPSection2::getTableSwap(int table)
     }
     return -1;
 }
+#endif
 /// <summary>
 /// Function to get binary length of worst case of selected table.
 /// </summary>
@@ -621,7 +648,7 @@ int SCPSection2::getWorstCase()
     int worst = -1;
     if (Works())
     {
-        if (this._NrTables == _DefaultTable)
+        if (_NrTables == _DefaultTable)
         {
             worst = 26;
         }
@@ -631,6 +658,7 @@ int SCPSection2::getWorstCase()
         }
         else
         {
+#if 0 //use DefaultTable
             for (int loper=0;loper < _Tables[_Selected].Length;loper++)
             {
                 if (_Tables[_Selected][loper].entire > worst)
@@ -638,6 +666,7 @@ int SCPSection2::getWorstCase()
                     worst = _Tables[_Selected][loper].entire;
                 }
             }
+#endif
         }
     }
     return worst;
