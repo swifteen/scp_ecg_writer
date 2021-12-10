@@ -16,6 +16,27 @@ public:
     /// Constructor of a SCP date.
     /// </summary>
 	SCPDate();
+
+
+    SCPDate& operator=(const SCPDate& date)
+    {
+        // Prevent self-assignment
+        if( &date != this )
+        {
+			 this->Year=0;
+			 this->Month=0;
+			 this->Day  =0;
+			deepCopy(date);
+        }
+        return *this;
+    }
+    void deepCopy(const SCPDate& date)
+    {
+	     this->Year  = date.Year;
+		 this->Month = date.Month;
+		 this->Day   = date.Day;
+	}
+	
     /// <summary>
     /// Constructor of a SCP date.
     /// </summary>
