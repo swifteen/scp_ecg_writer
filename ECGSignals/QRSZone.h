@@ -1,8 +1,11 @@
 #ifndef _QRSZONE_H_
 #define _QRSZONE_H_
 
+#include "../ScpGlobal.h"
 
-namespace ECGConversion.ECGSignals
+namespace ECGConversion{
+
+namespace ECGSignals
 {
 /// <summary>
 /// Class containing a QRS zone.
@@ -18,4 +21,8 @@ public:
 	int Fiducial;
 	int End;
 };
+
 }
+}
+
+#endif

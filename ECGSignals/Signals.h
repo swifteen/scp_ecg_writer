@@ -2,7 +2,16 @@
 #define _SIGNALS_H_
 #include "Signal.h"
 
-namespace ECGConversion.ECGSignals
+#include <vector>
+#include "LeadType.h"
+#include "../ScpGlobal.h"
+#include "QRSZone.h"
+using namespace std;
+
+
+namespace ECGConversion {
+
+namespace ECGSignals
 {
 /// <summary>
 /// Class containing signals of ECG.
@@ -11,14 +20,15 @@ class Signals
 {
 public:
     Signals();
-    Signals(byte nrleads);
+    Signals(uchar nrleads);
     // Overrall Data.
-    byte getNrLeads();
-    void setNrLeads();
+    uchar getNrLeads();
+    //void setNrLeads();
+	void setNrLeads(uchar NrLeads);
 
-    Signal[] GetLeads();
+    vector<Signal> GetLeads();
 
-    void SetLeads(Signal[] leads);
+    void SetLeads(vector<Signal> leads);
 
     //		Signal this[int i]
 
@@ -34,7 +44,7 @@ public:
     /// </summary>
     /// <param name="nStart">returns start</param>
     /// <param name="nEnd">returns end</param>
-    void CalculateStartAndEnd(out int nStart, out int nEnd);
+    void CalculateStartAndEnd(int &nStart, int &nEnd);
 
     /// <summary>
     /// Function to determine the number of simultaneosly.
@@ -74,7 +84,7 @@ public:
     /// Function to clone a signals object.
     /// </summary>
     /// <returns>cloned signals object</returns>
-    virtual Signals Clone();
+    //virtual Signals Clone(); todo
 
     /// <summary>
     /// Function to get a copy of a signals object.
@@ -142,12 +152,15 @@ public:
 
     // QRS zones
     ushort MedianFiducialPoint;
-    QRSZone[] QRSZone;
+    //QRSZone[] QRSZone;
+    vector<QRSZone> qRSZone;
 private:
     // Signal Data
-    private Signal[] _Lead;
+    //private Signal[] _Lead;
+    vector<Signal> _Lead;
+	uchar NrLeads;
 };
 }
-
+}
 
 #endif  /*#ifndef _SIGNALS_H_*/

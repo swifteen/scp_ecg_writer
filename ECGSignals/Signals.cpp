@@ -1,6 +1,10 @@
 #include "Signals.h"
 
-namespace ECGConversion.ECGSignals
+#include "Signal.h"
+
+
+namespace ECGConversion{
+namespace ECGSignals
 {
 /// <summary>
 /// Class containing signals of ECG.
@@ -18,39 +22,40 @@ Signals::Signals()
 
     // QRS zones
     MedianFiducialPoint = 0;
-    QRSZone = null;
+    //QRSZone = null;
 
     // Signal Data
-    _Lead = null;
+    //_Lead = null;
 }
 
-Signals::Signals(byte nrleads)
+Signals::Signals(uchar nrleads)
 {
     NrLeads = nrleads;
 }
 
-byte Signals::getNrLeads()
+uchar Signals::getNrLeads()
 {
-    return (byte) (_Lead != null ? _Lead.Length : 0);
+    return (uchar) (_Lead.size() != 0 ? _Lead.size() : 0);
 }
 
-void Signals::setNrLeads(byte NrLeads);
+void Signals::setNrLeads(uchar NrLeads)
 {
-if ((NrLeads < byte.MinValue)
-||	(NrLeads > byte.MaxValue))
+if ((NrLeads < uchar_MIN)
+||	(NrLeads > uchar_MAX))
 return;
 
-_Lead = new Signal[NrLeads];
+//_Lead = new Signal[NrLeads];
+_Lead.resize(NrLeads);
 }
 
-Signal[] Signals::GetLeads()
+vector<Signal> Signals::GetLeads()
 {
     return _Lead;
 }
 
-void Signals::SetLeads(Signal[] leads)
+void Signals::SetLeads(vector<Signal> leads)
 {
-    if (leads.Length > byte.MaxValue)
+    if (leads.size() > uchar_MAX)
         return;
 
     _Lead = leads;
@@ -77,7 +82,7 @@ Signal this[int i]
 /// <returns>true if as expected</returns>
 bool Signals::IsNormal()
 {
-    return Signal.IsNormal(_Lead);
+    return Signal::IsNormal(_Lead);
 }
 
 /// <summary>
@@ -85,14 +90,14 @@ bool Signals::IsNormal()
 /// </summary>
 /// <param name="nStart">returns start</param>
 /// <param name="nEnd">returns end</param>
-void Signals::CalculateStartAndEnd(out int nStart, out int nEnd)
+void Signals::CalculateStartAndEnd(int &nStart, int &nEnd)
 {
-    nStart = int.MaxValue;
-    nEnd = int.MinValue;
+    nStart = uint_MAX;
+    nEnd = uint_MIN;
 
-    if (_Lead != null)
+    if (_Lead.size() != 0)
     {
-        for (int nLead=0;nLead < _Lead.Length;nLead++)
+        for (int nLead=0;nLead < _Lead.size();nLead++)
         {
             if (_Lead[nLead].RhythmStart < nStart)
                 nStart = _Lead[nLead].RhythmStart;
@@ -110,7 +115,7 @@ void Signals::CalculateStartAndEnd(out int nStart, out int nEnd)
 /// <returns>true if as expected</returns>
 int Signals::NrSimultaneosly()
 {
-    return Signal.NrSimultaneosly(_Lead);
+    return Signal::NrSimultaneosly(_Lead);
 }
 /// <summary>
 /// Function to sort signal array on lead type.
@@ -118,7 +123,7 @@ int Signals::NrSimultaneosly()
 /// <param name="data">signal array</param>
 void Signals::SortOnType()
 {
-    Signal.SortOnType(_Lead);
+    Signal::SortOnType(_Lead);
 }
 /// <summary>
 /// Function to sort signal array on lead type.
@@ -127,7 +132,7 @@ void Signals::SortOnType()
 /// <param name="last">last value to sort</param>
 void Signals::SortOnType(int first, int last)
 {
-    Signal.SortOnType(_Lead, first, last);
+    Signal::SortOnType(_Lead, first, last);
 }
 /// <summary>
 /// Function to trim a signals.
@@ -137,7 +142,7 @@ void Signals::TrimSignals(short val)
 {
     int start, end;
 
-    CalculateStartAndEnd(out start, out end);
+    CalculateStartAndEnd(start, end);
 
     TrimSignals(val, start, end);
 }
@@ -147,16 +152,17 @@ void Signals::TrimSignals(short val)
 /// <param name="val">value to trim on</param>
 /// <param name="start">start of all signals</param>
 /// <param name="end">end of all signals</param>
+/*
 void Signals::TrimSignals(short val, int start, int end)
 {
     foreach (Signal sig in _Lead)
     {
         int	trimBegin = 0,
-                trimEnd = sig.Rhythm.Length-1;
+                trimEnd = sig.Rhythm.size()-1;
 
         if (sig.RhythmStart == start)
         {
-            for (int i=0;i < sig.Rhythm.Length;i++)
+            for (int i=0;i < sig.Rhythm.size();i++)
             {
                 if (sig.Rhythm[i] != val)
                 {
@@ -168,7 +174,7 @@ void Signals::TrimSignals(short val, int start, int end)
 
         if (sig.RhythmEnd == end)
         {
-            for (int i=sig.Rhythm.Length-1;i > 0;i--)
+            for (int i=sig.Rhythm.size()-1;i > 0;i--)
             {
                 if (sig.Rhythm[i] != val)
                 {
@@ -181,88 +187,92 @@ void Signals::TrimSignals(short val, int start, int end)
         if ((trimBegin / RhythmSamplesPerSecond) < 1)
             trimBegin = 0;
 
-        if (((sig.Rhythm.Length-1 - trimEnd) / RhythmSamplesPerSecond) < 1)
-            trimEnd = sig.Rhythm.Length-1;
+        if (((sig.Rhythm.size()-1 - trimEnd) / RhythmSamplesPerSecond) < 1)
+            trimEnd = sig.Rhythm.size()-1;
 
         if ((trimBegin != 0)
-                ||	(trimEnd != sig.Rhythm.Length-1))
+                ||	(trimEnd != sig.Rhythm.size()-1))
         {
             sig.RhythmStart += trimBegin;
-            sig.RhythmEnd -= (sig.Rhythm.Length-1) - trimEnd;
+            sig.RhythmEnd -= (sig.Rhythm.size()-1) - trimEnd;
 
             short[] temp = new short[trimEnd - trimBegin + 1];
 
-            for (int i=0;i < temp.Length;i++)
+            for (int i=0;i < temp.size();i++)
                 temp[i] = sig.Rhythm[i + trimBegin];
 
             sig.Rhythm = temp;
         }
     }
 }
+
 /// <summary>
 /// Function to clone a signals object.
 /// </summary>
 /// <returns>cloned signals object</returns>
 virtual Signals Signals::Clone()
 {
-    Signals sigs = new Signals();
+    Signals sigs;
 
-    sigs.RhythmAVM = this.RhythmAVM;
-    sigs.RhythmSamplesPerSecond = this.RhythmSamplesPerSecond;
+    sigs.RhythmAVM = RhythmAVM;
+    sigs.RhythmSamplesPerSecond = RhythmSamplesPerSecond;
 
-    sigs.MedianAVM = this.MedianAVM;
-    sigs.MedianLength = this.MedianLength;
-    sigs.MedianSamplesPerSecond = this.MedianSamplesPerSecond;
-    sigs.MedianFiducialPoint = this.MedianFiducialPoint;
+    sigs.MedianAVM = MedianAVM;
+    sigs.MedianLength = MedianLength;
+    sigs.MedianSamplesPerSecond = MedianSamplesPerSecond;
+    sigs.MedianFiducialPoint = MedianFiducialPoint;
 
-    if (this.QRSZone != null)
+    if (qRSZone.size() != 0)
     {
-        sigs.QRSZone = new QRSZone[this.QRSZone.Length];
+        sigs.qRSZone.resize(qRSZone.size());
 
-        for (int i=0;i < sigs.QRSZone.Length;i++)
-            sigs.QRSZone[i] = this.QRSZone[i].Clone();
+        for (int i=0;i < sigs.qRSZone.size();i++)
+            //sigs.qRSZone[i] = qRSZone[i].Clone(); todo
     }
 
-    if (this._Lead != null)
+    if (_Lead.size() != 0)
     {
-        sigs.NrLeads = this.NrLeads;
+        sigs.NrLeads = NrLeads;
 
-        for (int i=0;i < sigs._Lead.Length;i++)
-            sigs._Lead[i] = this._Lead[i].Clone();
+        for (int i=0;i < sigs._Lead.size();i++)
+            //sigs._Lead[i] = _Lead[i].Clone(); todo
     }
 
     return sigs;
 }
+*/
+
 /// <summary>
 /// Function to get a copy of a signals object.
 /// </summary>
 /// <returns>copy to basic signals object</returns>
 Signals Signals::GetCopy()
 {
-    Signals sigs = new Signals();
+    Signals sigs;
 
-    sigs.RhythmAVM = this.RhythmAVM;
-    sigs.RhythmSamplesPerSecond = this.RhythmSamplesPerSecond;
+    sigs.RhythmAVM = RhythmAVM;
+    sigs.RhythmSamplesPerSecond = RhythmSamplesPerSecond;
 
-    sigs.MedianAVM = this.MedianAVM;
-    sigs.MedianLength = this.MedianLength;
-    sigs.MedianSamplesPerSecond = this.MedianSamplesPerSecond;
-    sigs.MedianFiducialPoint = this.MedianFiducialPoint;
+    sigs.MedianAVM = MedianAVM;
+    sigs.MedianLength = MedianLength;
+    sigs.MedianSamplesPerSecond = MedianSamplesPerSecond;
+    sigs.MedianFiducialPoint = MedianFiducialPoint;
 
-    if (this.QRSZone != null)
+    if (qRSZone.size() != 0)
     {
-        sigs.QRSZone = new QRSZone[this.QRSZone.Length];
+        //sigs.qRSZone = new QRSZone[qRSZone.size()];
+        sigs.qRSZone.resize(qRSZone.size());
 
-        for (int i = 0; i < sigs.QRSZone.Length; i++)
-            sigs.QRSZone[i] = this.QRSZone[i].Clone();
+        for (int i = 0; i < sigs.qRSZone.size(); i++);
+            //sigs.qRSZone[i] = qRSZone[i].Clone(); todo
     }
 
-    if (this._Lead != null)
+    if (_Lead.size() != 0)
     {
-        sigs.NrLeads = this.NrLeads;
+        sigs.NrLeads = NrLeads;
 
-        for (int i = 0; i < sigs._Lead.Length; i++)
-            sigs._Lead[i] = this._Lead[i].Clone();
+        for (int i = 0; i < sigs._Lead.size(); i++);
+            //sigs._Lead[i] = this._Lead[i].Clone(); todo
     }
 
     return sigs;
@@ -280,14 +290,16 @@ void Signals::MakeSpecificLength(int seconds)
 /// </summary>
 /// <param name="seconds">length (in seconds)</param>
 /// <param name="startPoint">start point in signal (in seconds)</param>
+
+/*
 void Signals::MakeSpecificLength(int seconds, int startPoint)
 {
     int start, end;
 
-    seconds *= this.RhythmSamplesPerSecond;
-    startPoint *= this.RhythmSamplesPerSecond;
+    seconds *= RhythmSamplesPerSecond;
+    startPoint *= RhythmSamplesPerSecond;
 
-    CalculateStartAndEnd(out start, out end);
+    CalculateStartAndEnd(start, end);
 
     foreach (Signal sig in _Lead)
     {
@@ -305,6 +317,8 @@ void Signals::MakeSpecificLength(int seconds, int startPoint)
         sig.RhythmEnd = seconds;
     }
 }
+
+
 /// <summary>
 /// Function to resample all leads.
 /// </summary>
@@ -355,6 +369,8 @@ void Signals::Resample(int samplesPerSecond)
         this.MedianSamplesPerSecond = samplesPerSecond;
     }
 }
+*/
+
 /// <summary>
 /// Set AVM for all signals
 /// </summary>
@@ -363,19 +379,19 @@ void Signals::SetAVM(double avm)
 {
     if (avm != 0.0)
     {
-        int nrLeads = this.NrLeads;
+        int nrLeads = NrLeads;
 
         for (int i=0;i < nrLeads;i++)
         {
-            ECGTool.ChangeMultiplier(this[i].Rhythm, this.RhythmAVM, avm);
-            ECGTool.ChangeMultiplier(this[i].Median, this.MedianAVM, avm);
+            //ECGTool.ChangeMultiplier(this[i].Rhythm, this.RhythmAVM, avm);todo
+            //ECGTool.ChangeMultiplier(this[i].Median, this.MedianAVM, avm);todo
         }
 
-        if (this.RhythmAVM != 0.0)
-            this.RhythmAVM = avm;
+        if (RhythmAVM != 0.0)
+            RhythmAVM = avm;
 
-        if (this.MedianAVM != 0.0)
-            this.MedianAVM = avm;
+        if (MedianAVM != 0.0)
+            MedianAVM = avm;
     }
 }
 /// <summary>
@@ -385,19 +401,16 @@ void Signals::SetAVM(double avm)
 bool Signals::IsTwelveLeads()
 
 {
-    LeadType[] lt = new LeadType[]{	LeadType.I, LeadType.II, LeadType.III,
-                LeadType.aVR, LeadType.aVL, LeadType.aVF,
-                LeadType.V1, LeadType.V2, LeadType.V3,
-                LeadType.V4, LeadType.V5, LeadType.V6};
-
-
+  
+	LeadType lt[] = {ECGConversion::ECGSignals::I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6};
+	int ltSize = sizeof(lt) / sizeof(LeadType);
 
     int nrSim = NrSimultaneosly();
 
-    if (nrSim != _Lead.Length)
+    if (nrSim != _Lead.size())
         return false;
 
-    if (nrSim == lt.Length)
+    if (nrSim == ltSize)
     {
         for (int i=0;i < nrSim;i++)
             if (_Lead[i].Type != lt[i])
@@ -409,21 +422,27 @@ bool Signals::IsTwelveLeads()
     {
         int i = 0;
 
-        for (; i < lt.Length; i++)
+        for (; i < ltSize; i++)
             if (_Lead[i].Type != lt[i])
                 return false;
 
-        LeadType[][] extra = new LeadType[][] { new LeadType[]{ LeadType.V7, LeadType.V3R, LeadType.V4R }, new LeadType[]{ LeadType.V7, LeadType.V8, LeadType.V9 } };
-        bool[] check = new bool[extra.Length];
-
-        for (int c=0;c<check.Length;c++)
+		LeadType extra[][3] = {
+			{V7,V3R,V4R},
+			{V7,V8,V9},
+		};
+		int extraSize = sizeof(extra)/sizeof(extra[0]);// => 2
+			
+		//vector<bool> check(extraSize, true);
+		bool check[2];
+		
+        for (int c=0;c<2;c++)
             check[c] = true;
-
+       
         for (int j = 0; i < nrSim; i++, j++)
-            for (int c = 0; c < extra.Length; c++)
-                check[c] &= _Lead[i].Type == extra[c][j];
+            for (int c = 0; c < extraSize; c++)
+                check[c] &= (_Lead[i].Type == extra[c][j]);
 
-        for (i = 0; i < check.Length; i++)
+        for (i = 0; i < 2; i++)
             if (check[i])
                 return true;
     }
@@ -436,35 +455,40 @@ bool Signals::IsTwelveLeads()
 /// <returns>true if twelve lead signal.</returns>
 bool Signals::IsFifteenLeads()
 {
-    LeadType[][15] lts = { { LeadType.I, LeadType.II, LeadType.III,
-                    LeadType.aVR, LeadType.aVL, LeadType.aVF,
-                    LeadType.V1, LeadType.V2, LeadType.V3,
-                    LeadType.V4, LeadType.V5, LeadType.V6,
-                    LeadType.V7, LeadType.V3R, LeadType.V4R },
-        { LeadType.I, LeadType.II, LeadType.III,
-                    LeadType.aVR, LeadType.aVL, LeadType.aVF,
-                    LeadType.V1, LeadType.V2, LeadType.V3,
-                    LeadType.V4, LeadType.V5, LeadType.V6,
-                    LeadType.V7, LeadType.V8, LeadType.V9 } };
+		LeadType lts[][15] = {
+					{ I, II, III,
+                    aVR, aVL, aVF,
+                    V1, V2, V3,
+                    V4, V5, V6,
+                    V7, V3R, V4R 
+                    },
+					{I, II, III,
+                    aVR, aVL, aVF,
+                    V1, V2, V3,
+                    V4, V5, V6,
+                    V7, V8, V9 }
+					};
 
-	int size = sizeof(lts)/sizeof(lts[0]);
+	int ltsSize = sizeof(lts)/sizeof(lts[0]);// => 2
+	
     int nrSim = NrSimultaneosly();
 
-    if (nrSim != _Lead.Length)
+	
+    if (nrSim != _Lead.size())
         return false;
 
     if (nrSim == 15)
     {
-        bool[] check = new bool[lts.Length];
+        bool check[2];
 
-        for (int c = 0; c < check.Length; c++)
+        for (int c = 0; c < 2; c++)
             check[c] = true;
 
         for (int i = 0; i < nrSim; i++)
-            for (int c = 0; c < lts.Length; c++)
-                check[c] &= _Lead[i].Type == lts[c][i];
+            for (int c = 0; c < ltsSize; c++)
+                check[c] &= (_Lead[i].Type == lts[c][i]);
 
-        for (int i = 0; i < check.Length; i++)
+        for (int i = 0; i < 2; i++)
             if (check[i])
                 return true;
     }
@@ -475,28 +499,31 @@ bool Signals::IsFifteenLeads()
 /// Function to make a twelve leads signals object.
 /// </summary>
 /// <returns>returns twelve leads signals object or null</returns>
+
 Signals Signals::CalculateTwelveLeads()
 {
-    LeadType[] lt = new LeadType[]{	LeadType.I, LeadType.II, LeadType.III,
-                LeadType.aVR, LeadType.aVL, LeadType.aVF,
-                LeadType.V1, LeadType.V2, LeadType.V3,
-                LeadType.V4, LeadType.V5, LeadType.V6};
 
+	LeadType lt[] = {I, II, III,
+                aVR, aVL, aVF,
+                V1, V2, V3,
+                V4, V5, V6};
+	int ltSize = sizeof(lt) / sizeof(LeadType);
     int nrSim = NrSimultaneosly();
 
-    if (nrSim != _Lead.Length)
+    if (nrSim != _Lead.size())
         return null;
 
     Signal[] leads = null;
 
     if (nrSim == 12)
     {
-        ArrayList pos_list = new ArrayList(lt);
-
+        //ArrayList pos_list = new ArrayList(lt);
+		vector<LeadType> pos_list(lt,lt + ltSize);
         int check_one = 0;
-        ArrayList check_two = new ArrayList(lt);
-        Signal[] pos = new Signal[12];
-
+        //ArrayList check_two = new ArrayList(lt);
+        vector<LeadType> check_two(lt,lt + ltSize);
+        //Signal[] pos = new Signal[12];
+		vector<Signal> pos(12);
         for (int i=0;i < nrSim;i++)
         {
             if (_Lead[i].Type == lt[i])
@@ -512,13 +539,13 @@ Signals Signals::CalculateTwelveLeads()
         }
 
         if (check_one == 12)
-            return this;
+            return *this;
 
         if (check_two.Count == 0)
         {
-            for (int i=0;i < pos.Length;i++)
-                if (pos[i] != null)
-                    pos[i] = pos[i].Clone();
+            //for (int i=0;i < pos.size();i++)
+                //if (pos[i] != null)
+                    //pos[i] = pos[i].Clone();todo
 
             leads = pos;
         }
@@ -533,8 +560,9 @@ Signals Signals::CalculateTwelveLeads()
 
         if (nrSim == 8)
         {
-            ArrayList pos_list = new ArrayList(lt);
-
+            //ArrayList pos_list = new ArrayList(lt);
+			vector<LeadType> pos_list(lt, lt + ltSize);
+	
             ArrayList check = new ArrayList(
                         new LeadType[]{	LeadType.I, LeadType.II,
                         LeadType.V1, LeadType.V2, LeadType.V3,
@@ -553,7 +581,7 @@ Signals Signals::CalculateTwelveLeads()
 
             if (check.Count == 0)
             {
-                for (int i=0;i < pos.Length;i++)
+                for (int i=0;i < pos.size();i++)
                     if (pos[i] != null)
                         pos[i] = pos[i].Clone();
 
@@ -588,7 +616,7 @@ Signals Signals::CalculateTwelveLeads()
 
             if (check.Count == 0)
             {
-                for (int i=0;i < pos.Length;i++)
+                for (int i=0;i < pos.size();i++)
                     if (pos[i] != null)
                         pos[i] = pos[i].Clone();
 
@@ -611,26 +639,26 @@ Signals Signals::CalculateTwelveLeads()
 
             if ((tempRhythm != null)
                     &&	(tempRhythm[0] != null)
-                    &&	ECGTool.CalculateLeads(tempRhythm, tempRhythm[0].Length, out calcLeads) == 0)
+                    &&	ECGTool.CalculateLeads(tempRhythm, tempRhythm[0].size(), out calcLeads) == 0)
             {
-                for (int i=0;i < calcLeads.Length;i++)
+                for (int i=0;i < calcLeads.size();i++)
                 {
                     Signal sig = new Signal();
-                    sig.Type = lt[i + tempRhythm.Length];
+                    sig.Type = lt[i + tempRhythm.size()];
                     sig.RhythmStart	= pos[0].RhythmStart;
                     sig.RhythmEnd	= pos[0].RhythmEnd;
                     sig.Rhythm = calcLeads[i];
 
-                    pos[i + tempRhythm.Length] = sig;
+                    pos[i + tempRhythm.size()] = sig;
                 }
 
                 if ((tempMedian != null)
                         &&	(tempMedian[0] != null)
-                        &&	(ECGTool.CalculateLeads(tempMedian, tempMedian[0].Length, out calcLeads) == 0))
+                        &&	(ECGTool.CalculateLeads(tempMedian, tempMedian[0].size(), out calcLeads) == 0))
                 {
-                    for (int i=0;i < calcLeads.Length;i++)
+                    for (int i=0;i < calcLeads.size();i++)
                     {
-                        pos[i + tempRhythm.Length].Median = calcLeads[i];
+                        pos[i + tempRhythm.size()].Median = calcLeads[i];
                     }
                 }
 
@@ -641,11 +669,11 @@ Signals Signals::CalculateTwelveLeads()
 
     if (leads != null)
     {
-        Signals sigs = this.Clone();
+        //Signals sigs = this.Clone(); todo
 
-        sigs.NrLeads = (byte) leads.Length;
+        sigs.NrLeads = (byte) leads.size();
 
-        for (int i=0;i < leads.Length;i++)
+        for (int i=0;i < leads.size();i++)
             sigs._Lead[i] = leads[i];
 
         return sigs;
@@ -658,6 +686,7 @@ Signals Signals::CalculateTwelveLeads()
 /// Function to make a fifteen leads signals object.
 /// </summary>
 /// <returns>returns fifteen leads signals object or null</returns>
+/*
 Signals Signals::CalculateFifteenLeads()
 {
     LeadType[] lt1 = new LeadType[] { LeadType.I, LeadType.II, LeadType.III,
@@ -673,12 +702,12 @@ Signals Signals::CalculateFifteenLeads()
 
     int nrSim = NrSimultaneosly();
 
-    if (nrSim != _Lead.Length)
+    if (nrSim != _Lead.size())
         return null;
 
     Signal[] leads = null;
 
-    if (nrSim == lt1.Length)
+    if (nrSim == lt1.size())
     {
         ArrayList pos_list1 = new ArrayList(lt1);
         ArrayList pos_list2 = new ArrayList(lt2);
@@ -687,8 +716,8 @@ Signals Signals::CalculateFifteenLeads()
         int check_one2 = 0;
         ArrayList check_two1 = new ArrayList(lt1);
         ArrayList check_two2 = new ArrayList(lt2);
-        Signal[] pos1 = new Signal[lt1.Length];
-        Signal[] pos2 = new Signal[lt2.Length];
+        Signal[] pos1 = new Signal[lt1.size()];
+        Signal[] pos2 = new Signal[lt2.size()];
 
         for (int i = 0; i < nrSim; i++)
         {
@@ -714,14 +743,14 @@ Signals Signals::CalculateFifteenLeads()
             }
         }
 
-        if (check_one1 == lt1.Length)
+        if (check_one1 == lt1.size())
             return this;
-        if (check_one2 == lt2.Length)
+        if (check_one2 == lt2.size())
             return this;
 
         if (check_two1.Count == 0)
         {
-            for (int i = 0; i < pos1.Length; i++)
+            for (int i = 0; i < pos1.size(); i++)
                 if (pos1[i] != null)
                     pos1[i] = pos1[i].Clone();
 
@@ -729,7 +758,7 @@ Signals Signals::CalculateFifteenLeads()
         }
         else if (check_two2.Count == 0)
         {
-            for (int i = 0; i < pos2.Length; i++)
+            for (int i = 0; i < pos2.size(); i++)
                 if (pos2[i] != null)
                     pos2[i] = pos2[i].Clone();
 
@@ -748,8 +777,8 @@ Signals Signals::CalculateFifteenLeads()
 
         if (nrSim == 11)
         {
-            Signal[] pos1 = new Signal[lt1.Length];
-            Signal[] pos2 = new Signal[lt2.Length];
+            Signal[] pos1 = new Signal[lt1.size()];
+            Signal[] pos2 = new Signal[lt2.size()];
 
             ArrayList pos_list1 = new ArrayList(lt1);
             ArrayList pos_list2 = new ArrayList(lt2);
@@ -797,7 +826,7 @@ Signals Signals::CalculateFifteenLeads()
 
             if (pos != null)
             {
-                for (int i = 0; i < pos.Length; i++)
+                for (int i = 0; i < pos.size(); i++)
                     if (pos[i] != null)
                         pos[i] = pos[i].Clone();
 
@@ -812,8 +841,8 @@ Signals Signals::CalculateFifteenLeads()
         }
         else if (nrSim == 12)
         {
-            Signal[] pos1 = new Signal[lt1.Length];
-            Signal[] pos2 = new Signal[lt2.Length];
+            Signal[] pos1 = new Signal[lt1.size()];
+            Signal[] pos2 = new Signal[lt2.size()];
 
             ArrayList pos_list1 = new ArrayList(lt1);
             ArrayList pos_list2 = new ArrayList(lt2);
@@ -861,7 +890,7 @@ Signals Signals::CalculateFifteenLeads()
 
             if (pos != null)
             {
-                for (int i = 0; i < pos.Length; i++)
+                for (int i = 0; i < pos.size(); i++)
                     if (pos[i] != null)
                         pos[i] = pos[i].Clone();
 
@@ -884,26 +913,26 @@ Signals Signals::CalculateFifteenLeads()
 
             if ((tempRhythm != null)
                     &&  (tempRhythm[0] != null)
-                    &&  ECGTool.CalculateLeads(tempRhythm, tempRhythm[0].Length, out calcLeads) == 0)
+                    &&  ECGTool.CalculateLeads(tempRhythm, tempRhythm[0].size(), out calcLeads) == 0)
             {
-                for (int i = 0; i < calcLeads.Length; i++)
+                for (int i = 0; i < calcLeads.size(); i++)
                 {
                     Signal sig = new Signal();
-                    sig.Type = lt[i + tempRhythm.Length];
+                    sig.Type = lt[i + tempRhythm.size()];
                     sig.RhythmStart = pos[0].RhythmStart;
                     sig.RhythmEnd = pos[0].RhythmEnd;
                     sig.Rhythm = calcLeads[i];
 
-                    pos[i + tempRhythm.Length] = sig;
+                    pos[i + tempRhythm.size()] = sig;
                 }
 
                 if ((tempMedian != null)
                         && (tempMedian[0] != null)
-                        && (ECGTool.CalculateLeads(tempMedian, tempMedian[0].Length, out calcLeads) == 0))
+                        && (ECGTool.CalculateLeads(tempMedian, tempMedian[0].size(), out calcLeads) == 0))
                 {
-                    for (int i = 0; i < calcLeads.Length; i++)
+                    for (int i = 0; i < calcLeads.size(); i++)
                     {
-                        pos[i + tempRhythm.Length].Median = calcLeads[i];
+                        pos[i + tempRhythm.size()].Median = calcLeads[i];
                     }
                 }
 
@@ -914,16 +943,19 @@ Signals Signals::CalculateFifteenLeads()
 
     if (leads != null)
     {
-        Signals sigs = this.Clone();
+        //Signals sigs = this.Clone();todo
 
-        sigs.NrLeads = (byte)leads.Length;
+        sigs.size() = (byte)leads.size();
 
-        for (int i = 0; i < leads.Length; i++)
+        for (int i = 0; i < leads.size(); i++)
             sigs._Lead[i] = leads[i];
 
         return sigs;
     }
 
     return null;
+}
+*/
+
 }
 }

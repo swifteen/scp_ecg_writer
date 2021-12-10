@@ -1,22 +1,25 @@
 #include "Signal.h"
 
-namespace ECGConversion.ECGSignals
+namespace ECGConversion{
+
+namespace ECGSignals
 {
 /// <summary>
 /// Class Containing data of one signal.
 /// </summary>
 Signal::Signal()
 {
-    Type = LeadType.Unknown;
+    Type = Unknown;
     RhythmStart = 0;
     RhythmEnd = 0;
-    Rhythm = null;
-    Median = null;
+    //Rhythm = null;
+    //Median = null;
 }
 /// <summary>
 /// Function to make a deep copy of this object.
 /// </summary>
 /// <returns>copy of object</returns>
+#if 0 //todo
 Signal Signal::Clone()
 {
 	Signal sig = new Signal();
@@ -41,12 +44,14 @@ Signal Signal::Clone()
 
 	return sig;
 }
+#endif
 /// <summary>
 /// Function to apply a bandpass filter on Signal object
 /// </summary>
 /// <param name="rhythmFilter">Provide filter for rhythm data</param>
 /// <param name="medianFilter">Provide filter for median data</param>
 /// <returns>a filtered copy of object</returns>
+#if 0 //todo
 Signal Signal::ApplyFilter(DSP.IFilter rhythmFilter, DSP.IFilter medianFilter)
 {
 	Signal sig = new Signal();
@@ -83,21 +88,21 @@ Signal Signal::ApplyFilter(DSP.IFilter rhythmFilter, DSP.IFilter medianFilter)
 
 	return sig;
 }
+#endif
 
 /// <summary>
 /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
 /// </summary>
 /// <param name="data">signal information.</param>
 /// <returns>true if as expected</returns>
-static bool Signal::IsNormal(Signal[] data)
+bool Signal::IsNormal(vector<Signal> data)
 {
-    if ((data != null)
-            &&	(data.Length >= 8))
+    if ((data.size() != 0)
+            &&	(data.size() >= 8))
     {
         for (int loper=0;loper < 8;loper++)
         {
-            if ((data[loper] == null)
-                    ||	(data[loper].Type != (LeadType) (1 + loper)))
+            if ((data[loper].Type != (LeadType) (1 + loper)))
             {
                 return false;
             }
@@ -111,19 +116,15 @@ static bool Signal::IsNormal(Signal[] data)
 /// </summary>
 /// <param name="data">signal information.</param>
 /// <returns>true if as expected</returns>
-static int Signal::NrSimultaneosly(Signal[] data)
+int Signal::NrSimultaneosly(vector<Signal> data)
 {
-    if ((data != null)
-            &&  (data.Length > 1)
-            &&	(data[0] != null))
+    if ((data.size() != 0)
+            &&  (data.size() > 1))
     {
         int Nr = 1;
-        for (;Nr < data.Length;Nr++)
+        for (;Nr < data.size();Nr++)
         {
-            if (data[Nr] == null)
-            {
-                return 0;
-            }
+           
             if ((data[0].RhythmStart != data[Nr].RhythmStart)
                     ||	(data[0].RhythmEnd != data[Nr].RhythmEnd))
             {
@@ -138,11 +139,11 @@ static int Signal::NrSimultaneosly(Signal[] data)
 /// Function to sort signal array on lead type.
 /// </summary>
 /// <param name="data">signal array</param>
-static void Signal::SortOnType(Signal[] data)
+void Signal::SortOnType(vector<Signal> data)
 {
-    if (data != null)
+    if (data.size() != 0)
     {
-        SortOnType(data, 0, data.Length-1);
+        SortOnType(data, 0, data.size()-1);
     }
 }
 /// <summary>
@@ -151,10 +152,10 @@ static void Signal::SortOnType(Signal[] data)
 /// <param name="data">signal array</param>
 /// <param name="first"></param>
 /// <param name="last"></param>
-static void Signal::SortOnType(Signal[] data, int first, int last)
+void Signal::SortOnType(vector<Signal> data, int first, int last)
 {
-    if ((data != null)
-            &&	(first < last))
+    if ((data.size() != 0)
+           && (first < last))
     {
         int p = _PartitionOnType(data, first, last);
 
@@ -162,7 +163,7 @@ static void Signal::SortOnType(Signal[] data, int first, int last)
         SortOnType(data, p + 1, last);
     }
 }
-static int Signal::_PartitionOnType(Signal[] data, int first, int last)
+int Signal::_PartitionOnType(vector<Signal> data, int first, int last)
 {
     Signal pivot, t;
     int i, m, p;
@@ -177,7 +178,7 @@ static int Signal::_PartitionOnType(Signal[] data, int first, int last)
 
     for (i=first+1;i <= last;i++)
     {
-        if ((data == null)
+        if ((data.size() == 0)
                 ||	(data[i].Type < pivot.Type))
         {
             t = data[++p];
@@ -194,3 +195,6 @@ static int Signal::_PartitionOnType(Signal[] data, int first, int last)
 }
 
 }
+
+}
+

@@ -1,13 +1,15 @@
 #include "QRSZone.h"
 
-namespace ECGConversion.ECGSignals
+namespace ECGConversion{
+
+namespace ECGSignals
 {
 /// <summary>
 /// Class containing a QRS zone.
 /// </summary>
 QRSZone::QRSZone()
 {    
-    Type = ushort.MaxValue;
+    Type = ushort_MAX;
     Start = 0;
     Fiducial = 0;
     End = 0;
@@ -20,6 +22,7 @@ QRSZone::QRSZone(ushort type, int start, int fiducial, int end)
     Fiducial = fiducial;
     End = end;
 }
-
+}
 
 }
+
