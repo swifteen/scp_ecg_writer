@@ -83,7 +83,7 @@ public:
     uchar Tag;
     ushort Length;
     uchar* Value;
-}
+};
 
 // Defined in SCP.
 uchar SCPSection1::_MustBePresent[4] = {2, 14, 25, 26}; // defined in paragraph 5.4.3.1 of SCP
@@ -608,19 +608,19 @@ int SCPSection1::setPatientAge(ushort val, AgeDefinition def)
     return Insert(field) << 1;
 }
 
-void SCPSection1::setPatientBirthDate(const Date& PatientBirthDate)
+void SCPSection1::setPatientBirthDate(Date& PatientBirthDate)
 {
     if (PatientBirthDate.isExistingDate())
     {
         SCPHeaderField field;
         field.Tag = 5;
-        field.Length = (ushort) SCPDate.Size;
+        field.Length = (ushort) SCPDate::Size;
         field.Value = new uchar[field.Length];
         SCPDate scpdate;
         scpdate.Year = PatientBirthDate.Year;
         scpdate.Month = PatientBirthDate.Month;
         scpdate.Day = PatientBirthDate.Day;
-        scpdate.Write(field.Value, 0);
+        scpdate.Write(field.Value, field.Length,0);
 
         Insert(field);
     }
@@ -679,12 +679,12 @@ void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
     SCPHeaderField field;
     string deviceManufactor = (id.ManufactorID == 0 ? 
 											"defaultManufactorID" : 
-											((DeviceManufactor)id.ManufactorID).ToString());
+											(std::to_string((DeviceManufactor)id.ManufactorID)));
 	string SoftwareName = "scp-ecg writer";
     string unknown = "unknown";
     field.Tag = 14;
     field.Length = (ushort) (41 + (SoftwareName.length() > 24 ? 
-							24 : SoftwareName.length()) + deviceManufactor.Length + (3 * unknown.length()));
+							24 : SoftwareName.length()) + deviceManufactor.length() + (3 * unknown.length()));
     field.Value = new uchar[field.Length];
     int offset = 0;
     BytesTool::writeBytes(id.InstitutionNr, field.Value, field.Length,offset, sizeof(id.InstitutionNr), true);
@@ -702,7 +702,13 @@ void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
 							sizeof(id.ManufactorID), 
 							true);
     offset += sizeof(id.ManufactorID);
-    offset += BytesTool::copy(field.Value,field.Length, offset, id.ModelDescription, 0, sizeof(id.ModelDescription));
+    offset += BytesTool::copy(field.Value,
+							field.Length,
+							offset, 
+							id.ModelDescription, 
+							sizeof(id.ModelDescription),
+							0, 
+							sizeof(id.ModelDescription));
     field.Value[offset++] = ProtocolVersionNr;
     field.Value[offset++] = 0x00;
     field.Value[offset++] = 0x00;
@@ -743,17 +749,16 @@ void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
 #endif
 }
 
-void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID id)
+void SCPSection1::setAnalyzingMachineID(const AcquiringDeviceID& id)
 {
     SCPHeaderField field;
 	string SoftwareName = "scp-ecg writer";
-    string deviceManufactor = (id.ManufactorID == 0 ? SoftwareName : ((DeviceManufactor)id.ManufactorID).ToString());
+    string deviceManufactor = (id.ManufactorID == 0 ? 
+								SoftwareName : ( std::to_string((DeviceManufactor)id.ManufactorID)));
     string unknown = "unknown";
     field.Tag = 15;
     field.Length = (ushort) (41 + (SoftwareName.length() > 24 ? 
-								24 : SoftwareName.length()) 
-									+ deviceManufactor.Length 
-									+ (3 * unknown.length()));
+							24 : SoftwareName.length()) + deviceManufactor.length() + (3 * unknown.length()));
     field.Value = new uchar[field.Length];
     int offset = 0;
     BytesTool::writeBytes(id.InstitutionNr, field.Value, field.Length,offset, sizeof(id.InstitutionNr), true);
@@ -766,11 +771,18 @@ void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID id)
     offset += sizeof(id.DeviceType);
     BytesTool::writeBytes(id.ManufactorID == 0 ? (uchar)0xff : id.ManufactorID, 
 								field.Value, 
+								field.Length,
 								offset, 
 								sizeof(id.ManufactorID), 
 								true);
     offset += sizeof(id.ManufactorID);
-    offset += BytesTool::copy(field.Value, field.Length,offset, id.ModelDescription, 0, id.ModelDescription.Length);
+    offset += BytesTool::copy(field.Value, 
+								field.Length,
+								offset, 
+								id.ModelDescription, 
+								sizeof(id.ModelDescription), 
+								0, 
+								sizeof(id.ModelDescription));
     field.Value[offset++] = ProtocolVersionNr;
     field.Value[offset++] = 0x00;
     field.Value[offset++] = 0x00;
@@ -795,7 +807,7 @@ void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID id)
     BytesTool::writeString(_Encoding, ECGConverter.SoftwareName, field.Value, offset, (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1);
     offset+= (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1;
 
-    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.Length + 1);
+    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.length() + 1);
     offset+= deviceManufactor.Length + 1;
 #endif
 
@@ -807,19 +819,19 @@ void SCPSection1::setAnalyzingMachineID(AcquiringDeviceID id)
 #endif
 }
 
-void SCPSection1::setTimeAcquisition(DateTime time)
+void SCPSection1::setTimeAcquisition(const DateTime& time)
 {
     if (time.Year > 1000)
     {
         SCPHeaderField field;
         field.Tag = 25;
-        field.Length = (ushort) SCPDate.Size;
+        field.Length = (ushort) SCPDate::Size;
         field.Value = new uchar[field.Length];
         SCPDate scpdate;
         scpdate.Year = (ushort) time.Year;
         scpdate.Month = (uchar) time.Month;
         scpdate.Day = (uchar) time.Day;
-        scpdate.Write(field.Value, 0);
+        scpdate.Write(field.Value,field.Length, 0);
         int ret = Insert(field);
 
         if (ret != 0)
@@ -827,13 +839,13 @@ void SCPSection1::setTimeAcquisition(DateTime time)
 		
         SCPHeaderField time_field;
         time_field.Tag = 26;
-        time_field.Length = (ushort) SCPTime.Size;
+        time_field.Length = (ushort) SCPTime::Size;
         time_field.Value = new uchar[time_field.Length];
         SCPTime scptime;
         scptime.Hour = (uchar) time.Hour;
         scptime.Min = (uchar) time.Minute;
         scptime.Sec = (uchar) time.Second;
-        scptime.Write(time_field.Value, 0);
+        scptime.Write(time_field.Value, time_field.Length,0);
 
         Insert(field);
     }
@@ -877,11 +889,12 @@ void SCPSection1::setFreeTextFields(const std::vector<string>& FreeTextFields)
 	int size = FreeTextFields.size();
     for (int loper=0;loper < size;loper++)
     {
-        if (FreeTextFields[loper] != null)
+        if (FreeTextFields[loper].length() > 0)
         {
             SCPHeaderField field;
             field.Tag = 30;
-            field.Length = (ushort) (FreeTextFields[loper].Length >= _ExceptionsMaximumLength ? _ExceptionsMaximumLength : value[loper].Length + 1);
+            field.Length = (ushort) (FreeTextFields[loper].length() >= _ExceptionsMaximumLength ?
+									_ExceptionsMaximumLength : FreeTextFields[loper].length() + 1);
             field.Value = new uchar[field.Length];
 #if 0//TODO
             BytesTool::writeString(_Encoding, FreeTextFields[loper], field.Value, 0, field.Length);
@@ -982,7 +995,7 @@ void SCPSection1::setReferralIndication(const std::vector<string>& ReferralIndic
 	int size = ReferralIndication.size();
     for (int loper=0;loper < size;loper++)
     {
-        if (ReferralIndication[loper] != null)
+        if (ReferralIndication[loper].length() > 0)
         {
             SCPHeaderField field;
             field.Tag = 13;

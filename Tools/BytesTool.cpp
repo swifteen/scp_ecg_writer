@@ -67,7 +67,7 @@ static void BytesTool::writeString(Encoding enc, string src, byte[] buffer, int 
 /// <param name="src">source buffer</param>
 /// <param name="offsrc">offset in source buffer</param>
 /// <param name="length">number bytes to copy</param>
-int BytesTool::copy(uchar* dst,int dstLength, int offdst, uchar* src, int srcLength, int offsrc, int length)
+int BytesTool::copy(uchar* dst,int dstLength, int offdst, const uchar* src, int srcLength, int offsrc, int length)
 {
     int loper=0;
     for (;(loper < length) && ((offdst + loper) < dstLength) && ((offsrc + loper) < srcLength);loper++)

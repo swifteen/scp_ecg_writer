@@ -95,14 +95,14 @@ public:
     void setPatientID(const string& value);
     void setSecondLastName(const string& value);
     int setPatientAge(ushort val, AgeDefinition def);
-    void setPatientBirthDate(const Date& PatientBirthDate);
+    void setPatientBirthDate(Date& PatientBirthDate);
     int setPatientHeight(ushort val, HeightDefinition def);
     int setPatientWeight(ushort val, WeightDefinition def);
     void setGender(Sex Gender);
     void setPatientRace(Race PatientRace);
-    void setAcqMachineID(AcquiringDeviceID AcqMachineID);
-    void setAnalyzingMachineID(AcquiringDeviceID AnalyzingMachineID);
-    void setTimeAcquisition(DateTime time);
+    void setAcqMachineID(const AcquiringDeviceID& AcqMachineID);
+    void setAnalyzingMachineID(const AcquiringDeviceID& AnalyzingMachineID);
+    void setTimeAcquisition(const DateTime& time);
     void setBaselineFilter(ushort BaselineFilter);
     void setLowpassFilter(ushort LowpassFilter);
     void setFilterBitmap(uchar FilterBitmap);

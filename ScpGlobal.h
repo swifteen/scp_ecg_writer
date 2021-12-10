@@ -7,17 +7,19 @@
 #include <vector>
 
 using namespace std;
-#ifndef HAVE_NO_TYPEDEF_UCHAR
-#define HAVE_NO_TYPEDEF_UCHAR
+
 typedef unsigned char uchar;
-typedef unsigned short ushort;
 
-
-#endif
-
-#ifndef HAVE_NO_TYPEDEF_NULL
-#define HAVE_NO_TYPEDEF_NULL
 #define null             0L
-#endif
+
+typedef struct
+{
+	int Year;
+	int Month;
+	int Day;
+	int Hour;
+	int Minute;
+	int Second;
+}DateTime;
 
 #endif  /*#ifndef _SCPGLOBAL_H_*/

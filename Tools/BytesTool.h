@@ -47,7 +47,7 @@ public:
     /// <param name="src">source buffer</param>
     /// <param name="offsrc">offset in source buffer</param>
     /// <param name="length">number bytes to copy</param>
-    static int copy(uchar* dst,int dstLength, int offdst, uchar* src, int srcLength, int offsrc, int length);
+    static int copy(uchar* dst,int dstLength, int offdst, const uchar* src, int srcLength, int offsrc, int length);
 
     /// <summary>
     /// Function to empty a buffer to a defined number.

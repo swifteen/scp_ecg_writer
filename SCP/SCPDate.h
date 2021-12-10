@@ -52,7 +52,7 @@ public:
     /// <returns></returns>
     int Write(uchar* buffer, int bufferLength, int offset);
 public:
-    const int Size;
+    static int Size;
     // data structure of SCP date.
     ushort Year;
     uchar Month;

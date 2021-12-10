@@ -7,10 +7,11 @@ namespace ECGConversion
 {
 namespace SCP
 {
+int SCPTime::Size = 3;
 /// <summary>
 /// Constructor of a SCP time.
 /// </summary>
-SCPTime::SCPTime():Size(3)
+SCPTime::SCPTime()
 {	
 	Hour = 0;
 	Min = 0;
@@ -23,7 +24,7 @@ SCPTime::SCPTime():Size(3)
 /// <param name="hour">number of hour</param>
 /// <param name="min">number of minute</param>
 /// <param name="sec">number of second</param>
-SCPTime::SCPTime(int hour, int min, int sec):Size(10)
+SCPTime::SCPTime(int hour, int min, int sec)
 {
     Hour = (uchar) hour;
     Min = (uchar) min;

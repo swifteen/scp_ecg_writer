@@ -1,5 +1,7 @@
 project(scp_ecg_writer)
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+#add C++11 support
+set (CMAKE_CXX_STANDARD 11)
 
 #库输出目录 
 SET(out_dir "${PROJECT_SOURCE_DIR}/build")

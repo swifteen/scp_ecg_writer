@@ -29,7 +29,7 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer,int bufferLength, int offset);
 public:
-    const int Size;
+    static int Size;
     uchar Hour ;
     uchar Min ;
     uchar Sec ;

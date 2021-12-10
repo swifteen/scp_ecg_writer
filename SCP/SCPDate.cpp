@@ -6,6 +6,8 @@ namespace ECGConversion
 {
 namespace SCP
 {
+int SCPDate::Size = 4;
+
 /// <summary>
 /// class containing date in SCP format.
 /// </summary>
@@ -14,7 +16,7 @@ namespace SCP
 /// <summary>
 /// Constructor of a SCP date.
 /// </summary>
-SCPDate::SCPDate():Size(4)
+SCPDate::SCPDate()
 {
 	Year = 0;
 	Month = 0;
@@ -26,7 +28,7 @@ SCPDate::SCPDate():Size(4)
 /// <param name="year">number of year</param>
 /// <param name="month">number of month</param>
 /// <param name="day">number of day</param>
-SCPDate::SCPDate(int year, int month, int day):Size(4)
+SCPDate::SCPDate(int year, int month, int day)
 {
     Year = (ushort) year;
     Month = (uchar) month;

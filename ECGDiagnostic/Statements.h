@@ -13,14 +13,13 @@ namespace ECGConversion
 	/// </summary>
 		class Statements
 		{
-
 		public:
 		    Statements();
 		public:
 		    bool confirmed;
 		    bool interpreted;
-		   // DateTime time;  TODO
-		    std::string statement[];
+		   DateTime time; 
+		    std::vector<std::string> statement;
 		};
 	}
 }

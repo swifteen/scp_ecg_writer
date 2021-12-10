@@ -9,15 +9,6 @@ namespace ECGConversion
 {
 namespace ECGDemographics
 {
-	typedef struct
-	{
-        int Year;
-        int Month;
-        int Day;
-        int Hour;
-        int Minute;
-        int Second;
-	}DateTime;
 	/// <summary>
 	/// Interface for manupalation of demograpics information.
 	/// </summary>
@@ -33,14 +24,14 @@ namespace ECGDemographics
 		virtual void setPatientID(const string& value) = 0;
 		virtual void setSecondLastName(const string& value) = 0;
 		virtual int setPatientAge(ushort val, AgeDefinition def) = 0;
-		virtual void setPatientBirthDate(const Date& PatientBirthDate) = 0;
+		virtual void setPatientBirthDate(Date& PatientBirthDate) = 0;
 		virtual int setPatientHeight(ushort val, HeightDefinition def) = 0;
 		virtual int setPatientWeight(ushort val, WeightDefinition def) = 0;
 		virtual void setGender(Sex Gender) = 0;
 		virtual void setPatientRace(Race PatientRace) = 0;
-		virtual void setAcqMachineID(AcquiringDeviceID AcqMachineID) = 0;
-		virtual void setAnalyzingMachineID(AcquiringDeviceID AnalyzingMachineID) = 0;
-		virtual void setTimeAcquisition(DateTime time) = 0;
+		virtual void setAcqMachineID(const AcquiringDeviceID& AcqMachineID) = 0;
+		virtual void setAnalyzingMachineID(const AcquiringDeviceID& AnalyzingMachineID) = 0;
+		virtual void setTimeAcquisition(const DateTime& time) = 0;
 		virtual void setBaselineFilter(ushort BaselineFilter) = 0;
 		virtual void setLowpassFilter(ushort LowpassFilter) = 0;
 		virtual void setFilterBitmap(uchar FilterBitmap) = 0;
