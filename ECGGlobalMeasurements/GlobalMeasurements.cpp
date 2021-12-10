@@ -1,68 +1,86 @@
 #include "GlobalMeasurements.h"
 
 
-namespace ECGConversion.ECGGlobalMeasurements
+namespace ECGConversion
+{
+
+namespace ECGGlobalMeasurements
 {
 /// <summary>
 /// Class containing measurements of ECG.
 /// </summary>
 GlobalMeasurements::GlobalMeasurements()
 {
-    _QTc = GlobalMeasurement.NoValue;
-    _VentRate = GlobalMeasurement.NoValue;
-    AvgRR = GlobalMeasurement.NoValue;
-    AvgPP = GlobalMeasurement.NoValue;
-    measurment = null;
-    spike = null;
+    _QTc = GlobalMeasurement::NoValue;
+    _VentRate = GlobalMeasurement::NoValue;
+    AvgRR = GlobalMeasurement::NoValue;
+    AvgPP = GlobalMeasurement::NoValue;
+  //  measurment = null;
+ //   spike = null;
 }
 
 void GlobalMeasurements::setVentRate(ushort VentRate)
 {
-    _VentRate = VentRate < GlobalMeasurement.NoValue ? VentRate : GlobalMeasurement.NoValue;
+    _VentRate = VentRate < GlobalMeasurement::NoValue ? VentRate : GlobalMeasurement::NoValue;
 }
 
 void GlobalMeasurements::setPdur(ushort Pdur)
 {
-    if (measurment == null)
+
+
+
+    if (measurment.size() == 0)
     {
-        measurment = new GlobalMeasurement[1];
+
+		measurment.resize(1);
+        //measurment = new GlobalMeasurement[1];
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].Pdur = Pdur;
+    measurment[0]->Pdur = Pdur;
 }
 
 void GlobalMeasurements::setPRint(ushort PRint)
 {
-    if (measurment == null)
+  
+	if (measurment.size() == 0)
     {
-        measurment = new GlobalMeasurement[1];
+        measurment.resize(1);
+        //measurment = new GlobalMeasurement[1];
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].PRint = PRint;
+    measurment[0]->PRint = PRint;
+    
 }
 
 void GlobalMeasurements::setQRSdur(ushort QRSdur)
 {
-    if (measurment == null)
+  
+    if (measurment.size() == 0)
     {
-        measurment = new GlobalMeasurement[1];
+       measurment.resize(1);
+        //measurment = new GlobalMeasurement[1];
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].QRSdur = QRSdur;
+    measurment[0]->QRSdur = QRSdur;
+    
 }
 
 void GlobalMeasurements::setQTdur(ushort QTdur)
 {
-    if (measurment == null)
+
+
+    if (measurment.size() == 0)
     {
-        measurment = new GlobalMeasurement[1];
+       measurment.resize(1);
+        //measurment = new GlobalMeasurement[1];
         measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].QTdur = QTdur;
+    measurment[0]->QTdur = QTdur;
+    
 }
 void GlobalMeasurements::setQTc(ushort QTc)
 {
@@ -70,15 +88,21 @@ void GlobalMeasurements::setQTc(ushort QTc)
 }
 void GlobalMeasurements::setQTcType(ushort QTcType)
 {
-    if (QTcType != QTcCalcType.Unknown)
-        _QTc = (ushort) (GlobalMeasurement.NoValue + QTcType);
-    else if (_QTc >= GlobalMeasurement.NoValue)
+   
+	if (QTcType != Unknown)
+        _QTc = (ushort) (GlobalMeasurement::NoValue + QTcType);
+    else if (_QTc >= GlobalMeasurement::NoValue)
         _QTc = 0;
+        
 }
 
 GlobalMeasurements GlobalMeasurements::Clone()
 {
-    GlobalMeasurements ret = new GlobalMeasurements();
+
+GlobalMeasurements ret;
+
+/* TODO
+	GlobalMeasurements ret = new GlobalMeasurements();
 
     ret._QTc = _QTc;
     ret._VentRate = VentRate;
@@ -114,7 +138,8 @@ GlobalMeasurements GlobalMeasurements::Clone()
             ret.spike[i].Time = spike[i].Time;
         }
     }
-
+*/
     return ret;
+}
 }
 }

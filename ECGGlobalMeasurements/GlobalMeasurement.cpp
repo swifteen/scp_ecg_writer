@@ -1,7 +1,12 @@
 #include "GlobalMeasurement.h"
+#include <math.h>
 
-namespace ECGConversion.ECGGlobalMeasurements
+namespace ECGConversion
 {
+
+namespace ECGGlobalMeasurements
+{
+
 /// <summary>
 /// Class containing one wave measurement (SCP an UNIPRO defined).
 /// </summary>
@@ -111,7 +116,7 @@ ushort GlobalMeasurement::QTdur_set(ushort value)
     }
 }
 
-ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, GlobalMeasurements::QTcCalcType calcType)
+ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType)
 {
     if ((AvgRR == 0)
             ||	(AvgRR == NoValue)
@@ -122,16 +127,16 @@ ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, GlobalMeasurements::Q
 
     switch (calcType)
     {
-    case GlobalMeasurements::QTcCalcType::Bazett:
-        ret = (ushort) (QTdur / Math.Sqrt(AvgRR * 0.001));
+    case Bazett:
+        ret = (ushort) (QTdur / sqrt(AvgRR * 0.001));
         break;
-    case GlobalMeasurements::QTcCalcType::Fridericia:
-        ret = (ushort) (QTdur / Math.Pow(AvgRR * 0.001, 1.0/3.0));
+    case Fridericia:
+        ret = (ushort) (QTdur / pow(AvgRR * 0.001, 1.0/3.0));
         break;
-    case GlobalMeasurements::QTcCalcType::Framingham:
+    case Framingham:
         ret = (ushort) (QTdur + (154 * (1 - (AvgRR * 0.001))));
         break;
-    case GlobalMeasurements::QTcCalcType::Hodges:
+    case Hodges:
         ret = (ushort) (QTdur + (1.75 * (HR - 60)));
         break;
     default:break;
@@ -139,5 +144,5 @@ ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, GlobalMeasurements::Q
 
     return ret;
 }
-
+}
 }
