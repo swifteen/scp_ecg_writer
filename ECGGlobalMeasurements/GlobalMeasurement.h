@@ -13,15 +13,14 @@ namespace ECGConversion
 	class GlobalMeasurement
 	{
 	public:
-		 enum QTcCalcType
-	    {
-	        Unknown = -1,
-	        Bazett = 0,
-	        Hodges = 1,
-	        Fridericia = 2,
-	        Framingham = 3,
-
-	    };
+		enum QTcCalcType
+		{
+			QTcCalcTypeUnknown = -1,
+			QTcCalcTypeBazett = 0,
+			QTcCalcTypeHodges = 1,
+			QTcCalcTypeFridericia = 2,
+			QTcCalcTypeFramingham = 3,
+		};
 	public:
 	    GlobalMeasurement();
 	    ushort getPdur();

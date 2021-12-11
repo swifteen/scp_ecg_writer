@@ -192,9 +192,15 @@ SCPSection10::SCPSection10()
 {
     SCPSection::Empty();
 }
+
+ushort SCPSection10::getNrLeads()
+{
+    return (ushort) (_LeadMeasurements.size());
+}
+
 void SCPSection10::setNrLeads(ushort NrLeads)
 {
-    (_NrLeads == 0) ? _LeadMeasurements.clear() : _LeadMeasurements.resize(NrLeads);
+    (NrLeads == 0) ? _LeadMeasurements.clear() : _LeadMeasurements.resize(NrLeads);
 }
 
 int SCPSection10::_Write(uchar* buffer, int bufferLength, int offset)

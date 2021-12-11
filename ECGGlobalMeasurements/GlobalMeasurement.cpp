@@ -153,16 +153,16 @@ ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType)
 
     switch (calcType)
     {
-    case Bazett:
+    case QTcCalcTypeBazett:
         ret = (ushort) (getQTdur() / sqrt(AvgRR * 0.001));
         break;
-    case Fridericia:
+    case QTcCalcTypeFridericia:
         ret = (ushort) (getQTdur() / pow(AvgRR * 0.001, 1.0/3.0));
         break;
-    case Framingham:
+    case QTcCalcTypeFramingham:
         ret = (ushort) (getQTdur() + (154 * (1 - (AvgRR * 0.001))));
         break;
-    case Hodges:
+    case QTcCalcTypeHodges:
         ret = (ushort) (getQTdur() + (1.75 * (HR - 60)));
         break;
     default:break;

@@ -15,8 +15,8 @@ GlobalMeasurements::GlobalMeasurements()
     _VentRate = GlobalMeasurement::NoValue;
     AvgRR = GlobalMeasurement::NoValue;
     AvgPP = GlobalMeasurement::NoValue;
-  //  measurment = null;
- //   spike = null;
+  	measurment.clear();
+ 	spike.clear();
 }
 
 void GlobalMeasurements::setVentRate(ushort VentRate)
@@ -24,78 +24,120 @@ void GlobalMeasurements::setVentRate(ushort VentRate)
     _VentRate = VentRate < GlobalMeasurement::NoValue ? VentRate : GlobalMeasurement::NoValue;
 }
 
+ushort GlobalMeasurements::getVentRate()
+{
+	if (_VentRate < GlobalMeasurement::NoValue)
+		return _VentRate;
+	
+	return (ushort) ((AvgRR == 0) || (AvgRR == GlobalMeasurement::NoValue) ? 0 : (60000 / AvgRR));
+}
+
 void GlobalMeasurements::setPdur(ushort Pdur)
 {
     if (measurment.size() == 0)
     {
-
 		measurment.resize(1);
-        //measurment = new GlobalMeasurement[1];
-      //  measurment[0] = new GlobalMeasurement();
     }
 
     measurment[0].setPdur(Pdur);
 }
 
-void GlobalMeasurements::setPRint(ushort PRint)
+ushort GlobalMeasurements::getPdur()
 {
-  
+	if (measurment.size() > 0)
+		return measurment[0].getPdur();
+
+	return GlobalMeasurement::NoValue;
+}
+
+void GlobalMeasurements::setPRint(ushort PRint)
+{  
 	if (measurment.size() == 0)
     {
         measurment.resize(1);
-        //measurment = new GlobalMeasurement[1];
-      //  measurment[0] = new GlobalMeasurement();
     }
+    measurment[0].setPRint(PRint);    
+}
 
-    measurment[0].setPRint(PRint);
-    
+ushort GlobalMeasurements::getPRint()
+{
+	if (measurment.size() > 0)
+		return measurment[0].getPRint();
+
+	return GlobalMeasurement::NoValue;
 }
 
 void GlobalMeasurements::setQRSdur(ushort QRSdur)
-{
-  
+{  
     if (measurment.size() == 0)
     {
        measurment.resize(1);
-        //measurment = new GlobalMeasurement[1];
-       // measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].setQRSdur(QRSdur);
-    
+    measurment[0].setQRSdur(QRSdur);    
+}
+
+ushort GlobalMeasurements::getQRSdur()
+{
+	if (measurment.size() > 0)
+		return measurment[0].getQRSdur();
+
+	return GlobalMeasurement::NoValue;
 }
 
 void GlobalMeasurements::setQTdur(ushort QTdur)
 {
-
-
     if (measurment.size() == 0)
     {
        measurment.resize(1);
-        //measurment = new GlobalMeasurement[1];
-       // measurment[0] = new GlobalMeasurement();
     }
 
-    measurment[0].setQTdur(QTdur);
-    
+    measurment[0].setQTdur(QTdur);    
 }
+
+ushort GlobalMeasurements::getQTdur()
+{
+	if (measurment.size() > 0)
+		return measurment[0].getQTdur();
+
+	return GlobalMeasurement::NoValue;
+}
+
 void GlobalMeasurements::setQTc(ushort QTc)
 {
     _QTc = QTc;
 }
-void GlobalMeasurements::setQTcType(ushort QTcType)
+
+ushort GlobalMeasurements::getQTc()
 {
-   
-	if (QTcType != Unknown)
+	if (_QTc < GlobalMeasurement::NoValue)
+		return _QTc;
+	
+	if ((measurment.size() > 0)
+	&&	(AvgRR != GlobalMeasurement::NoValue))
+		return measurment[0].calcQTc(AvgRR, getVentRate(), getQTcType());
+	
+	return GlobalMeasurement::NoValue;
+}
+
+void GlobalMeasurements::setQTcType(GlobalMeasurement::QTcCalcType QTcType)
+{   
+	if (QTcType != GlobalMeasurement::QTcCalcTypeUnknown)
         _QTc = (ushort) (GlobalMeasurement::NoValue + QTcType);
     else if (_QTc >= GlobalMeasurement::NoValue)
-        _QTc = 0;
-        
+        _QTc = 0;        
+}
+
+GlobalMeasurement::QTcCalcType GlobalMeasurements::getQTcType()
+{
+	if (_QTc >= GlobalMeasurement::NoValue)
+		return (GlobalMeasurement::QTcCalcType) (_QTc - GlobalMeasurement::NoValue);
+
+	return GlobalMeasurement::QTcCalcTypeUnknown;
 }
 
 GlobalMeasurements GlobalMeasurements::Clone()
 {
-
 	GlobalMeasurements ret ;
     ret._QTc = _QTc;
     ret._VentRate = _VentRate;

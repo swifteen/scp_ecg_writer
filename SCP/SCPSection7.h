@@ -3,7 +3,7 @@
 #include "SCPSection.h"
 #include "IGlobalMeasurement.h" 
 #include "GlobalMeasurements.h"
-using namespace ECGConversion.ECGGlobalMeasurements;
+using namespace ECGConversion::ECGGlobalMeasurements;
 
 namespace ECGConversion
 {
@@ -16,11 +16,13 @@ class SCPSection7 : public SCPSection, public IGlobalMeasurement
 {
     // Defined in SCP.
 public:
+	SCPSection7();
+	~SCPSection7();
     ushort getSectionID();
     bool Works();
-    int setGlobalMeasurements(GlobalMeasurements mes);
+    int setGlobalMeasurements(GlobalMeasurements& mes);
 protected:
-	int _Write(byte[] buffer, int offset);
+	int _Write(uchar* buffer, int bufferLength, int offset);
 	void _Empty();
 	int _getLength();
 private:
@@ -32,8 +34,8 @@ private:
     bool _AfterQRSType ;
 
     // Part of the stored Data Structure.
-    byte _NrRefTypeQRS ;
-    byte _NrSpikes;
+    uchar _NrRefTypeQRS ;
+    uchar _NrSpikes;
     ushort _AvgRRInterval ;
     ushort _AvgPPInterval ;
 	
@@ -41,31 +43,31 @@ private:
     /// Class containing measurements for SCP.
     /// </summary>
     class SCPMeasurement;
-    SCPMeasurement[] _Measurements;
+    std::vector<SCPMeasurement> _Measurements;
 	
     /// <summary>
     /// Class containing SCP spikes.
     /// </summary>
     class SCPSpike;
-    SCPSpike[] _Spikes;
+    std::vector<SCPSpike> _Spikes;
 	
     /// <summary>
     /// Class containing SCP Spike info.
     /// </summary>
     class SCPSpikeInfo;
-    SCPSpikeInfo[] _SpikesInfo;
+    std::vector<SCPSpikeInfo> _SpikesInfo;
 	
     ushort _NrQRS ;
-    byte[] _QRSType ;
+    uchar* _QRSType ;
 	
     /// <summary>
     /// Class containing SCP extra measurements. (no compatability with UNIPRO at all)
     /// </summary>
     class SCPExtraMeasurements;
-    SCPExtraMeasurements _ExtraMeasurements;
+    SCPExtraMeasurements* _ExtraMeasurements;
 
     // Manufactor specific block (Not implemented, because UNIPRO doesn't store this kind of info).
-    byte[] _Rest ;
+    uchar* _Rest ;
 };
 }
 }
