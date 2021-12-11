@@ -1,6 +1,6 @@
 #ifndef _ISIGNAL_CS_
 #define _ISIGNAL_CS_
-    
+#include "Signals.h"
 
 namespace ECGConversion
 {

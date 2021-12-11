@@ -26,7 +26,6 @@ public:
 	void setNrLeads(uchar NrLeads);
 
     vector<Signal>& getLeads();
-
     void setLeads(const vector<Signal>& leads);
 
 	const Signal& operator[](int i);

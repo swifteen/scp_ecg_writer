@@ -41,7 +41,7 @@ short LeadMeasurement::getMeasurementType(MeasurementType mt)
     
 }
 
-short LeadMeasurement::setMeasurementType(MeasurementType mt)
+void LeadMeasurement::setMeasurementType(MeasurementType mt)
 {
 
 	std::map<int,int>::iterator  it;

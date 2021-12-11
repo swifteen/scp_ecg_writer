@@ -63,7 +63,7 @@ public:
     /// Function to get section ID of section.
     /// </summary>
     /// <returns>section id</returns>
-    virtual ushort getSectionID() = 0;
+    virtual ushort getSectionID() {return 0;}
     /// <summary>
     /// Function to check working of section.
     /// </summary>

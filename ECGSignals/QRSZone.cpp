@@ -9,7 +9,7 @@ namespace ECGSignals
 /// </summary>
 QRSZone::QRSZone()
 {    
-    Type = ushort_MAX;
+    Type = ushort_MaxValue;
     Start = 0;
     Fiducial = 0;
     End = 0;

@@ -50,7 +50,6 @@ public:
     /// <param name="sps">samples per second</param>
     void setSamplesPerSecond(int sps);
 protected:
-
     int _Write(uchar* buffer, int bufferLength,int offset);
     void _Empty();
     int _getLength();

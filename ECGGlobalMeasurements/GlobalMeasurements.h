@@ -1,7 +1,7 @@
 #ifndef _GLOBALMEASUREMENTS_H_
 #define _GLOBALMEASUREMENTS_H_
-#include "Spike.h"
 #include <vector>
+#include "Spike.h"
 #include "GlobalMeasurement.h"
 namespace ECGConversion
 {
@@ -35,17 +35,14 @@ class GlobalMeasurements
 	    void setQTdur(ushort QTdur);
 	    void setQTc(ushort QTc);
 	    void setQTcType(ushort QTcType);
-
+	public:
+	    std::vector<GlobalMeasurement> measurment;
+	    std::vector<Spike> spike;
 	private:
 	    ushort _QTc;
 	    ushort _VentRate;
 	    ushort AvgRR;
 	    ushort AvgPP;
-
-	    std::vector<GlobalMeasurement> measurment;
-	   // GlobalMeasurement[] measurment;
-	    std::vector<Spike> spike;
-	   // Spike[] spike;
 	};
  }
 }

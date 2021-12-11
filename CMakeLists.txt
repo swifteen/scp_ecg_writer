@@ -23,8 +23,9 @@ SET(SCP_FILES
 				SCP/SCPSection.cpp 
 				SCP/SCPSection0.cpp 
 				SCP/SCPSection1.cpp
-				SCP/SCPSection2.cpp
+				SCP/SCPSection2.cpp 
 				SCP/SCPSection3.cpp
+				SCP/SCPSection4.cpp
 				SCP/SCPSection8.cpp
 				SCP/SCPSection11.cpp
 				) 

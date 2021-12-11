@@ -3,6 +3,9 @@
 #include "BytesTool.h"
 
 using namespace Communication_IO_Tools;
+using namespace ECGConversion::ECGSignals;
+using namespace ECGConversion::ECGGlobalMeasurements;
+
 namespace ECGConversion
 {
 namespace SCP
@@ -12,12 +15,13 @@ namespace SCP
 /// </summary>
 class SCPSection4::SCPQRSSubtraction
 {
+public:
     /// <summary>
     /// Constructor for an QRS Subtraction zone.
     /// </summary>
-    SCPQRSSubtraction():Size(14)
+    SCPQRSSubtraction()
     {
-        ushort Type = ushort.MaxValue;
+        ushort Type = ushort_MaxValue;
         int Start = 0;
         int Fiducial = 0;
         int End = 0;
@@ -29,7 +33,7 @@ class SCPSection4::SCPQRSSubtraction
     /// <param name="start">starting point of subtraction zone</param>
     /// <param name="fiducial">fiducial point in subtraction zone</param>
     /// <param name="end">ending point of subtraction zone</param>
-    SCPQRSSubtraction(byte type, int start, int fiducial, int end)
+    SCPQRSSubtraction(uchar type, int start, int fiducial, int end)
     {
         Type = type;
         Start = start;
@@ -43,41 +47,44 @@ class SCPSection4::SCPQRSSubtraction
     /// <param name="buffer">byte array</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(byte[] buffer, int offset)
+    int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if (offset + Size > buffer.Length)
+        if (offset + Size > bufferLength)
         {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Type, buffer, offset, sizeof(Type), true);
+        BytesTool::writeBytes(Type, buffer, bufferLength,offset, sizeof(Type), true);
         offset += sizeof(Type);
-        BytesTool::writeBytes(Start, buffer, offset, sizeof(Start), true);
+        BytesTool::writeBytes(Start, buffer, bufferLength,offset, sizeof(Start), true);
         offset += sizeof(Start);
-        BytesTool::writeBytes(Fiducial, buffer, offset, sizeof(Fiducial), true);
+        BytesTool::writeBytes(Fiducial, buffer, bufferLength,offset, sizeof(Fiducial), true);
         offset += sizeof(Fiducial);
-        BytesTool::writeBytes(End, buffer, offset, sizeof(End), true);
+        BytesTool::writeBytes(End, buffer, bufferLength,offset, sizeof(End), true);
         offset += sizeof(End);
 
         return 0x0;
     }
 public:
-    const int Size;
+    static int Size;
     ushort Type;
     int Start;
     int Fiducial;
     int End;
 };
 
+int SCPSection4::SCPQRSSubtraction::Size = 14;
+
 /// <summary>
 /// Class containing QRS protected zones.
 /// </summary>
 class SCPSection4::SCPQRSProtected
 {
+public:
     /// <summary>
     /// Constructor to create an QRS protected zone.
     /// </summary>
-    SCPQRSProtected():Size(8)
+    SCPQRSProtected()
     {
         Start = 0;
         End = 0;
@@ -99,26 +106,27 @@ class SCPSection4::SCPQRSProtected
     /// <param name="buffer">byte array to write to</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(byte[] buffer, int offset)
+    int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if (offset + Size > buffer.Length)
+        if (offset + Size > bufferLength)
         {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Start, buffer, offset, sizeof(Start), true);
+        BytesTool::writeBytes(Start, buffer, bufferLength,offset, sizeof(Start), true);
         offset += sizeof(Start);
-        BytesTool::writeBytes(End, buffer, offset, sizeof(End), true);
+        BytesTool::writeBytes(End, buffer, bufferLength,offset, sizeof(End), true);
         offset += sizeof(End);
 
         return 0x0;
     }
 public:
-    const int Size;
+    static int Size;
 
     int Start = 0;
     int End = 0;
 };
+int SCPSection4::SCPQRSProtected::Size = 8;
 
 // Defined in SCP.
 ushort SCPSection4::_SectionID = 4;
@@ -132,37 +140,37 @@ SCPSection4::SCPSection4()
     _MedianDataLength = 0;
     _FirstFiducial = 0;
     _NrQRS = 0xffff;
-    _Subtraction = null;
-    _Protected = null;
+    _Subtraction.clear();
+    _Protected.clear();
 }
-int SCPSection4::_Write(byte[] buffer, int offset)
+int SCPSection4::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    BytesTool::writeBytes(_MedianDataLength, buffer, offset, sizeof(_MedianDataLength), true);
+    BytesTool::writeBytes(_MedianDataLength, buffer, bufferLength,offset, sizeof(_MedianDataLength), true);
     offset += sizeof(_MedianDataLength);
-    BytesTool::writeBytes(_FirstFiducial, buffer, offset, sizeof(_FirstFiducial), true);
+    BytesTool::writeBytes(_FirstFiducial, buffer, bufferLength,offset, sizeof(_FirstFiducial), true);
     offset += sizeof(_FirstFiducial);
-    BytesTool::writeBytes(_NrQRS, buffer, offset, sizeof(_NrQRS), true);
+    BytesTool::writeBytes(_NrQRS, buffer, bufferLength,offset, sizeof(_NrQRS), true);
     offset += sizeof(_NrQRS);
     for (int loper=0;loper < _NrQRS;loper++)
     {
-        int err = _Subtraction[loper].Write(buffer, offset);
+        int err = _Subtraction[loper].Write(buffer, bufferLength,offset);
         if (err != 0)
         {
             return err << loper;
         }
-        offset += SCPQRSSubtraction.Size;
+        offset += SCPQRSSubtraction::Size;
     }
 
-    if (_Protected != null)
+    if (_Protected.size() > 0)
     {
         for (int loper=0;loper < _NrQRS;loper++)
         {
-            int err = _Protected[loper].Write(buffer, offset);
+            int err = _Protected[loper].Write(buffer, bufferLength,offset);
             if (err != 0)
             {
                 return err << loper;
             }
-            offset += SCPQRSProtected.Size;
+            offset += SCPQRSProtected::Size;
         }
     }
     return 0x0;
@@ -172,18 +180,18 @@ void SCPSection4::_Empty()
     _MedianDataLength = 0;
     _FirstFiducial = 0;
     _NrQRS = 0xffff;
-    _Subtraction = null;
-    _Protected = null;
+    _Subtraction.clear();
+    _Protected.clear();
 }
 int SCPSection4::_getLength()
 {
     if (Works())
     {
         int sum = (sizeof(_MedianDataLength) + sizeof(_FirstFiducial) + sizeof(_NrQRS));
-        sum += (_NrQRS * SCPQRSSubtraction.Size);
-        if (_Protected != null)
+        sum += (_NrQRS * SCPQRSSubtraction::Size);
+        if (_Protected.size() > 0)
         {
-            sum += (_NrQRS * SCPQRSProtected.Size);
+            sum += (_NrQRS * SCPQRSProtected::Size);
         }
         return ((sum % 2) == 0 ? sum : sum + 1);
     }
@@ -195,43 +203,34 @@ ushort SCPSection4::getSectionID()
 }
 bool SCPSection4::Works()
 {
-    if ((_Subtraction != null)
-            &&  (_Protected != null)
-            &&  (_NrQRS == _Subtraction.Length)
-            &&  (_NrQRS == _Protected.Length)
+    if ((_Subtraction.size() > 0)
+            &&  (_Protected.size() > 0)
+            &&  (_NrQRS == _Subtraction.size())
+            &&  (_NrQRS == _Protected.size())
             ||  (_NrQRS == 0))
     {
-        if ((_Protected != null)
-                &&  (_Protected.Length != _NrQRS))
+        if ((_Protected.size() > 0)
+                &&  (_Protected.size() != _NrQRS))
         {
             return false;
         }
 
+#if 0
         for (int loper=0;loper < _NrQRS;loper++)
         {
             if ((_Subtraction[loper] == null)
-                    ||  ((_Protected != null)
+                    ||  ((_Protected.size() > 0)
                          &&	 (_Protected[loper] == null)))
             {
                 return false;
             }
         }
+#endif
         return true;
     }
     return false;
 }
-/// <summary>
-/// Function to get length of median.
-/// </summary>
-/// <returns>length of median data.</returns>
-ushort SCPSection4::getMedianLength()
-{
-    if (Works())
-    {
-        return _MedianDataLength;
-    }
-    return 0;
-}
+#if 0
 /// <summary>
 /// Function to add median data to residual data.
 /// </summary>
@@ -360,65 +359,7 @@ int SCPSection4::SubtractMedians(SCPSection3 definition, short[][] rhythm, short
     }
     return -1;
 }
-/// <summary>
-/// Function to get nr of protected zones.
-/// </summary>
-/// <returns>nr of protected zones</returns>
-int SCPSection4::getNrProtectedZones()
-{
-    return (_Protected != null ? _Protected.Length : 0);
-}
-/// <summary>
-/// Function to get start of protected zone.
-/// </summary>
-/// <param name="nr">nr of protected zone</param>
-/// <returns>start sample nr of protected zone</returns>
-int SCPSection4::getProtectedStart(int nr)
-{
-    if ((_Protected != null)
-            &&  (nr >= 0)
-            &&	(nr < _Protected.Length))
-    {
-        return _Protected[nr].Start;
-    }
-    return -1;
-}
-/// <summary>
-/// Function to get end of protected zone.
-/// </summary>
-/// <param name="nr">nr of protected zone</param>
-/// <returns>end sample nr of protected zone</returns>
-int SCPSection4::getProtectedEnd(int nr)
-{
-    if ((_Protected != null)
-            &&  (nr >= 0)
-            &&	(nr < _Protected.Length))
-    {
-        return _Protected[nr].End;
-    }
-    return -1;
-}
-/// <summary>
-/// Function to get length of protected zone.
-/// </summary>
-/// <param name="nr">nr of protected zone</param>
-/// <returns>length of protected zone in samples</returns>
-int SCPSection4::getProtectedLength(int nr)
-{
-    if ((_Protected != null)
-            &&  (nr >= 0)
-            &&	(nr < _Protected.Length))
-    {
-        if (_Protected[nr] == null)
-        {
-            return 0;
-        }
-
-        int templen = _Protected[nr].End - _Protected[nr].Start;
-        return (templen > 0 ? templen + 1 : 0);
-    }
-    return -1;
-}
+#endif
 /// <summary>
 /// Function to set protected zones using global measurements.
 /// </summary>
@@ -427,18 +368,16 @@ int SCPSection4::getProtectedLength(int nr)
 /// <param name="rate">Bimodal compression rate</param>
 /// <param name="minbegin">Begin of all leads in samples</param>
 /// <param name="maxend">End of all leads in samples</param>
-void SCPSection4::setProtected(GlobalMeasurements global, int medianFreq, int rate, int minbegin, int maxend)
+void SCPSection4::setProtected(GlobalMeasurements& global, int medianFreq, int rate, int minbegin, int maxend)
 {
-    if ((global != null)
-            &&	(global.measurment != null)
-            &&	(_Subtraction != null)
-            &&	(_Protected != null)
+    if ((_Subtraction.size() > 0)
+            &&	(_Protected.size() > 0)
             &&	(medianFreq != 0))
     {
         // If global measurements are per beat use them.
-        if (global.measurment.Length == (_Protected.Length + 1))
+        if (global.measurment.size() == (_Protected.size() + 1))
         {
-            for (int loper=0;loper < _Protected.Length;loper++)
+            for (int loper=0;loper < _Protected.size();loper++)
             {
                 _Protected[loper].Start = _Subtraction[loper].Fiducial + (short) ((global.measurment[loper + 1].QRSonset - (_FirstFiducial * 1000)) / medianFreq);
                 _Protected[loper].End = _Subtraction[loper].Fiducial + (short) ((global.measurment[loper + 1].QRSoffset - (_FirstFiducial * 1000)) / medianFreq);
@@ -459,9 +398,9 @@ void SCPSection4::setProtected(GlobalMeasurements global, int medianFreq, int ra
                 }
             }
         }
-        else if (global.measurment.Length > 0)
+        else if (global.measurment.size() > 0)
         {
-            for (int loper=0;loper < _Protected.Length;loper++)
+            for (int loper=0;loper < _Protected.size();loper++)
             {
                 if (_Subtraction[loper].Type == 0)
                 {
@@ -487,96 +426,43 @@ void SCPSection4::setProtected(GlobalMeasurements global, int medianFreq, int ra
         }
     }
 }
-// Signal Manupalations
-int SCPSection4::getSignals(out Signals signals)
+int SCPSection4::setSignals(Signals& signals)
 {
-    signals = new Signals();
-    int err = getSignalsToObj(signals);
-    if (err != 0)
-    {
-        signals = null;
-    }
-    return err;
-}
-int SCPSection4::getSignalsToObj(Signals signals)
-{
-    if (signals != null
-            &&  Works())
-    {
-        signals.MedianLength = _MedianDataLength;
-        signals.MedianFiducialPoint = _FirstFiducial;
-
-        if (_NrQRS == 0)
-        {
-            signals.QRSZone = null;
-        }
-        else
-        {
-            signals.QRSZone = new QRSZone[_NrQRS];
-            for (int loper = 0;loper < _NrQRS;loper++)
-            {
-                signals.QRSZone[loper] = new QRSZone();
-                if (_Subtraction[loper] != null)
-                {
-                    signals.QRSZone[loper].Type = _Subtraction[loper].Type;
-                    signals.QRSZone[loper].Start = _Subtraction[loper].Start - 1;
-                    signals.QRSZone[loper].Fiducial = _Subtraction[loper].Fiducial;
-                    signals.QRSZone[loper].End = _Subtraction[loper].End;
-                }
-            }
-        }
-
-        return 0;
-    }
-    return 1;
-}
-int SCPSection4::setSignals(Signals signals)
-{
-    if ((signals != null)
-            &&  (signals.NrLeads != 0))
+    if (signals.getNrLeads() != 0)
     {
         _MedianDataLength = signals.MedianLength;
         _FirstFiducial = signals.MedianFiducialPoint;
 
-        if (signals.QRSZone == null)
+        if (signals.qrsZone.size() == 0)
         {
             _NrQRS = 0;
-            _Subtraction = null;
-            _Protected = null;
+            _Subtraction.clear();
+            _Protected.clear();
         }
         else
         {
-            _NrQRS = (ushort) signals.QRSZone.Length;
-            _Subtraction = new SCPQRSSubtraction[_NrQRS];
-            _Protected = new SCPQRSProtected[_NrQRS];
+            _NrQRS = (ushort) signals.qrsZone.size();
+			_Subtraction.resize(_NrQRS);
+			_Protected.resize(_NrQRS);
 
             for (int loper=0;loper < _NrQRS;loper++)
             {
-                _Subtraction[loper] = new SCPQRSSubtraction();
-                _Protected[loper] = new SCPQRSProtected();
+                _Subtraction[loper].Type = signals.qrsZone[loper].Type;
+                _Subtraction[loper].Fiducial = signals.qrsZone[loper].Fiducial;
 
-                if (signals.QRSZone[loper] != null)
+                if (_Subtraction[loper].Type == 0)
                 {
-                    _Subtraction[loper].Type = signals.QRSZone[loper].Type;
-                    _Subtraction[loper].Fiducial = signals.QRSZone[loper].Fiducial;
+                    _Subtraction[loper].Start = signals.qrsZone[loper].Start + 1;
+                    _Subtraction[loper].End = signals.qrsZone[loper].End;
 
-                    if (_Subtraction[loper].Type == 0)
+                    if (((_Subtraction[loper].End - _Subtraction[loper].Fiducial) + _FirstFiducial)
+                            >=	((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000))
                     {
-                        _Subtraction[loper].Start = signals.QRSZone[loper].Start + 1;
-                        _Subtraction[loper].End = signals.QRSZone[loper].End;
-
-                        if (((_Subtraction[loper].End - _Subtraction[loper].Fiducial) + _FirstFiducial)
-                                >=	((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000))
-                        {
-                            _Subtraction[loper].End = (int) (((((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000) - _FirstFiducial) + _Subtraction[loper].Fiducial - 2) & 0xfffffffe);
-                        }
-
-                        _Protected[loper].Start = _Subtraction[loper].Start;
-                        _Protected[loper].End = _Subtraction[loper].End;
+                        _Subtraction[loper].End = (int) (((((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000) - _FirstFiducial) + _Subtraction[loper].Fiducial - 2) & 0xfffffffe);
                     }
-                    else
-                    {
-                    }
+
+                    _Protected[loper].Start = _Subtraction[loper].Start;
+                    _Protected[loper].End = _Subtraction[loper].End;
                 }
             }
         }

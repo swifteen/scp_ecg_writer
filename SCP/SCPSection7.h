@@ -5,7 +5,9 @@
 #include "GlobalMeasurements.h"
 using namespace ECGConversion.ECGGlobalMeasurements;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 7 (contains the global measurements section).
@@ -67,3 +69,4 @@ private:
 };
 }
 }
+#endif

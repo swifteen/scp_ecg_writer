@@ -21,7 +21,7 @@ public:
     LeadMeasurement();
     LeadMeasurement(LeadType lt);
     short getMeasurementType(MeasurementType mt);
-    short setMeasurementType(MeasurementType mt);
+    void setMeasurementType(MeasurementType mt);
     int   getMeasurementCount();
 
     short getValueByIndex(int index);

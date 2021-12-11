@@ -2,7 +2,9 @@
 #define _SCPSECTIONUNKOWN_H_
 #include "SCPSection.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// SCP Unknown Section. this class is for reading and writing SCP formats without having to implement the sections that aren't needed at all.

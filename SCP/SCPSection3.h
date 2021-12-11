@@ -1,8 +1,8 @@
 #ifndef _SCPSECTION3_H_
 #define _SCPSECTION3_H_
 #include "SCPSection.h"
-#include "Signals.h"
 #include "ISignal.h"
+#include "Signals.h"
 
 using namespace ECGConversion::ECGSignals;
 

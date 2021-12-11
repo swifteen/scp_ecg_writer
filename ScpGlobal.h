@@ -16,8 +16,8 @@ typedef unsigned long ulong;
 #define uchar_MIN (0)
 #define uchar_MAX (uchar(-1))
 
-#define ushort_MIN (0)
-#define ushort_MAX (ushort(-1))
+#define ushort_MinValue (0)
+#define ushort_MaxValue (ushort(-1))
 
 #define uint_MIN (0)
 #define uint_MAX (uint(-1))
