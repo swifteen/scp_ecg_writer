@@ -69,7 +69,7 @@ public:
     /// <param name="bimodal">true if bimodal used</param>
     void setBimodal(bool bimodal);
 protected:
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:

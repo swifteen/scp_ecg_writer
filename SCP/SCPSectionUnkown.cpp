@@ -17,27 +17,27 @@ SCPSectionUnknown::SCPSectionUnknown()
     _Data = null;
 }
 
-public SCPSectionUnknown::SCPSectionUnknown(ushort sectionId)
+SCPSectionUnknown::SCPSectionUnknown(ushort sectionId)
 {
-    this.SectionID = sectionId;
+    this->SectionID = sectionId;
 }
 
-int SCPSectionUnknown::_Write(byte[] buffer, int offset)
+int SCPSectionUnknown::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    offset += BytesTool::copy(buffer, offset, _Data, 0, _Data.Length);
+    offset += BytesTool::copy(buffer, bufferLength,offset, _Data,_DataLength,0, _DataLength);
     return 0x00;
 }
 
 void SCPSectionUnknown::_Empty()
 {
-    _Data = null;
+    delete []_Data;
 }
 
 int SCPSectionUnknown::_getLength()
 {
     if (Works())
     {
-        return _Data.Length;
+        return _DataLength;
     }
     return 0;
 }
@@ -56,9 +56,14 @@ bool SCPSectionUnknown::Works()
     return false;
 }
 
-void SCPSectionUnknown::setInternalData(byte[] InternalData)
+void SCPSectionUnknown::setInternalData(uchar* InternalData,int InternalDataLength)
 {
-    _Data = InternalData;
+	if((InternalData != null) && (InternalDataLength > 0))
+	{
+		if(_Data != null)
+			delete [] _Data;
+		memcpy(_Data,InternalData,InternalDataLength);
+	}
 }
 }
 }

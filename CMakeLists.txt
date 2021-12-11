@@ -26,6 +26,7 @@ SET(SCP_FILES
 				SCP/SCPSection2.cpp 
 				SCP/SCPSection3.cpp
 				SCP/SCPSection4.cpp
+				SCP/SCPSectionUnkown.cpp
 				SCP/SCPSection8.cpp
 				SCP/SCPSection11.cpp
 				) 

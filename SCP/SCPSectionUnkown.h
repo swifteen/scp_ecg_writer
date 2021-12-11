@@ -19,14 +19,15 @@ public:
     /// <summary>
     /// Get and Set the internal data of this
     /// </summary>
-    void setInternalData(byte[] InternalData);
+    void setInternalData(uchar* InternalData,int InternalDataLength);
 protected:
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
     // Part of the stored Data Structure.
 private:
-    byte[] _Data;
+    uchar* _Data;
+	int _DataLength;
 };
 }
 }
