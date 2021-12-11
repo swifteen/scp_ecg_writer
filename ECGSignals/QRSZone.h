@@ -1,7 +1,7 @@
 #ifndef _QRSZONE_H_
 #define _QRSZONE_H_
 
-#include "../ScpGlobal.h"
+#include "ScpGlobal.h"
 
 namespace ECGConversion{
 

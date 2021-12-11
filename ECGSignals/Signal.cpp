@@ -9,7 +9,7 @@ namespace ECGSignals
 /// </summary>
 Signal::Signal()
 {
-    Type = Unknown;
+    Type = LeadTypeUnknown;
     RhythmStart = 0;
     RhythmEnd = 0;
     //Rhythm = null;
@@ -95,7 +95,7 @@ Signal Signal::ApplyFilter(DSP.IFilter rhythmFilter, DSP.IFilter medianFilter)
 /// </summary>
 /// <param name="data">signal information.</param>
 /// <returns>true if as expected</returns>
-bool Signal::IsNormal(vector<Signal> data)
+bool Signal::IsNormal(const vector<Signal>& data)
 {
     if ((data.size() != 0)
             &&	(data.size() >= 8))
@@ -116,7 +116,7 @@ bool Signal::IsNormal(vector<Signal> data)
 /// </summary>
 /// <param name="data">signal information.</param>
 /// <returns>true if as expected</returns>
-int Signal::NrSimultaneosly(vector<Signal> data)
+int Signal::NrSimultaneosly(const vector<Signal>& data)
 {
     if ((data.size() != 0)
             &&  (data.size() > 1))
@@ -139,7 +139,7 @@ int Signal::NrSimultaneosly(vector<Signal> data)
 /// Function to sort signal array on lead type.
 /// </summary>
 /// <param name="data">signal array</param>
-void Signal::SortOnType(vector<Signal> data)
+void Signal::SortOnType(vector<Signal>& data)
 {
     if (data.size() != 0)
     {
@@ -152,7 +152,7 @@ void Signal::SortOnType(vector<Signal> data)
 /// <param name="data">signal array</param>
 /// <param name="first"></param>
 /// <param name="last"></param>
-void Signal::SortOnType(vector<Signal> data, int first, int last)
+void Signal::SortOnType(vector<Signal>& data, int first, int last)
 {
     if ((data.size() != 0)
            && (first < last))
@@ -163,7 +163,7 @@ void Signal::SortOnType(vector<Signal> data, int first, int last)
         SortOnType(data, p + 1, last);
     }
 }
-int Signal::_PartitionOnType(vector<Signal> data, int first, int last)
+int Signal::_PartitionOnType(vector<Signal>& data, int first, int last)
 {
     Signal pivot, t;
     int i, m, p;

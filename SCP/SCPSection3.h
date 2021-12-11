@@ -100,8 +100,6 @@ public:
     /// Class containing SCP lead information.
     /// </summary>
 protected:
-
-    int _Read(byte[] buffer, int offset);
     int _Write(byte[] buffer, int offset);
     void _Empty();
     int _getLength();
@@ -110,8 +108,8 @@ private:
     static ushort _SectionID ;
 
     // Part of the stored Data Structure.
-    byte _NrLeads;
-    byte _Flags ;
+    uchar _NrLeads;
+    uchar _Flags ;
 
     class SCPLead;
     SCPLead[] _Leads ;
