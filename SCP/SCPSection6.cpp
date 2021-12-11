@@ -20,35 +20,54 @@ ushort SCPSection6::_SectionID = 6;
 SCPSection6::SCPSection6()
 {
     // special variable for setting nr leads before a read.
-    ushort _NrLeads = 0;
+    _NrLeads = 0;
 
     // Part of the stored Data Structure.
-    ushort _AVM = 0;
-    ushort _TimeInterval = 0;
-    byte _Difference = 0;
-    byte _Bimodal = 0;
-    ushort[] _DataLength = null;
-    byte[][] _Data = null;
+    _AVM = 0;
+    _TimeInterval = 0;
+    _Difference = 0;
+    _Bimodal = 0;
+    _DataLength.clear();
+	_DataRealLength.clear();
+    _Data.clear();
+	int size = _Data.size();
+	for (int i = 0; i < size; i++)
+	{
+		_Data[i] = null;
+	}
 }
 
-int SCPSection6::_Write(byte[] buffer, int offset)
+SCPSection6::~SCPSection6()
 {
-    BytesTool::writeBytes(_AVM, buffer, offset, sizeof(_AVM), true);
+	int size = _Data.size();
+	for (int i = 0; i < size; i++)
+	{
+		if(_Data[i] != null)
+		{
+			delete [] _Data[i];
+			_Data[i] = null;
+		}
+	}
+}
+
+int SCPSection6::_Write(uchar* buffer, int bufferLength, int offset)
+{
+    BytesTool::writeBytes(_AVM, buffer, bufferLength,offset, sizeof(_AVM), true);
     offset += sizeof(_AVM);
-    BytesTool::writeBytes(_TimeInterval, buffer, offset, sizeof(_TimeInterval), true);
+    BytesTool::writeBytes(_TimeInterval, buffer, bufferLength,offset, sizeof(_TimeInterval), true);
     offset += sizeof(_TimeInterval);
-    BytesTool::writeBytes(_Difference, buffer, offset, sizeof(_Difference), true);
+    BytesTool::writeBytes(_Difference, buffer, bufferLength,offset, sizeof(_Difference), true);
     offset += sizeof(_Difference);
-    BytesTool::writeBytes(_Bimodal, buffer, offset, sizeof(_Bimodal), true);
+    BytesTool::writeBytes(_Bimodal, buffer, bufferLength,offset, sizeof(_Bimodal), true);
     offset += sizeof(_Bimodal);
 
-    int offset2 = offset + (_Data.Length * sizeof(_DataLength[0]));
+    int offset2 = offset + (_Data.size() * sizeof(_DataLength[0]));
 
-    for (int loper=0;loper < _Data.Length;loper++)
+    for (int loper=0;loper < _Data.size();loper++)
     {
-        BytesTool::writeBytes(_DataLength[loper], buffer, offset, sizeof(_DataLength[loper]), true);
+        BytesTool::writeBytes(_DataLength[loper], buffer, bufferLength,offset, sizeof(_DataLength[loper]), true);
         offset += sizeof(_DataLength[loper]);
-        BytesTool::copy(buffer, offset2, _Data[loper], 0, _Data[loper].Length);
+        BytesTool::copy(buffer, bufferLength,offset2, _Data[loper], _DataRealLength[loper],0, _DataRealLength[loper]);
         offset2 += _DataLength[loper];
     }
     return 0x00;
@@ -59,16 +78,17 @@ void SCPSection6::_Empty()
     _TimeInterval = 0;
     _Difference = 0;
     _Bimodal = 0;
-    _DataLength = null;
-    _Data = null;
+    _DataLength.clear();
+    _Data.clear();
+	_DataRealLength.clear();
 }
 int SCPSection6::_getLength()
 {
     if (Works())
     {
         int sum = sizeof(_AVM) + sizeof(_TimeInterval) + sizeof(_Difference) + sizeof(_Bimodal);
-        sum += (_Data.Length * sizeof(_DataLength[0]));
-        for (int loper=0;loper < _Data.Length;loper++)
+        sum += (_Data.size() * sizeof(_DataLength[0]));
+        for (int loper=0;loper < _Data.size();loper++)
         {
             sum += _DataLength[loper];
         }
@@ -82,14 +102,14 @@ ushort SCPSection6::getSectionID()
 }
 bool SCPSection6::Works()
 {
-    if ((_Data != null)
-            &&  (_DataLength != null)
-            &&  (_Data.Length == _DataLength.Length))
+    if ((_Data.size() > 0)
+            &&  (_DataLength.size() > 0)
+            &&  (_Data.size() == _DataLength.size()))
     {
-        for (int loper=0;loper < _Data.Length;loper++)
+        for (int loper=0;loper < _Data.size();loper++)
         {
             if ((_Data[loper] == null)
-                    ||	(_DataLength[loper] < _Data[loper].Length))
+                    ||	(_DataLength[loper] < _DataRealLength[loper]))
             {
                 return false;
             }
@@ -114,11 +134,17 @@ void SCPSection6::setNrLeads(ushort nrleads)
 /// <param name="leadDefinition">Lead Definitions to use for encoding</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>0 on succes</returns>
-int SCPSection6::EncodeData(short[][] data, SCPSection2 tables, SCPSection3 leadDefinition, SCPSection4 qrsLocations, int medianFreq, byte difference)
+int SCPSection6::EncodeData(short* dataArray,
+    				int dataSingleLength, 
+    				SCPSection2* tables, 
+    				SCPSection3* leadDefinition, 
+    				SCPSection4* qrsLocations, 
+    				int medianFreq, 
+    				uchar difference)
 {
     int localFreq = getSamplesPerSecond();
 
-    if ((data != null)
+    if ((dataArray != null)
             &&	(tables != null)
             &&	(leadDefinition != null)
             &&  (localFreq > 0))
@@ -136,19 +162,21 @@ int SCPSection6::EncodeData(short[][] data, SCPSection2 tables, SCPSection3 lead
             return 2;
         }
 
-        ushort nrleads = leadDefinition.getNrLeads();
-        _Data = new byte[nrleads][];
-        _DataLength = new ushort[nrleads];
+        ushort nrleads = leadDefinition->getNrLeads();
+		_Data.resize(nrleads);
+		_DataLength.resize(nrleads);
+		_DataRealLength.resize(nrleads);
         for (int loper=0;loper < nrleads;loper++)
         {
-            if (data[loper] == null)
+            if (dataArray + loper*dataSingleLength == null)
             {
                 return 4;
             }
 
-            short[] temp = data[loper];
+            short* temp = dataArray + loper*dataSingleLength;
 
-            int time = (leadDefinition.getLeadLength(loper) * localFreq) / medianFreq;
+            int time = (leadDefinition->getLeadLength(loper) * localFreq) / medianFreq;
+#if 0
             if (localFreq != medianFreq)
             {
                 int rate = (medianFreq / localFreq);
@@ -225,16 +253,19 @@ int SCPSection6::EncodeData(short[][] data, SCPSection2 tables, SCPSection3 lead
                     ECGTool.ResampleLead(temp, medianFreq, localFreq, out temp);
                 }
             }
+#endif
 
             _Difference = difference;
-            _Data[loper] = tables.Encode(temp, time, 0, _Difference);
-            if (_Data[loper] == null)
+			int encodeLength = 0;
+            _Data[loper] = tables->Encode(temp, dataSingleLength,time, 0, _Difference,&encodeLength);
+            if ((_Data[loper] == null) || (0 == encodeLength))
             {
-                _Data = null;
-                _DataLength = null;
+                _Data.clear();
+                _DataLength.clear();
                 return 8;
             }
-            _DataLength[loper] = (ushort) _Data[loper].Length;
+            _DataLength[loper] = (ushort) encodeLength;
+            _DataRealLength[loper] = (ushort) encodeLength;
             if ((_DataLength[loper] & 0x1) == 0x1)
             {
                 _DataLength[loper]++;
@@ -304,7 +335,7 @@ bool SCPSection6::getBimodal()
 /// <param name="bimodal">true if bimodal used</param>
 void SCPSection6::setBimodal(bool bimodal)
 {
-    _Bimodal = (byte) (bimodal ? 1 : 0);
+    _Bimodal = (ushort) (bimodal ? 1 : 0);
 }
 }
 }

@@ -1,6 +1,7 @@
 #ifndef _SCPSECTION5_H_
 #define _SCPSECTION5_H_
 #include "SCPSection.h"
+#include "SCPSection2.h"
 
 namespace ECGConversion
 {
@@ -13,6 +14,7 @@ class SCPSection5 : SCPSection
 {
 public:
     SCPSection5();
+    ~SCPSection5();
     ushort getSectionID();
     bool Works();
     /// <summary>
@@ -28,7 +30,12 @@ public:
     /// <param name="medianLength">contains length of median data in msec</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
-    int EncodeData(short[][] data, SCPSection2 tables, ushort medianLength, uchar difference);
+    int EncodeData(short* dataArray,    					
+						int nrleads, 
+	    				int dataSingleLength, 
+	    				SCPSection2* tables, 
+	    				ushort medianLength, 
+	    				uchar difference);
     /// <summary>
     /// Function to get AVM.
     /// </summary>
@@ -63,10 +70,11 @@ private:
     // Part of the stored Data Structure.
     ushort _AVM;
     ushort _TimeInterval;
-    byte _Difference;
-    byte _Reserved;
-    ushort[] _DataLength;
-    byte[][] _Data ;
+    uchar _Difference;
+    uchar _Reserved;
+    std::vector<ushort> _DataLength;
+    std::vector<uchar*> _Data;
+    std::vector<ushort> _DataRealLength;	
 };
 }
 }

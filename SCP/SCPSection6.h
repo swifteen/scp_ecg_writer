@@ -1,7 +1,9 @@
 #ifndef _SCPSECTION6_H_
 #define _SCPSECTION6_H_
 #include "SCPSection.h"
-
+#include "SCPSection2.h"
+#include "SCPSection3.h"
+#include "SCPSection4.h"
 
 namespace ECGConversion
 {
@@ -14,6 +16,8 @@ class SCPSection6 : public SCPSection
 {
     // Defined in SCP.
 public:
+	SCPSection6();
+	~SCPSection6();
     ushort getSectionID();
     bool Works();
 
@@ -31,7 +35,13 @@ public:
     /// <param name="leadDefinition">Lead Definitions to use for encoding</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
-    int EncodeData(short[][] data, SCPSection2 tables, SCPSection3 leadDefinition, SCPSection4 qrsLocations, int medianFreq, byte difference);
+    int EncodeData(short* dataArray,
+    				int dataSingleLength, 
+    				SCPSection2* tables, 
+    				SCPSection3* leadDefinition, 
+    				SCPSection4* qrsLocations, 
+    				int medianFreq, 
+    				uchar difference);
 
     /// <summary>
     /// Function to get AVM.
@@ -81,10 +91,11 @@ private:
     // Part of the stored Data Structure.
     ushort _AVM;
     ushort _TimeInterval;
-    byte _Difference;
-    byte _Bimodal;
-    ushort[] _DataLength;
-    byte[][] _Data;
+    uchar _Difference;
+    uchar _Bimodal;
+    std::vector<ushort> _DataLength;
+    std::vector<uchar*> _Data;
+    std::vector<ushort> _DataRealLength;
 };
 }
 }

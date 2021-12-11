@@ -25,8 +25,27 @@ SCPSection5::SCPSection5()
     _TimeInterval = 0;
     _Difference = 0;
     _Reserved = 0;
-    _DataLength = null;
-    _Data = null;
+	_Data.clear();
+	_DataLength.clear();
+	_DataRealLength.clear();
+	int size = _Data.size();
+	for (int i = 0; i < size; i++)
+	{
+		_Data[i] = null;
+	}
+}
+
+SCPSection5::~SCPSection5()
+{
+	int size = _Data.size();
+	for (int i = 0; i < size; i++)
+	{
+		if(_Data[i] != null)
+		{
+			delete [] _Data[i];
+			_Data[i] = null;
+		}
+	}
 }
 
 int SCPSection5::_Write(uchar* buffer, int bufferLength, int offset)
@@ -40,9 +59,9 @@ int SCPSection5::_Write(uchar* buffer, int bufferLength, int offset)
     BytesTool::writeBytes(_Reserved, buffer, bufferLength,offset, sizeof(_Reserved), true);
     offset += sizeof(_Reserved);
 
-    int offset2 = offset + (_Data.Length * sizeof(_DataLength[0]));
+    int offset2 = offset + (_Data.size() * sizeof(_DataLength[0]));
 
-    for (int loper=0;loper < _Data.Length;loper++)
+    for (int loper=0;loper < _Data.size();loper++)
     {
         BytesTool::writeBytes(_DataLength[loper], 
 									buffer, 
@@ -55,9 +74,9 @@ int SCPSection5::_Write(uchar* buffer, int bufferLength, int offset)
 						bufferLength,
 						offset2, 
 						_Data[loper], 
-						_Data[loper].Length, 
+						_DataRealLength[loper], 
 						0, 
-						_Data[loper].Length);
+						_DataRealLength[loper]);
         offset2 += _DataLength[loper];
     }
     return 0x00;
@@ -68,16 +87,17 @@ void SCPSection5::_Empty()
     _TimeInterval = 0;
     _Difference = 0;
     _Reserved = 0;
-    _DataLength = null;
-    _Data = null;
+	_Data.clear();
+	_DataLength.clear();
+	_DataRealLength.clear();
 }
 int SCPSection5::_getLength()
 {
     if (Works())
     {
         int sum = sizeof(_AVM) + sizeof(_TimeInterval) + sizeof(_Difference) + sizeof(_Reserved);
-        sum += (_Data.Length * sizeof(_DataLength[0]));
-        for (int loper=0;loper < _Data.Length;loper++)
+        sum += (_Data.size() * sizeof(_DataLength[0]));
+        for (int loper=0;loper < _Data.size();loper++)
         {
             sum += _DataLength[loper];
         }
@@ -91,15 +111,13 @@ ushort SCPSection5::getSectionID()
 }
 bool SCPSection5::Works()
 {
-    if ((_Data != null)
-            &&  (_DataLength != null)
-            &&  (_Data.Length == _DataLength.Length)
-            &&  (_Data.Length > 0))
+    if ((_Data.size() == _DataLength.size())
+            &&  (_Data.size() > 0))
     {
-        for (int loper=0;loper < _Data.Length;loper++)
+        for (int loper=0;loper < _Data.size();loper++)
         {
             if ((_Data[loper] == null)
-                    ||	(_DataLength[loper] < _Data[loper].Length))
+                    ||	(_DataLength[loper] < _DataRealLength[loper]))
             {
                 return false;
             }
@@ -125,30 +143,41 @@ void SCPSection5::setNrLeads(ushort nrleads)
 /// <param name="medianLength">contains length of median data in msec</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>0 on succes</returns>
-int SCPSection5::EncodeData(short[][] data, SCPSection2 tables, ushort medianLength, uchar difference)
+int SCPSection5::EncodeData(short* dataArray,								
+			    				int nrleads, 
+			    				int dataSingleLength, 
+			    				SCPSection2* tables, 
+			    				ushort medianLength, 
+			    				uchar difference)
 {
     if ((tables != null)
-            &&  (data != null))
+            &&  (dataArray != null))
     {
-        ushort nrleads = (ushort) data.Length;
-        _Data = new byte[nrleads][];
-        _DataLength = new ushort[nrleads];
+		_Data.resize(nrleads);
+		_DataLength.resize(nrleads);
+		_DataRealLength.resize(nrleads);
         for (int loper=0;loper < nrleads;loper++)
         {
-            if (data[loper] == null)
+            if (dataArray + loper*dataSingleLength == null)
             {
                 return 2;
             }
 
             _Difference = difference;
-            _Data[loper] = tables.Encode(data[loper], medianLength, 0, _Difference);
-            if (_Data[loper] == null)
+			int encodeLength = 0;
+            _Data[loper] = tables->Encode(dataArray + loper*dataSingleLength,
+											dataSingleLength,
+											medianLength, 
+											0, 
+											_Difference,
+											&encodeLength);
+            if ((_Data[loper] == null) || (0 == encodeLength))
             {
-                _Data = null;
-                _DataLength = null;
+                _Data.clear();
+                _DataLength.clear();
                 return 4;
             }
-            _DataLength[loper] = (ushort) _Data[loper].Length;
+            _DataLength[loper] = (ushort) encodeLength;
             if ((_DataLength[loper] & 0x1) == 0x1)
             {
                 _DataLength[loper]++;

@@ -224,13 +224,13 @@ SCPHuffmanStruct SCPSection2::InterpettingData(byte[] buffer, int offset)
 /// <param name="usedTable">table to use for encoding</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-uchar* SCPSection2::Encode(short* data, int dataLength,int time, short usedTable, uchar difference)
+uchar* SCPSection2::Encode(short* data, int dataLength,int time, short usedTable, uchar difference,int* encodeLength)
 {
     if (Works() || _NrTables == 0)
     {
         if (_NrTables == _DefaultTable)
         {
-            return InhouseEncode(data, dataLength,time, difference);
+            return InhouseEncode(data, dataLength,time, difference,encodeLength);
         }
 #if 0 //use DefaultTable
         else if (_NrTables == 0)
@@ -252,7 +252,7 @@ uchar* SCPSection2::Encode(short* data, int dataLength,int time, short usedTable
 /// <param name="time">number of samples to use</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>byte array containing encoded data</returns>
-uchar* SCPSection2::InhouseEncode(short* data, int dataLength,int time, uchar difference)
+uchar* SCPSection2::InhouseEncode(short* data, int dataLength,int time, uchar difference,int* encodeLength)
 {
     uchar* ret = null;
 
@@ -380,6 +380,7 @@ uchar* SCPSection2::InhouseEncode(short* data, int dataLength,int time, uchar di
         }
 #else		
 		memcpy(ret,buffer,retLength*sizeof(uchar));
+		*encodeLength = retLength;
 #endif
     }
     return ret;
