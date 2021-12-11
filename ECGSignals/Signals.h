@@ -29,9 +29,7 @@ public:
 
     void setLeads(const vector<Signal>& leads);
 
-#if 0
-	Signal& operator[](int i);
-#endif
+	const Signal& operator[](int i);
 
     /// <summary>
     /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).

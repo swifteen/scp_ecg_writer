@@ -4,6 +4,8 @@
 #include "Signals.h"
 #include "ISignal.h"
 
+using namespace ECGConversion::ECGSignals;
+
 namespace ECGConversion
 {
 namespace SCP
@@ -90,15 +92,17 @@ public:
     /// <returns>true if leads are simultaneous</returns>
     bool isSimultaneously();
 
-    int setSignals(Signals signals);
+    int setSignals(Signals& signals);
 
     /// <summary>
     /// Class containing SCP lead information.
     /// </summary>
 protected:
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength,int offset);
     void _Empty();
     int _getLength();
+private:
+    bool _isSimultaneously();
 private:
     // Defined in SCP.
     static ushort _SectionID ;
@@ -108,8 +112,8 @@ private:
     uchar _Flags ;
 
     class SCPLead;
-    SCPLead[] _Leads ;
-    bool _isSimultaneously();
+    std::vector<SCPLead> _Leads ;
 };
 }
 }
+#endif

@@ -25,6 +25,13 @@ typedef unsigned long ulong;
 #define ulong_MIN (0)
 #define ulong_MAX (ulong(-1L))
 
+#define ulong_MIN (0)
+#define ulong_MAX (ulong(-1L))
+
+#define Int32_MaxValue ((int)0x7FFFFFFF)
+#define Int32_MinValue ((int)0x80000000)
+
+
 #define null             0L
 
 typedef struct

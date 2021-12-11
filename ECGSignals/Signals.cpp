@@ -57,12 +57,10 @@ void Signals::setLeads(const vector<Signal>& leads)
     _Lead = leads;
 }
 
-#if 0
-Signal& Signals::operator[](int i)
+const Signal& Signals::operator[](int i)
 {
 	return ((_Lead.size() > 0) && (i < _Lead.size())) ? _Lead[i] : Signal();
 }
-#endif
 
 /// <summary>
 /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
