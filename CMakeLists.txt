@@ -14,12 +14,9 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDemographics ECGDemographics_FILES
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDiagnostic ECGDiagnostic_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGGlobalMeasurements ECGGlobalMeasurements_FILES) 
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGLeadMeasurements ECGLeadMeasurements_FILES)       
-#aux_source_directory(${PROJECT_SOURCE_DIR}/ECGSignals ECGSignals_FILES)                                        
+aux_source_directory(${PROJECT_SOURCE_DIR}/ECGSignals ECGSignals_FILES)                                        
 #aux_source_directory(${PROJECT_SOURCE_DIR}/SCP SCP_FILES)
-SET(ECGSignals_FILES  	
-				ECGSignals/QRSZone.cpp
-				ECGSignals/Signal.cpp
-				) 
+ 
 SET(SCP_FILES  	
 				SCP/SCPTime.cpp
 				SCP/SCPDate.cpp

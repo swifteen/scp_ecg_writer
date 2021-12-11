@@ -22,7 +22,7 @@ enum LeadType
 		LeadTypeV5, 
 		LeadTypeV6, 
 		LeadTypeV7, 
-		V2R, 
+		LeadTypeV2R, 
 		LeadTypeV3R, 
 		LeadTypeV4R, 
 		LeadTypeV5R, 

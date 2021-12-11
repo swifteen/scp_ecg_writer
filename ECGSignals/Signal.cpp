@@ -195,6 +195,4 @@ int Signal::_PartitionOnType(vector<Signal>& data, int first, int last)
 }
 
 }
-
 }
-

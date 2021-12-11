@@ -1,8 +1,12 @@
 #ifndef _SCPSECTION3_H_
 #define _SCPSECTION3_H_
 #include "SCPSection.h"
+#include "Signals.h"
+#include "ISignal.h"
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class contains section 3 (Lead definition section).
@@ -85,14 +89,6 @@ public:
     /// </summary>
     /// <returns>true if leads are simultaneous</returns>
     bool isSimultaneously();
-
-    /// <summary>
-    /// Function to determine if all leads are simultaneously.
-    /// </summary>
-    /// <returns>true if leads are simultaneous</returns>
-    // Signal Manupalations
-    int getSignals(out Signals signals);
-    int getSignalsToObj(Signals signals);
 
     int setSignals(Signals signals);
 

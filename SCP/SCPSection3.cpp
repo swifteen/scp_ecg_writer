@@ -298,36 +298,6 @@ bool SCPSection3::_isSimultaneously()
     }
     return (_Leads != null) && (_NrLeads == 1);
 }
-// Signal Manupalations
-int SCPSection3::getSignals(out Signals signals)
-{
-    signals = new Signals();
-    int err = getSignalsToObj(signals);
-    if (err != 0)
-    {
-        signals = null;
-    }
-    return err;
-}
-int SCPSection3::getSignalsToObj(Signals signals)
-{
-    if ((signals != null)
-            &&  (Works()))
-    {
-        signals.NrLeads = _NrLeads;
-
-        for (int loper=0;loper < _NrLeads;loper++)
-        {
-            signals[loper] = new Signal();
-            signals[loper].Type = (LeadType) _Leads[loper].ID;
-            signals[loper].RhythmStart = _Leads[loper].Start - 1;
-            signals[loper].RhythmEnd = _Leads[loper].End;
-        }
-
-        return 0;
-    }
-    return 1;
-}
 int SCPSection3::setSignals(Signals signals)
 {
     if ((signals != null)
