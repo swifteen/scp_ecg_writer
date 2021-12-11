@@ -2,7 +2,9 @@
 #define _SCPSECTION10_H_
 #include "SCPSection.h"
 #include "ILeadMeasurement.h"
+#include "LeadMeasurements.h"
 
+using namespace ECGConversion::ECGLeadMeasurements;
 namespace ECGConversion
 {
 namespace SCP
@@ -12,27 +14,24 @@ namespace SCP
 /// </summary>
 class SCPSection10 : public SCPSection, public ILeadMeasurement
 {
-
 public:
     SCPSection10();
     ushort getSectionID();
     bool Works();
     //region ILeadMeasurement Members
-    int getLeadMeasurements(out LeadMeasurements mes);
-    int setLeadMeasurements(LeadMeasurements mes);
+    void setNrLeads(ushort _NrLeads);
+    int setLeadMeasurements(LeadMeasurements& mes);
 protected:
-    int _Read(byte[] buffer, int offset);
-    int _Write(byte[] buffer, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
-    void setLeadMeasurements(ushort _NrLeads);
-private:
     // Defined in SCP.
     static ushort _SectionID;
+    ushort _NrLeads;
     ushort _ManufactorSpecific;
     class SCPLeadMeasurements;
-    SCPLeadMeasurements[] _LeadMeasurements;
+    std::vector<SCPLeadMeasurements> _LeadMeasurements;
 };
 }
 }

@@ -17,7 +17,7 @@ public:
     LeadMeasurements();
     LeadMeasurements(int nr);
 public:
-    std::vector<LeadMeasurement *> Measurements;
+    std::vector<LeadMeasurement> Measurements;
 };
 
 

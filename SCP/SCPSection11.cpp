@@ -19,11 +19,11 @@ public:
     /// </summary>
     SCPStatement()
     {
-    	SequenceNr = 0;
-		TypeID = 0;
-    	Length = 0;
-		Field = null;
-	}
+        SequenceNr = 0;
+        TypeID = 0;
+        Length = 0;
+        Field = null;
+    }
     /// <summary>
     /// Constructor to make a SCP statement.
     /// </summary>
@@ -34,50 +34,50 @@ public:
     {
         SequenceNr = seqnr;
         Length = length;
-		if(length > 0)
-		{
-			Field = new uchar[length];
-			memcpy(Field,field,length*sizeof(uchar));
-		}
-		else
-		{
-			Field = null;
-		}
+        if(length > 0)
+        {
+            Field = new uchar[length];
+            memcpy(Field,field,length*sizeof(uchar));
+        }
+        else
+        {
+            Field = null;
+        }
     }
     SCPStatement(const SCPStatement& rhs)
     {
-		deepCopy(rhs);
+        deepCopy(rhs);
     }
-	
+
     SCPStatement& operator=(const SCPStatement& rhs)
     {
         // Prevent self-assignment
         if( &rhs != this )
         {
-			delete[] this->Field;
-			this->Field = null;
-			deepCopy(rhs);
+            delete[] this->Field;
+            this->Field = null;
+            deepCopy(rhs);
         }
         return *this;
     }
-	
+
     ~SCPStatement()
     {
-		delete[] Field;
+        delete[] Field;
     }
-	
-	void deepCopy(const SCPStatement& rhs)
+
+    void deepCopy(const SCPStatement& rhs)
     {
-		this->Length = rhs.Length;
-		if((rhs.Length > 0) && (rhs.Field != null))
-		{
-			this->Field = new uchar[rhs.Length];
-			if(this->Field != null)
-			{
-				memcpy(this->Field,rhs.Field,rhs.Length);
-			}
-		}
-	}
+        this->Length = rhs.Length;
+        if((rhs.Length > 0) && (rhs.Field != null))
+        {
+            this->Field = new uchar[rhs.Length];
+            if(this->Field != null)
+            {
+                memcpy(this->Field,rhs.Field,rhs.Length);
+            }
+        }
+    }
 
     /// <summary>
     /// Function to write SCP statement.
@@ -115,12 +115,12 @@ public:
             if (Length > sizeof(TypeID))
             {
                 offset += BytesTool::copy(buffer,
-										bufferLength,
-										offset, 
-										Field,
-										Length - sizeof(TypeID),
-										0, 
-										Length - sizeof(TypeID));
+                                          bufferLength,
+                                          offset,
+                                          Field,
+                                          Length - sizeof(TypeID),
+                                          0,
+                                          Length - sizeof(TypeID));
             }
         }
 
@@ -158,7 +158,7 @@ SCPSection11::SCPSection11()
     // Part of the stored Data Structure.
     _Confirmed = 0;
     _NrStatements = 0;
-	_Statements.clear();
+    _Statements.clear();
 }
 
 int SCPSection11::_Write(uchar* buffer, int bufferLength, int offset)
@@ -182,7 +182,7 @@ void SCPSection11::_Empty()
 {
     _Confirmed = 0;
     _NrStatements = 0;
-	_Statements.clear();
+    _Statements.clear();
 }
 int SCPSection11::_getLength()
 {
@@ -204,7 +204,7 @@ ushort SCPSection11::getSectionID()
 bool SCPSection11::Works()
 {
     if ((_NrStatements == 0)
-                 ||	 (_NrStatements <= _Statements.size()))
+            ||	 (_NrStatements <= _Statements.size()))
     {
         return true;
     }

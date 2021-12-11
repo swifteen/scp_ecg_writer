@@ -19,8 +19,6 @@ ushort SCPSection6::_SectionID = 6;
 
 SCPSection6::SCPSection6()
 {
-
-
     // special variable for setting nr leads before a read.
     ushort _NrLeads = 0;
 

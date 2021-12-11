@@ -1,9 +1,12 @@
 #include "SCPSection10.h"
 #include "CRCTool.h"
 #include "BytesTool.h"
+#include "LeadType.h"
+#include "MeasurementType.h"
 
 using namespace Communication_IO_Tools;
-
+using namespace ECGConversion::ECGLeadMeasurements;
+using namespace ECGConversion::ECGSignals;
 
 namespace ECGConversion
 {
@@ -14,131 +17,170 @@ namespace SCP
 /// </summary>
 class SCPSection10::SCPLeadMeasurements
 {
-public:
+public:	
+    /// <summary>
+    /// Constructor to make a SCP statement.
+    /// </summary>
+    SCPLeadMeasurements()
+    {
+    	_LeadId = LeadTypeUnknown;
+		_LeadLength = 0;
+		_Measurements = null;
+		_MeasurementsLength = 0;
+	}
+    /// <summary>
+    /// Constructor to make a SCP statement.
+    /// </summary>
+    SCPLeadMeasurements(LeadType lt, ushort nrMes)
+    {
+        _LeadId = lt;
+		setCount(nrMes);
+		_Measurements = null;
+		_MeasurementsLength = 0;
+    }
+	
     void setLeadType(LeadType LeadId)
     {
         _LeadId = (ushort) LeadId;
     }
+    LeadType getLeadType()
+    {
+        return (LeadType)_LeadId;
+    }
+	
     void setCount(int Count)
     {
         int temp = (Count < 50) ? 50 : (Count << 1);
 
-        if ((temp <= ushort.MaxValue)
-                &&	(temp >= ushort.MinValue))
+        if ((temp <= ushort_MaxValue)
+                &&	(temp >= ushort_MinValue))
+        {
             _LeadLength = (ushort) temp;
+        }
     }
-#if 0
-    public short this[MeasurementType mt]
+    int getCount()
     {
-    this[(int)mt] = value;
-}
-    public short this[int id]
+        return (_Measurements == null ? 0 : _MeasurementsLength);
+    }
+
+    short getMeasurement(MeasurementType mt)
     {
-    if ((_Measurements != null)
-    &&	(id >= 0)
-    &&	(id < _Measurements.Length))
-    {
-    _Measurements[id] = value;
-}
-}
-#endif
+        int id = (int)mt;
+        if ((_MeasurementsLength == 0)
+                ||	(id < 0)
+                ||	(id >= _MeasurementsLength))
+            return 0;
+
+        return _Measurements[id];
+    }
+    void setMeasurement(MeasurementType mt,short measurementValue)
+    {    	
+		int id = (int)mt;
+		if ((_Measurements != null)
+		&&	(id >= 0)
+		&&	(id < _MeasurementsLength))
+		{
+			_Measurements[id] = measurementValue;
+		}
+    }
 
     void setLeadLength(ushort LeadLength)
     {
-    if (LeadLength >> 1 < 50)
-    LeadLength = 50 << 1;
-
-    _Measurements = ((LeadLength == 0) && ((LeadLength & 0x1) != 0x1)) ? null : new short[LeadLength >> 1];
-
-    if (_Measurements != null)
-    {
-        for (int i=0;i < _Measurements.Length;i++)
+        if (LeadLength >> 1 < 50)
         {
-            MeasurementType mt = (MeasurementType) i;
-
-            bool bZero =	(mt == MeasurementType.Pmorphology)
-                    ||	(mt == MeasurementType.Tmorphology)
-                    ||	(mt == MeasurementType.QualityCode)
-                    ||	(mt > MeasurementType.STamp1_8RR);
-
-            _Measurements[i] = bZero ? (short) 0 : LeadMeasurement.NoValue;
+            LeadLength = 50 << 1;
         }
+		if((LeadLength == 0) && ((LeadLength & 0x1) != 0x1))
+		{
+			return;
+		}
+		else
+		{
+			_MeasurementsLength = LeadLength >> 1;
+			if(_Measurements != null)
+			{
+				delete [] _Measurements;
+				_Measurements = null;
+			}
+			_Measurements = new short[_MeasurementsLength];
+			if (_Measurements != null)
+			{
+				for (int i=0;i < _MeasurementsLength;i++)
+				{
+					MeasurementType mt = (MeasurementType) i;
+			
+					bool bZero =	(mt == MeasurementTypePmorphology)
+							||	(mt == MeasurementTypeTmorphology)
+							||	(mt == MeasurementTypeQualityCode)
+							||	(mt > MeasurementTypeSTamp1_8RR);
+			
+					_Measurements[i] = bZero ? (short) 0 : LeadMeasurement::NoValue;
+				}
+			}
+		}
     }
-}
-/// <summary>
-/// Constructor to make a SCP statement.
-/// </summary>
-SCPLeadMeasurements()
-{}
-/// <summary>
-/// Constructor to make a SCP statement.
-/// </summary>
-SCPLeadMeasurements(LeadType lt, ushort nrMes)
-{
-    LeadId = lt;
-    Count = nrMes;
-}
 
-/// <summary>
-/// Function to write SCP statement.
-/// </summary>
-/// <param name="buffer">byte array to write into</param>
-/// <param name="offset">position to start writing</param>
-/// <returns>0 on success</returns>
-int Write(byte[] buffer, int offset)
-{
-    if (!Works())
-        return 0x1;
-
-    if ((offset + getLength()) > buffer.Length)
-        return 0x2;
-
-    int fieldSize = sizeof(_LeadId);
-    BytesTool::writeBytes(_LeadId, buffer, offset, fieldSize, true);
-    offset += fieldSize;
-
-    fieldSize = sizeof(_LeadLength);
-    BytesTool::writeBytes(_LeadLength, buffer, offset, fieldSize, true);
-    offset += fieldSize;
-
-    if (_LeadLength != 0)
+    /// <summary>
+    /// Function to write SCP statement.
+    /// </summary>
+    /// <param name="buffer">byte array to write into</param>
+    /// <param name="offset">position to start writing</param>
+    /// <returns>0 on success</returns>
+    int Write(uchar* buffer, int bufferLength, int offset)
     {
-        fieldSize = sizeof(typeof(short));
+        if (!Works())
+            return 0x1;
 
-        for (int i=0;i < _Measurements.Length;i++)
+        if ((offset + getLength()) > bufferLength)
+            return 0x2;
+
+        int fieldSize = sizeof(_LeadId);
+        BytesTool::writeBytes(_LeadId, buffer, bufferLength,offset, fieldSize, true);
+        offset += fieldSize;
+
+        fieldSize = sizeof(_LeadLength);
+        BytesTool::writeBytes(_LeadLength, buffer, bufferLength,offset, fieldSize, true);
+        offset += fieldSize;
+
+        if (_LeadLength != 0)
         {
-            BytesTool::writeBytes(_Measurements[i], buffer, offset, fieldSize, true);
-            offset += fieldSize;
+            fieldSize = sizeof(short);
+
+            for (int i=0;i < _MeasurementsLength;i++)
+            {
+                BytesTool::writeBytes(_Measurements[i], buffer, bufferLength,offset, fieldSize, true);
+                offset += fieldSize;
+            }
         }
-    }
 
-    return 0x0;
-}
-/// <summary>
-/// Function to get length of SCP statement.
-/// </summary>
-/// <returns>length of statement</returns>
-int getLength()
-{
-    if (Works())
+        return 0x0;
+    }
+    /// <summary>
+    /// Function to get length of SCP statement.
+    /// </summary>
+    /// <returns>length of statement</returns>
+    int getLength()
     {
-        int sum = sizeof(_LeadId) + sizeof(_LeadLength);
+        if (Works())
+        {
+            int sum = sizeof(_LeadId) + sizeof(_LeadLength);
 
-        if (_Measurements != null)
-            sum += _LeadLength;
+            if (_Measurements != null)
+                sum += _LeadLength;
 
-        return sum;
+            return sum;
+        }
+        return 0;
     }
-    return 0;
-}
-bool Works()
-{
-    return _Measurements != null;
-}
+    bool Works()
+    {
+        return _Measurements != null;
+    }
 private:		
-short[] _Measurements;
-ushort _LeadId;
-ushort _LeadLength
+    short* _Measurements;
+	int _MeasurementsLength;
+    ushort _LeadId;
+    ushort _LeadLength;
 };
 
 // Defined in SCP.
@@ -148,38 +190,38 @@ ushort SCPSection10::_SectionID = 10;
 /// </summary>
 SCPSection10::SCPSection10()
 {
-    Empty();
+    SCPSection::Empty();
 }
-void SCPSection10::setLeadMeasurements(ushort _NrLeads)
+void SCPSection10::setNrLeads(ushort NrLeads)
 {
-    _LeadMeasurements = (_NrLeads == 0) ? null : new SCPLeadMeasurements[value];
+    (_NrLeads == 0) ? _LeadMeasurements.clear() : _LeadMeasurements.resize(NrLeads);
 }
 
-int SCPSection10::_Write(byte[] buffer, int offset)
+int SCPSection10::_Write(uchar* buffer, int bufferLength, int offset)
 {
     if (!Works())
         return 0x1;
 
-    if ((offset + _getLength()) > buffer.Length)
+    if ((offset + _getLength()) > bufferLength)
         return 0x2;
 
     if (_NrLeads  == 0)
         return 0;
 
     int fieldSize = sizeof(_NrLeads);
-    BytesTool::writeBytes(_NrLeads, buffer, offset, fieldSize, true);
+    BytesTool::writeBytes(_NrLeads, buffer, bufferLength,offset, fieldSize, true);
     offset += fieldSize;
 
     fieldSize = sizeof(_ManufactorSpecific);
-    BytesTool::writeBytes(_ManufactorSpecific, buffer, offset, fieldSize, true);
+    BytesTool::writeBytes(_ManufactorSpecific, buffer, bufferLength,offset, fieldSize, true);
     offset += fieldSize;
 
     if (_NrLeads == 0)
         return 0x0;
 
-    for (int loper=0;loper < _LeadMeasurements.Length;loper++)
+    for (int loper=0;loper < _LeadMeasurements.size();loper++)
     {
-        int ret = _LeadMeasurements[loper].Write(buffer, offset);
+        int ret = _LeadMeasurements[loper].Write(buffer, bufferLength,offset);
 
         if (ret != 0)
             return 0x1;
@@ -204,7 +246,7 @@ int SCPSection10::_getLength()
 
         if (_NrLeads != 0)
         {
-            for (int loper=0;loper < _LeadMeasurements.Length;loper++)
+            for (int loper=0;loper < _LeadMeasurements.size();loper++)
             {
                 sum += _LeadMeasurements[loper].getLength();
             }
@@ -223,10 +265,9 @@ bool SCPSection10::Works()
     if (_NrLeads == 0)
         return true;
 
-    for (int loper=0;loper < _LeadMeasurements.Length;loper++)
+    for (int loper=0;loper < _LeadMeasurements.size();loper++)
     {
-        if (_LeadMeasurements[loper] == null
-                ||	!_LeadMeasurements[loper].Works())
+        if (!_LeadMeasurements[loper].Works())
         {
             return false;
         }
@@ -234,61 +275,32 @@ bool SCPSection10::Works()
     return true;
 }
 
-//region ILeadMeasurement Members
-int SCPSection10::getLeadMeasurements(out LeadMeasurements mes)
+int SCPSection10::setLeadMeasurements(LeadMeasurements& mes)
 {
-    mes = null;
+    int nrLeads = mes.Measurements.size();
 
-    if (_NrLeads != 0)
+    _NrLeads = (ushort) nrLeads;
+	_LeadMeasurements.resize(nrLeads);
+
+    for (int i=0;i < nrLeads;i++)
     {
-        int nrLeads = _NrLeads;
+        int nrValues = mes.Measurements[i].getMeasurementCount();
 
-        mes = new LeadMeasurements(nrLeads);
+        nrValues = (nrLeads > 0) ? ((int) mes.Measurements[i].getKeyByIndex(nrValues-1))+1 : 0;
 
-        for (int i=0;i < nrLeads;i++)
+        _LeadMeasurements[i].setLeadType(mes.Measurements[i].leadType);
+        _LeadMeasurements[i].setCount(nrValues);
+
+        nrValues = mes.Measurements[i].getMeasurementCount();
+
+        for (int j=0;j < nrValues;j++)
         {
-            mes.Measurements[i].LeadType = _LeadMeasurements[i].LeadId;
-
-            int len = _LeadMeasurements[i].Count;
-
-            for (int j=0;j < len;j++)
-                mes.Measurements[i][(MeasurementType) j] = _LeadMeasurements[i][j];
-        }
-
-        return 0;
+        	_LeadMeasurements[i].setMeasurement(mes.Measurements[i].getKeyByIndex(j),
+												mes.Measurements[i].getValueByIndex(j));
+		}
     }
 
-    return 1;
-}
-
-int SCPSection10::setLeadMeasurements(LeadMeasurements mes)
-{
-    if (mes != null)
-    {
-        int nrLeads = mes.Measurements.Length;
-
-        _NrLeads = (ushort) nrLeads;
-
-        for (int i=0;i < nrLeads;i++)
-        {
-            int nrValues = mes.Measurements[i].Count;
-
-            nrValues = (nrLeads > 0) ? ((int) mes.Measurements[i].getKeyByIndex(nrValues-1))+1 : 0;
-
-            _LeadMeasurements[i] = new SCPLeadMeasurements();
-            _LeadMeasurements[i].LeadId = mes.Measurements[i].LeadType;
-            _LeadMeasurements[i].Count = nrValues;
-
-            nrValues = mes.Measurements[i].Count;
-
-            for (int j=0;j < nrValues;j++)
-                _LeadMeasurements[i][mes.Measurements[i].getKeyByIndex(j)] = mes.Measurements[i].getValueByIndex(j);
-        }
-
-        return 0;
-    }
-
-    return 1;
+    return 0;
 }
 }
 }
