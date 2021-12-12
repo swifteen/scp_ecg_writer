@@ -64,7 +64,7 @@ void Signal::deepCopy(const Signal& rhs)
 /// <param name="rhythmFilter">Provide filter for rhythm data</param>
 /// <param name="medianFilter">Provide filter for median data</param>
 /// <returns>a filtered copy of object</returns>
-#if 0 //todo
+#if 0 
 Signal Signal::ApplyFilter(DSP.IFilter rhythmFilter, DSP.IFilter medianFilter)
 {
 	Signal sig = new Signal();

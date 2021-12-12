@@ -22,8 +22,11 @@ bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offs
         {
             buffer[offset + (littleEndian ? read : (bytes-read-1))] = (uchar) ((values >> (read << 3)) & 0xff);
         }
+		SCP_PD("writeBytes ok,values:%ld,bufferLength:%d,offset:%d,bytes:%d\n",values,bufferLength,offset,bytes);
         return true;
     }
+			
+	SCP_PE("writeBytes error,values:%ld,bufferLength:%d,offset:%d,bytes:%d\n",values,bufferLength,offset,bytes);
     return false;
 }
 #if 0//TODO

@@ -163,6 +163,10 @@ int SCPSection6::EncodeData(std::vector<short*>& data,
         }
 
         ushort nrleads = leadDefinition->getNrLeads();
+		if((nrleads != data.size()) || (nrleads != dataLength.size()))
+		{
+            return 8;
+		}
 		_Data.resize(nrleads);
 		_DataLength.resize(nrleads);
 		_DataRealLength.resize(nrleads);

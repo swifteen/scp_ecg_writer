@@ -129,10 +129,16 @@ public:
     int Write(uchar* buffer, int bufferLength, int offset)
     {
         if (!Works())
+        {
+        	SCP_PE("not Works\n");
             return 0x1;
+		}
 
         if ((offset + getLength()) > bufferLength)
+        {
+        	SCP_PE("out of range,offset: %d,getLength(): %d,bufferLength: %d\n",offset, getLength(), bufferLength);
             return 0x2;
+		}
 
         int fieldSize = sizeof(_LeadId);
         BytesTool::writeBytes(_LeadId, buffer, bufferLength,offset, fieldSize, true);

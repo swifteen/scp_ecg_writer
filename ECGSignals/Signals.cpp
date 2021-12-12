@@ -1,4 +1,5 @@
 #include "Signals.h"
+#include "ECGTool.h"    
 
 namespace ECGConversion{
 namespace ECGSignals
@@ -143,7 +144,7 @@ virtual Signals Signals::Clone()
         sigs.qRSZone.resize(qRSZone.size());
 
         for (int i=0;i < sigs.qRSZone.size();i++)
-            //sigs.qRSZone[i] = qRSZone[i].Clone(); todo
+            sigs.qRSZone[i] = qRSZone[i].Clone();
     }
 
     if (_Lead.size() != 0)
@@ -151,7 +152,7 @@ virtual Signals Signals::Clone()
         sigs.NrLeads = NrLeads;
 
         for (int i=0;i < sigs._Lead.size();i++)
-            //sigs._Lead[i] = _Lead[i].Clone(); todo
+            sigs._Lead[i] = _Lead[i].Clone(); 
     }
 
     return sigs;
@@ -179,7 +180,7 @@ Signals Signals::GetCopy()
         sigs.qrsZone.resize(qrsZone.size());
 
         for (int i = 0; i < sigs.qrsZone.size(); i++);
-            //sigs.qrsZone[i] = qrsZone[i].Clone(); todo
+            sigs.qrsZone[i] = qrsZone[i].Clone();
     }
 
     if (_Lead.size() != 0)
@@ -187,7 +188,7 @@ Signals Signals::GetCopy()
         sigs.NrLeads = NrLeads;
 
         for (int i = 0; i < sigs._Lead.size(); i++);
-            //sigs._Lead[i] = this._Lead[i].Clone(); todo
+            sigs._Lead[i] = this._Lead[i].Clone();
     }
 
     return sigs;
@@ -257,8 +258,8 @@ void Signals::SetAVM(double avm)
 
         for (int i=0;i < nrLeads;i++)
         {
-            //ECGTool.ChangeMultiplier(this[i].Rhythm, this.RhythmAVM, avm);todo
-            //ECGTool.ChangeMultiplier(this[i].Median, this.MedianAVM, avm);todo
+            ECGTool::ChangeMultiplier(_Lead[i].Rhythm,_Lead[i].RhythmLength, RhythmAVM, avm);
+            //ECGTool.ChangeMultiplier(this[i].Median, this.MedianAVM, avm);
         }
 
         if (RhythmAVM != 0.0)

@@ -5,6 +5,7 @@
 #include <string>
 #include <memory.h>
 #include <vector>
+#include <time.h> 
 
 using namespace std;
 
@@ -43,5 +44,32 @@ typedef struct
 	int Minute;
 	int Second;
 }DateTime;
+
+
+static void scp_print_local_time()
+{
+    time_t now;
+    struct tm  *timenow;	
+    char local_time[64];
+    memset(local_time, 0, sizeof(local_time));
+    time(&now);						
+    timenow = localtime(&now);	
+    snprintf(local_time, sizeof(local_time),"%04d-%02d-%02d %02d:%02d:%02d", 
+        timenow->tm_year + 1900, timenow->tm_mon + 1, timenow->tm_mday,
+        timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
+    printf("[%s]", local_time);
+    return;
+}
+
+#define SCP_PRINT_LOCAL_TIME scp_print_local_time();
+
+#define SCP_DUMP_RED printf("\033[0;32;31m")
+#define SCP_DUMP_YELLOW printf("\033[1;33m")
+#define SCP_DUMP_GREEN printf("\033[0;32;32m")
+#define SCP_DUMP_NONE printf("\033[m")
+
+#define SCP_PD(msg, args...)        do{SCP_DUMP_GREEN; SCP_PRINT_LOCAL_TIME;printf("[SCP0] DEBUG! %s::%s::%d: ", __FILE__, __FUNCTION__, __LINE__);printf(msg, ##args);SCP_DUMP_NONE;}while(0)
+#define SCP_PW(msg, args...)        do{SCP_DUMP_YELLOW; SCP_PRINT_LOCAL_TIME;printf("[SCP0] WARNING! %s::%s::%d: ", __FILE__, __FUNCTION__, __LINE__);printf(msg, ##args);SCP_DUMP_NONE;}while(0)
+#define SCP_PE(msg, args...)        do{SCP_DUMP_RED; SCP_PRINT_LOCAL_TIME;printf("[SCP0] ERROR! %s::%s::%d: ", __FILE__, __FUNCTION__, __LINE__);printf(msg, ##args);SCP_DUMP_NONE;}while(0)
 
 #endif  /*#ifndef _SCPGLOBAL_H_*/

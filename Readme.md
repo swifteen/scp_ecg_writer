@@ -67,6 +67,8 @@ bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offs
 }
 ```
 
+## 类型定义和公共的头文件处理
+
 ScpGlobal.h文件如下，用来定义类型和包含公共的头文件
 
 ```c++
@@ -79,15 +81,30 @@ ScpGlobal.h文件如下，用来定义类型和包含公共的头文件
 #include <memory.h>
 
 //定义类型
-#ifndef HAVE_NO_TYPEDEF_UCHAR
-#define HAVE_NO_TYPEDEF_UCHAR
 typedef unsigned char uchar;
-#endif
+typedef unsigned short ushort;
+typedef unsigned int uint;
+typedef unsigned long ulong;
 
-#ifndef HAVE_NO_TYPEDEF_NULL
-#define HAVE_NO_TYPEDEF_NULL
+#define uchar_MIN (0)
+#define uchar_MAX (uchar(-1))
+
+#define ushort_MinValue (0)
+#define ushort_MaxValue (ushort(-1))
+
+#define uint_MIN (0)
+#define uint_MAX (uint(-1))
+
+#define ulong_MIN (0)
+#define ulong_MAX (ulong(-1L))
+
+#define ulong_MIN (0)
+#define ulong_MAX (ulong(-1L))
+
+#define Int32_MaxValue ((int)0x7FFFFFFF)
+#define Int32_MinValue ((int)0x80000000)
+
 #define null             0L
-#endif
 
 #endif  /*#ifndef _SCPGLOBAL_H_*/
 ```

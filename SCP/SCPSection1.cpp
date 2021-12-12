@@ -158,6 +158,7 @@ bool SCPSection1::Works()
                     		&& (!isException(_MaximumLengthExceptions,sizeof(_MaximumLengthExceptions), _Fields[loper].Tag) 
                     		|| (_Fields[loper].Length > _ExceptionsMaximumLength))))
             {
+				SCP_PW("not Works:%d,Tag:%d,Length:%d\n",loper,_Fields[loper].Tag,_Fields[loper].Length);
                 return false;
             }
         }
@@ -166,11 +167,13 @@ bool SCPSection1::Works()
         {
             if (_SearchField(_MustBePresent[loper]) < 0)
             {
+				SCP_PW("not Works:%d\n",loper);
                 return false;
             }
         }
         return (_Fields[_NrFields - 1].Tag == 0xff) &&  (_Fields[_NrFields - 1].Length == 0);
     }
+	SCP_PW("not Works\n");
     return false;
 }
 
@@ -242,9 +245,11 @@ int SCPSection1::Insert(const SCPHeaderField& field)
                 _NrFields++;
             }
             return 0x0;
-        }
+        }		
+		SCP_PE("field.Length:%d\n",field.Length);
         return 0x2;
     }
+	SCP_PE("field.Tag:%d\n",field.Tag);
     return 0x1;
 }
 
@@ -268,8 +273,10 @@ int SCPSection1::Remove(uchar tag)
             }
             return 0x0;
         }
+		SCP_PE("tag:%d\n",tag);
         return 0x2;
     }
+	SCP_PE("tag:%d\n",tag);
     return 0x1;
 }
 
@@ -328,6 +335,8 @@ int SCPSection1::_SearchField(uchar tag)
     {
         return m;
     }
+	
+	SCP_PW("tag:%d not found\n",tag);
     return -1;
 }
 
@@ -363,12 +372,14 @@ bool SCPSection1::CheckInstances()
             if ((prev == _Fields[loper].Tag)
                     &&  !isException(_MultipleInstanceFields,sizeof(_MultipleInstanceFields), prev))
             {
+				SCP_PE("_Fields:%d\n",loper);
                 return false;
             }
             prev = _Fields[loper].Tag;
         }
         return true;
     }
+	SCP_PE("_NrFields:%d,_Fields.size:%d\n",_NrFields,_Fields.size());
     return false;
 }
 
@@ -381,7 +392,8 @@ bool SCPSection1::CheckInstances()
 bool SCPSection1::isException(uchar* condition, int conditionLength,uchar tag)
 {
     if (condition == null)
-    {
+    {    	
+		SCP_PE("condition is null\n");
         return false;
     }
     int l = 0;
@@ -551,8 +563,10 @@ int SCPSection1::setProtocolCompatibilityLevel(ProtocolCompatibility pc)
             &&  (_Fields[p].Length > 15))
     {
         _Fields[p].Value[15] = (uchar) pc;
+		SCP_PD("ProtocolCompatibilityLevel:%d\n",pc);
         return 0;
     }
+	SCP_PE("ProtocolCompatibilityLevel:%d\n",pc);
     return 1;
 }
 
@@ -571,8 +585,10 @@ int SCPSection1::setText(uchar tag, const string& text)
         field.Length = (ushort) (text.length() >= _MaximumFieldLength ? _MaximumFieldLength :  text.length() + 1);
         field.Value = new uchar[field.Length];
 //        BytesTool::writeString(_Encoding, text, field.Value, 0, field.Length);//TODO
+		SCP_PD("tag:%d,text:%s\n",tag,text.c_str());
         return Insert(field) << 1;
     }
+	SCP_PE("tag:%d,text:%s\n",tag,text.c_str());
     return 1;
 }
 
@@ -605,6 +621,7 @@ int SCPSection1::setPatientAge(ushort val, AgeDefinition def)
     field.Value = new uchar[field.Length];
     BytesTool::writeBytes(val, field.Value,field.Length, 0, sizeof(val), true);
     BytesTool::writeBytes((uchar)def, field.Value,field.Length, sizeof(val), sizeof(uchar), true);
+	SCP_PD("val:%d,AgeDef:%d\n",val,def);
     return Insert(field) << 1;
 }
 
@@ -621,9 +638,11 @@ void SCPSection1::setPatientBirthDate(Date& PatientBirthDate)
         scpdate.Month = PatientBirthDate.Month;
         scpdate.Day = PatientBirthDate.Day;
         scpdate.Write(field.Value, field.Length,0);
-
+		SCP_PD("Year:%d,Month:%d,Day:%d\n",PatientBirthDate.Year,PatientBirthDate.Month,PatientBirthDate.Day);
         Insert(field);
+		return;
     }
+	SCP_PE("Year:%d,Month:%d,Day:%d\n",PatientBirthDate.Year,PatientBirthDate.Month,PatientBirthDate.Day);
 }
 
 int SCPSection1::setPatientHeight(ushort val, HeightDefinition def)
@@ -859,6 +878,8 @@ void SCPSection1::setBaselineFilter(ushort BaselineFilter)
     field.Value = new uchar[field.Length];
     BytesTool::writeBytes(BaselineFilter, field.Value,field.Length, 0, sizeof(BaselineFilter), true);
     Insert(field);
+	
+	SCP_PD("BaselineFilter:%u\n",BaselineFilter);
 }
 
 void SCPSection1::setLowpassFilter(ushort LowpassFilter)
@@ -869,6 +890,7 @@ void SCPSection1::setLowpassFilter(ushort LowpassFilter)
     field.Value = new uchar[field.Length];
     BytesTool::writeBytes(LowpassFilter, field.Value, field.Length,0, sizeof(LowpassFilter), true);
     Insert(field);
+	SCP_PD("LowpassFilter:%u\n",LowpassFilter);
 }
 
 void SCPSection1::setFilterBitmap(uchar FilterBitmap)
@@ -881,6 +903,8 @@ void SCPSection1::setFilterBitmap(uchar FilterBitmap)
         field.Value = new uchar[field.Length];
         BytesTool::writeBytes(FilterBitmap, field.Value,field.Length, 0, sizeof(FilterBitmap), true);
         Insert(field);
+		SCP_PD("LowpassFilter:%hhu\n",FilterBitmap);
+		return;
     }
 }
 
@@ -900,6 +924,7 @@ void SCPSection1::setFreeTextFields(const std::vector<string>& FreeTextFields)
             BytesTool::writeString(_Encoding, FreeTextFields[loper], field.Value, 0, field.Length);
 #endif
             Insert(field);
+			SCP_PD("loper:%d,FreeTextFields:%s\n",loper,FreeTextFields[loper].c_str());
         }
     }
 }
