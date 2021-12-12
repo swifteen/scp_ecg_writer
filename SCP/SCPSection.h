@@ -20,13 +20,12 @@ public:
     /// Constructor for a SCP Section.
     /// </summary>
     SCPSection();
-#if 0//TODO
+
     /// <summary>
     /// Set encoding used for section.
     /// </summary>
     /// <param name="enc">encoding to use in section.</param>
-    void SetEncoding(System.Text.Encoding enc);
-#endif
+    void SetEncoding(const string& encoding);
 #if 0
     /// <summary>
     /// Function to write an SCP Section.
@@ -90,10 +89,8 @@ protected:
 public:
     static int Size;
 protected:
-#if 0//TODO
     // encoding of scp file
-    System.Text.Encoding _Encoding;
-#endif
+    std::string _Encoding;//iconv support characterset
 
     // Content of Header of section.
     ushort CRC;

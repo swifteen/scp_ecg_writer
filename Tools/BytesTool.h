@@ -18,7 +18,6 @@ public:
     /// <returns></returns>
     static bool writeBytes(long values, uchar* buffer,int bufferLength, int offset, int bytes, bool littleEndian);
 
-#if 0 //TODO
     /// <summary>
     ///	Function to write a string too a byte array at a given offset
     /// </summary>
@@ -26,7 +25,7 @@ public:
     /// <param name="buffer">to write the string too</param>
     /// <param name="offset">position to start reading</param>
     /// <param name="length">max length of string</param>
-    static void writeString(string src, byte[] buffer, int offset, int length);
+    static void writeString(const std::string& src, uchar* buffer, int bufferLength, int offset, int length);
 
     /// <summary>
     ///	Function to write a string too a byte array at a given offset
@@ -36,8 +35,12 @@ public:
     /// <param name="buffer">to write the string too</param>
     /// <param name="offset">position to start reading</param>
     /// <param name="length">max length of string</param>
-    static void writeString(Encoding enc, string src, byte[] buffer, int offset, int length);
-#endif
+    static void writeString(const std::string& dstEncoding, 
+										const std::string& src, 
+										uchar* buffer, 
+										int bufferLength,
+										int offset, 
+										int length);
 
     /// <summary>
     /// Function to copy content of one buffer to another.

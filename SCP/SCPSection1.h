@@ -61,25 +61,12 @@ public:
     /// <returns></returns>
     SCPHeaderField GetField(uchar tag);
 #endif
-#if 0//TODO
-    /// <summary>
-    /// Get encoding for text from language support code.
-    /// </summary>
-    /// <returns>used encoding</returns>
-    System.Text.Encoding getLanguageSupportCode();
-    /// <summary>
-    /// Get encoding for text from language support code.
-    /// </summary>
-    /// <param name="enc">used encoding</param>
-    /// <returns>0 if successfull</returns>
-    int getLanguageSupportCode(out System.Text.Encoding enc);
     /// <summary>
     /// Set language support code based on encoding.
     /// </summary>
     /// <param name="enc">encoding to set lsc with.</param>
     /// <returns>0 if successfull</returns>
-    int setLanguageSupportCode(System.Text.Encoding enc);
-#endif
+    int setLanguageSupportCode(const std::string& enc);
     /// <summary>
     /// Function to set Protocol Compatability Level.
     /// </summary>

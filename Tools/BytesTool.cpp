@@ -1,4 +1,5 @@
 #include "BytesTool.h"
+#include <iconv.h>
 
 namespace Communication_IO_Tools
 {
@@ -29,7 +30,7 @@ bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offs
 	SCP_PE("writeBytes error,values:%ld,bufferLength:%d,offset:%d,bytes:%d\n",values,bufferLength,offset,bytes);
     return false;
 }
-#if 0//TODO
+
 /// <summary>
 ///	Function to write a string too a byte array at a given offset
 /// </summary>
@@ -37,9 +38,9 @@ bool BytesTool::writeBytes(long values, uchar* buffer,int bufferLength, int offs
 /// <param name="buffer">to write the string too</param>
 /// <param name="offset">position to start reading</param>
 /// <param name="length">max length of string</param>
-static void BytesTool::writeString(string src, byte[] buffer, int offset, int length)
+void BytesTool::writeString(const std::string& src, uchar* buffer, int bufferLength, int offset, int length)
 {
-    writeString(Encoding.ASCII, src, buffer, offset, length);
+    writeString("ASCII", src, buffer, bufferLength,offset, length);
 }
 /// <summary>
 ///	Function to write a string too a byte array at a given offset
@@ -49,19 +50,61 @@ static void BytesTool::writeString(string src, byte[] buffer, int offset, int le
 /// <param name="buffer">to write the string too</param>
 /// <param name="offset">position to start reading</param>
 /// <param name="length">max length of string</param>
-static void BytesTool::writeString(Encoding enc, string src, byte[] buffer, int offset, int length)
+void BytesTool::writeString(const std::string& dstEncoding, 
+										const std::string& src, 
+										uchar* buffer, 
+										int bufferLength,
+										int offset, 
+										int length)
 {
-    if ((src != null) && (buffer != null))
+    if ((src.length() > 0) && (buffer != null))
     {
-        int nrChars = enc.GetMaxCharCount((buffer.Length < (offset + length)) ? buffer.Length - offset : length);
-
-        nrChars = (src.Length < nrChars) ? src.Length : nrChars;
-
-        if (nrChars > 0)
-            enc.GetBytes(src, 0, nrChars, buffer, offset);
+    	char * src_cstr = new char [src.length()+1];
+		if(src_cstr == null)
+		{
+			return;
+		}
+		snprintf(src_cstr,src.length()+1,"%s",src.c_str());
+		size_t src_cstr_len = strlen(src_cstr);
+		//The maximum number of characters produced by decoding the specified number of bytes.
+		size_t nrChars = (bufferLength < (offset + length)) ? bufferLength - offset : length;		
+		nrChars = (src.length() < nrChars) ? src.length() : nrChars;
+		
+		if (nrChars > 0)
+		{
+			char * dst_cstr = new char [nrChars];
+			if(dst_cstr == null)
+			{
+				delete[] src_cstr;
+				return;
+			}
+			do
+			{
+				iconv_t icd = iconv_open(dstEncoding.c_str(), "UTF−8");
+				
+				if((iconv_t)-1 == icd)
+				{
+					SCP_PE("iconv_open error,dstEncoding[%s]\n", dstEncoding.c_str());
+					break;
+				}
+				memset(dst_cstr,0,nrChars);
+				int ret = iconv(icd, &src_cstr, &src_cstr_len, &dst_cstr, &nrChars);
+				
+				if(0 != ret)
+				{
+					SCP_PE("iconv error,ret[%d]dstEncoding[%s]src_cstr[%s]\n",ret,dstEncoding.c_str(),src_cstr);
+					break;
+				}
+				
+				iconv_close(icd);	
+				memcpy(buffer + offset,dst_cstr,nrChars);
+			}while(0);
+			delete[] dst_cstr;
+		}
+		delete[] src_cstr;
     }
 }
-#endif
+
 /// <summary>
 /// Function to copy content of one buffer to another.
 /// </summary>

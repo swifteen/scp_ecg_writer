@@ -1,5 +1,7 @@
 #include "AcquiringDeviceID.h"
 #include "DemographicEnumrations.h"
+#include "BytesTool.h"
+using namespace Communication_IO_Tools;
 
 namespace ECGConversion
 {
@@ -32,9 +34,7 @@ AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
         ManufactorID = (uchar) kDeviceManufactorUnknown;
         DeviceCapabilities = 0x8;
         ACFrequencyEnvironment = 1;
-#if 0	//todo	
-        Communication_IO_Tools.BytesTool.writeString("MCONV", ModelDescription, 0, ModelDescription.Length);
-#endif
+        BytesTool::writeString("MCONV", ModelDescription, sizeof(ModelDescription), 0, sizeof(ModelDescription));
     }
 	memset(ModelDescription,0,sizeof(ModelDescription));
 }

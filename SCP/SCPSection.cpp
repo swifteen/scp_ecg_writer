@@ -22,16 +22,14 @@ SCPSection::SCPSection()
     Empty();
 }
 
-#if 0//TODO
 /// <summary>
 /// Set encoding used for section.
 /// </summary>
 /// <param name="enc">encoding to use in section.</param>
-void SCPSection::SetEncoding(System.Text.Encoding enc)
+void SCPSection::SetEncoding(const string& encoding)
 {
-    _Encoding = enc;
+    _Encoding = encoding;
 }
-#endif
 
 #if 0
 /// <summary>

@@ -414,118 +414,89 @@ bool SCPSection1::isException(uchar* condition, int conditionLength,uchar tag)
     return (m >= 0) && (m < conditionLength) && (condition[m] == tag);
 }
 
-#if 0
-/// <summary>
-/// Get encoding for text from language support code.
-/// </summary>
-/// <returns>used encoding</returns>
-System.Text.Encoding SCPSection1::getLanguageSupportCode()
-{
-    System.Text.Encoding enc;
-
-    getLanguageSupportCode(out enc);
-
-    return enc;
-}
-
-/// <summary>
-/// Get encoding for text from language support code.
-/// </summary>
-/// <param name="enc">used encoding</param>
-/// <returns>0 if successfull</returns>
-int SCPSection1::getLanguageSupportCode(out System.Text.Encoding enc)
-{
-    enc = System.Text.Encoding.Default;
-
-    int p = _SearchField(14);
-    if ((p >= 0)
-            &&	(_Fields[p] != null)
-            &&  (_Fields[p].Value != null)
-            &&  (_Fields[p].Length <= _Fields[p].Value.Length)
-            &&  (_Fields[p].Length > 16))
-    {
-        byte lsc = _Fields[p].Value[16];
-
-        if ((lsc & 0x1) == 0x0)
-        {
-            return 0;
-        }
-        else if ((lsc & 0x3) == 0x1)
-        {
-            enc = System.Text.Encoding.GetEncoding("ISO-8859-1");
-
-            return 0;
-        }
-        else
-        {
-            string encName = null;
-
-            switch (lsc)
-            {
-            case 0x03: encName = "ISO-8859-2"; break;
-            case 0x0b: encName = "ISO-8859-4"; break;
-            case 0x13: encName = "ISO-8859-5"; break;
-            case 0x1b: encName = "ISO-8859-6"; break;
-            case 0x23: encName = "ISO-8859-7"; break;
-            case 0x2b: encName = "ISO-8859-8"; break;
-            case 0x33: encName = "ISO-8859-11"; break;
-            case 0x3b: encName = "ISO-8859-15"; break;
-            case 0x07: encName = "utf-16"; break; //case 0x07: encName = "ISO-60646"; break;
-            case 0x0f: //encName = "JIS X0201-1976";
-            case 0x17: //encName = "JIS X0208-1997";
-            case 0x1f: //encName = "JIS X0212-1990";
-                encName = "EUC-JP";
-                break;
-            case 0x27: encName = "gb2312"; break;
-            case 0x2f: encName = "ks_c_5601-1987"; break;
-            default: break;
-            }
-
-            if (encName != null)
-            {
-                enc = System.Text.Encoding.GetEncoding(encName);
-
-                return 0;
-            }
-        }
-    }
-    return 1;
-}
-
 /// <summary>
 /// Set language support code based on encoding.
 /// </summary>
 /// <param name="enc">encoding to set lsc with.</param>
 /// <returns>0 if successfull</returns>
-int SCPSection1::setLanguageSupportCode(System.Text.Encoding enc)
+int SCPSection1::setLanguageSupportCode(const std::string& enc)
 {
     int ret = 0;
-    byte lsc = 0;
+    uchar lsc = 0;
 
+#if 0
     switch (enc.CodePage)
     {
-    case 20127: break;
-    case 28591: lsc = 0x01; break;
-    case 28592: lsc = 0x03; break;
-    case 28594: lsc = 0x0b; break;
-    case 28595: lsc = 0x13; break;
-    case 28596: lsc = 0x1b; break;
-    case 28597: lsc = 0x23; break;
-    case 28598: lsc = 0x2b; break;
-    case 28603: lsc = 0x33; break;
-    case 28605: lsc = 0x3b; break;
-    case  1200: lsc = 0x07; break;
-    case 20932: lsc = 0x1f; break;
-    case 20936: lsc = 0x27; break;
-    case   949: lsc = 0x2f; break;
+    case 20127: break;//US-ASCII
+    case 28591: lsc = 0x01; break;//iso-8859-1
+    case 28592: lsc = 0x03; break;//iso-8859-2
+    case 28594: lsc = 0x0b; break;//iso-8859-4
+    case 28595: lsc = 0x13; break;//iso-8859-5
+    case 28596: lsc = 0x1b; break;//iso-8859-6
+    case 28597: lsc = 0x23; break;//iso-8859-7
+    case 28598: lsc = 0x2b; break;//iso-8859-8
+    case 28603: lsc = 0x33; break;//iso-8859-13
+    case 28605: lsc = 0x3b; break;//iso-8859-15
+    case  1200: lsc = 0x07; break;//utf-16
+    case 20932: lsc = 0x1f; break;//EUC-JP	Japanese (JIS 0208-1990 and 0212-1990)	
+    case 20936: lsc = 0x27; break;//x-cp20936	Chinese Simplified (GB2312-80)
+    case   949: lsc = 0x2f; break;//ks_c_5601-1987	Korean
     default: ret = 1; break;
     }
-
-    int p = _SearchField(14);
+#endif
+	if(enc.compare("GB18030") == 0)
+	{
+		lsc = 0x27;
+	}
+	else if(enc.compare("ISO−8859−1") == 0)
+	{
+		lsc = 0x01;
+	}
+	else if(enc.compare("ISO−8859−2") == 0)
+	{
+		lsc = 0x03;
+	}
+	else if(enc.compare("ISO−8859−4") == 0)
+	{
+		lsc = 0x0b;
+	}
+	else if(enc.compare("ISO−8859−5") == 0)
+	{
+		lsc = 0x13;
+	}
+	else if(enc.compare("ISO−8859−6") == 0)
+	{
+		lsc = 0x1b;
+	}
+	else if(enc.compare("ISO−8859−7") == 0)
+	{
+		lsc = 0x23;
+	}
+	else if(enc.compare("ISO−8859−8") == 0)
+	{
+		lsc = 0x2b;
+	}
+	else if(enc.compare("ISO−8859−13") == 0)
+	{
+		lsc = 0x33;
+	}
+	else if(enc.compare("ISO−8859−15") == 0)
+	{
+		lsc = 0x3b;
+	}
+	else if(enc.compare("ISO−8859−15") == 0)
+	{
+		lsc = 0x3b;
+	}
+	else
+	{
+		ret = 1;
+		SCP_PE("not support LanguageSupportCode[%s]\n",enc.c_str());
+	}
+	int p = _SearchField(14);
     if ((p >= 0)
-            &&	(_Fields[p] != null)
+		&&	(p < _Fields.size())
             &&  (_Fields[p].Value != null)
-            &&  (_Fields[p].Length <= _Fields[p].Value.Length)
             &&  (_Fields[p].Length > 16))
     {
         _Fields[p].Value[16] = lsc;
@@ -537,9 +508,8 @@ int SCPSection1::setLanguageSupportCode(System.Text.Encoding enc)
 
     p = _SearchField(15);
     if ((p >= 0)
-            &&	(_Fields[p] != null)
+            &&	(p < _Fields.size())
             &&  (_Fields[p].Value != null)
-            &&  (_Fields[p].Length <= _Fields[p].Value.Length)
             &&  (_Fields[p].Length > 16))
     {
         _Fields[p].Value[16] = lsc;
@@ -548,7 +518,6 @@ int SCPSection1::setLanguageSupportCode(System.Text.Encoding enc)
 
     return ret;
 }
-#endif
 
 /// <summary>
 /// Function to set Protocol Compatability Level.
@@ -584,7 +553,7 @@ int SCPSection1::setText(uchar tag, const string& text)
         field.Tag = tag;
         field.Length = (ushort) (text.length() >= _MaximumFieldLength ? _MaximumFieldLength :  text.length() + 1);
         field.Value = new uchar[field.Length];
-//        BytesTool::writeString(_Encoding, text, field.Value, 0, field.Length);//TODO
+        BytesTool::writeString(_Encoding, text, field.Value,field.Length, 0, field.Length);
 		SCP_PD("tag:%d,text:%s\n",tag,text.c_str());
         return Insert(field) << 1;
     }
@@ -739,7 +708,6 @@ void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
 
     field.Value[offset++] = (uchar) (unknown.length() + 1);
 
-#if 0//TODO
     BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
     offset+= unknown.length() + 1;
 
@@ -752,20 +720,18 @@ void SCPSection1::setAcqMachineID(const AcquiringDeviceID& id)
     BytesTool::writeString(_Encoding, 
 							SoftwareName, 
 							field.Value, 
+							field.Length,
 							offset, 
 							(SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1);
     offset+= (SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1;
 
-    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, field.Length,offset, deviceManufactor.Length + 1);
-    offset+= deviceManufactor.Length + 1;
-#endif
+    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, field.Length,offset, deviceManufactor.length() + 1);
+    offset+= deviceManufactor.length() + 1;
 
     int ret = Insert(field);
 
-#if 0//TODO
     if (ret == 0)
         ret = setLanguageSupportCode(_Encoding);
-#endif
 }
 
 void SCPSection1::setAnalyzingMachineID(const AcquiringDeviceID& id)
@@ -813,29 +779,25 @@ void SCPSection1::setAnalyzingMachineID(const AcquiringDeviceID& id)
 
     field.Value[offset++] = (uchar) (unknown.length() + 1);
 
-#if 0//TODO
-    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
     offset+= unknown.length() + 1;
 
-    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
     offset+= unknown.length() + 1;
 
-    BytesTool::writeString(_Encoding, unknown, field.Value, offset, unknown.length() + 1);
+    BytesTool::writeString(_Encoding, unknown, field.Value, field.Length,offset, unknown.length() + 1);
     offset+= unknown.length() + 1;
 
-    BytesTool::writeString(_Encoding, ECGConverter.SoftwareName, field.Value, offset, (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1);
-    offset+= (ECGConverter.SoftwareName.length() > 24 ? 24 : ECGConverter.SoftwareName.length()) + 1;
+    BytesTool::writeString(_Encoding, SoftwareName, field.Value, field.Length,offset, (SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1);
+    offset+= (SoftwareName.length() > 24 ? 24 : SoftwareName.length()) + 1;
 
-    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, offset, deviceManufactor.length() + 1);
-    offset+= deviceManufactor.Length + 1;
-#endif
+    BytesTool::writeString(_Encoding, deviceManufactor, field.Value, field.Length,offset, deviceManufactor.length() + 1);
+    offset+= deviceManufactor.length() + 1;
 
     int ret = Insert(field);
 
-#if 0//TODO
     if (ret == 0)
         ret = setLanguageSupportCode(_Encoding);
-#endif
 }
 
 void SCPSection1::setTimeAcquisition(const DateTime& time)
@@ -920,9 +882,7 @@ void SCPSection1::setFreeTextFields(const std::vector<string>& FreeTextFields)
             field.Length = (ushort) (FreeTextFields[loper].length() >= _ExceptionsMaximumLength ?
 									_ExceptionsMaximumLength : FreeTextFields[loper].length() + 1);
             field.Value = new uchar[field.Length];
-#if 0//TODO
-            BytesTool::writeString(_Encoding, FreeTextFields[loper], field.Value, 0, field.Length);
-#endif
+            BytesTool::writeString(_Encoding, FreeTextFields[loper], field.Value, field.Length,0, field.Length);
             Insert(field);
 			SCP_PD("loper:%d,FreeTextFields:%s\n",loper,FreeTextFields[loper].c_str());
         }
@@ -1007,9 +967,7 @@ void SCPSection1::setDrugs(std::vector<Drug> Drugs)
         field.Value[0] = 0;
         field.Value[1] = Drugs[loper].DrugClass;
         field.Value[2] = Drugs[loper].ClassCode;
-#if 0//TODO
         BytesTool::writeString(_Encoding, Drugs[loper].TextDesciption, field.Value,field.Length, 3, field.Length - 3);
-#endif
 
         Insert(field);
     }
@@ -1027,9 +985,7 @@ void SCPSection1::setReferralIndication(const std::vector<string>& ReferralIndic
             field.Length = (ushort) (ReferralIndication[loper].length() >= _ExceptionsMaximumLength ?
 							_ExceptionsMaximumLength : ReferralIndication[loper].length() + 1);
             field.Value = new uchar[field.Length];
-#if 0//TODO
-            BytesTool::writeString(_Encoding, value[loper], field.Value,field.Length, 0, field.Length);
-#endif
+            BytesTool::writeString(_Encoding, ReferralIndication[loper], field.Value,field.Length, 0, field.Length);
             Insert(field);
         }
     }

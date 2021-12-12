@@ -220,9 +220,12 @@ int SCPSection8::setDiagnosticStatements(Statements& stat)
             {
                 _Statements[loper].Length = (ushort) (stat.statement[loper].length() + 1);
                 _Statements[loper].Field = new uchar[_Statements[loper].Length];
-#if 0//todo
-                BytesTool::writeString(_Encoding, stat.statement[loper], _Statements[loper].Field, 0, _Statements[loper].Length);
-#endif
+                BytesTool::writeString(_Encoding, 
+										stat.statement[loper], 
+										_Statements[loper].Field, 
+										_Statements[loper].Length,
+										0, 
+										_Statements[loper].Length);
             }
             else
             {

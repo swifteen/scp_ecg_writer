@@ -1,3 +1,5 @@
+[TOC]
+
 # 项目起源
 
 受限于嵌入式平台，只能运行C和C++程序，在网上找不到C++相关的SCP-ECG格式实现，最后参考开源工程 [C# ECG Toolkit](https://sourceforge.net/projects/ecgtoolkit-cs/)，将C#代码转换为C++实现，完成了SCP-ECG格式的写入功能
@@ -7,6 +9,16 @@
 ECG Toolkit support for: SCP-ECG, DICOM, HL7 aECG, ISHNE & MUSE-XML
 
 https://sourceforge.net/projects/ecgtoolkit-cs/
+
+# 项目依赖
+
+为了支持多字符集，需要使用[iconv](https://www.gnu.org/software/libiconv/)
+
+```c++
+
+```
+
+
 
 # C#转换为C++实现细节
 
@@ -156,3 +168,44 @@ sed -i "s/Communication.IO.Tools/Communication::IO::Tools/g"  $file
 #endif
 ```
 
+## 二维数组处理
+
+There are three ways to pass a 2D array to a function:
+
+1. The parameter is a 2D array
+
+   ```cpp
+   int array[10][10];
+   void passFunc(int a[][10])
+   {
+       // ...
+   }
+   passFunc(array);
+   ```
+
+2. The parameter is an array containing pointers
+
+   ```cpp
+   int *array[10];
+   for(int i = 0; i < 10; i++)
+       array[i] = new int[10];
+   void passFunc(int *a[10]) //Array containing pointers
+   {
+       // ...
+   }
+   passFunc(array);
+   ```
+
+3. The parameter is a pointer to a pointer
+
+   ```cpp
+   int **array;
+   array = new int *[10];
+   for(int i = 0; i <10; i++)
+       array[i] = new int[10];
+   void passFunc(int **a)
+   {
+       // ...
+   }
+   passFunc(array);
+   ```
