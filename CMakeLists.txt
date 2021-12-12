@@ -15,32 +15,10 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/ECGDiagnostic ECGDiagnostic_FILES)
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGGlobalMeasurements ECGGlobalMeasurements_FILES) 
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGLeadMeasurements ECGLeadMeasurements_FILES)       
 aux_source_directory(${PROJECT_SOURCE_DIR}/ECGSignals ECGSignals_FILES)                                        
-#aux_source_directory(${PROJECT_SOURCE_DIR}/SCP SCP_FILES)
- 
-SET(SCP_FILES  	
-				SCP/SCPTime.cpp
-				SCP/SCPDate.cpp
-				SCP/SCPSection.cpp 
-				SCP/SCPSection0.cpp 
-				SCP/SCPSection1.cpp
-				SCP/SCPSection2.cpp 
-				SCP/SCPSection3.cpp
-				SCP/SCPSection4.cpp
-				SCP/SCPSection5.cpp
-				SCP/SCPSection6.cpp
-				SCP/SCPSection7.cpp
-				SCP/SCPSection8.cpp
-				SCP/SCPSectionUnkown.cpp
-				SCP/SCPSection10.cpp
-				SCP/SCPSection11.cpp
-				) 
+aux_source_directory(${PROJECT_SOURCE_DIR}/SCP SCP_FILES)
 
 message("Root_FILES ${Root_FILES}")
-message("Tools_FILES ${Tools_FILES}")
-message("ECGDemographics_FILES ${ECGDemographics_FILES}")
-message("ECGDiagnostic_FILES ${ECGDiagnostic_FILES}")
-message("ECGDiagnostic_FILES ${ECGGlobalMeasurements_FILES}")
-message("ECGDiagnostic_FILES ${ECGLeadMeasurements_FILES}")
+
 #添加头文件查找目录
 include_directories(${PROJECT_SOURCE_DIR} 
 					${PROJECT_SOURCE_DIR}/Tools

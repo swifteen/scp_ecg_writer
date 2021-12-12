@@ -28,7 +28,7 @@ public:
     vector<Signal>& getLeads();
     void setLeads(const vector<Signal>& leads);
 
-	const Signal& operator[](int i);
+	Signal& operator[](int i);
 
     /// <summary>
     /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
@@ -97,7 +97,7 @@ public:
     vector<QRSZone> qrsZone;
 private:
     // Signal Data
-    vector<Signal> _Lead;
+    std::vector<Signal> _Lead;
 	uchar NrLeads;
 };
 }

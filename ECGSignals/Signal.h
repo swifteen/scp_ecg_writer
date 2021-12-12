@@ -15,16 +15,9 @@ class Signal
 {
 public:
 	Signal(); 
-#if 0 //todo
-	Signal Clone();
-		/// <summary>
-	/// Function to apply a bandpass filter on Signal object
-	/// </summary>
-	/// <param name="rhythmFilter">Provide filter for rhythm data</param>
-	/// <param name="medianFilter">Provide filter for median data</param>
-	/// <returns>a filtered copy of object</returns>
-	Signal ApplyFilter(DSP.IFilter rhythmFilter, DSP.IFilter medianFilter);
-#endif
+	Signal(const Signal& rhs);		
+	Signal& operator=(const Signal& rhs);		
+	~Signal();
     /// <summary>
     /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
     /// </summary>
@@ -54,13 +47,16 @@ public:
     static void SortOnType(vector<Signal>& data, int first, int last);
 
 private:
+	void deepCopy(const Signal& rhs);
     static int _PartitionOnType(vector<Signal>& data, int first, int last);
 public:
     LeadType Type ;
     int RhythmStart;
     int RhythmEnd;
-	
-    //short[] Rhythm;
+
+	short* Rhythm;
+	int RhythmLength;
+//	std::vector<short> Rhythm;
     //short[] Median;
 };
 }

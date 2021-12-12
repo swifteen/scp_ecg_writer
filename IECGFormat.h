@@ -29,27 +29,27 @@ public:
     /// Function to get IDemographic class.
     /// </summary>
     /// <returns>IDemographic object</returns>
-    virtual IDemographic getDemographic() = 0;
+    virtual IDemographic* getDemographic() = 0;
     /// <summary>
     /// Function to get IDiagnostic class.
     /// </summary>
     /// <returns>IDiagnostic object</returns>
-    virtual IDiagnostic getDiagnostic() = 0;
+    virtual IDiagnostic* getDiagnostic() = 0;
     /// <summary>
     /// Function to get IGlobalMeasurement class.
     /// </summary>
     /// <returns>IGlobalMeasurement object</returns>
-    virtual IGlobalMeasurement getGlobalMeasurements() = 0;
+    virtual IGlobalMeasurement* getGlobalMeasurements() = 0;
     /// <summary>
     /// Function to get ISignal class.
     /// </summary>
     /// <returns></returns>
-    virtual ISignal getSignals() = 0;
+    virtual ISignal* getSignals() = 0;
     /// <summary>
     /// Function to get IMeasurement class.
     /// </summary>
     /// <returns>ILeadMeasurement object</returns>
-    virtual ILeadMeasurement getLeadMeasurements() = 0;
+    virtual ILeadMeasurement* getLeadMeasurements() = 0;
     /// <summary>
     /// Function to determine size of file.
     /// </summary>

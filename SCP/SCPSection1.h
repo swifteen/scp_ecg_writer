@@ -19,11 +19,16 @@ class SCPHeaderField;
 /// <summary>
 /// Class contains section 1 (Header Information).
 /// </summary>
-class SCPSection1 : SCPSection, IDemographic
+class SCPSection1 : public SCPSection, public IDemographic
 {
 public:
     enum ProtocolCompatibility
-    {CatI = 0x90, CatII = 0xa0, CatIII = 0xb0, CatIV = 0xc0};
+    {
+	    kProtocolCompatibilityCatI = 0x90, 
+		kProtocolCompatibilityCatII = 0xa0, 
+		kProtocolCompatibilityCatIII = 0xb0, 
+		kProtocolCompatibilityCatIV = 0xc0
+	};
 public:
     SCPSection1();
     ushort getSectionID();

@@ -134,8 +134,8 @@ void SCPSection6::setNrLeads(ushort nrleads)
 /// <param name="leadDefinition">Lead Definitions to use for encoding</param>
 /// <param name="difference">difference to use durring decoding</param>
 /// <returns>0 on succes</returns>
-int SCPSection6::EncodeData(short* dataArray,
-    				int dataSingleLength, 
+int SCPSection6::EncodeData(std::vector<short*>& data,
+					std::vector<int>& dataLength,
     				SCPSection2* tables, 
     				SCPSection3* leadDefinition, 
     				SCPSection4* qrsLocations, 
@@ -144,7 +144,7 @@ int SCPSection6::EncodeData(short* dataArray,
 {
     int localFreq = getSamplesPerSecond();
 
-    if ((dataArray != null)
+    if ((data.size() > 0)
             &&	(tables != null)
             &&	(leadDefinition != null)
             &&  (localFreq > 0))
@@ -168,13 +168,13 @@ int SCPSection6::EncodeData(short* dataArray,
 		_DataRealLength.resize(nrleads);
         for (int loper=0;loper < nrleads;loper++)
         {
-            if (dataArray + loper*dataSingleLength == null)
+            if (data[loper] == null)
             {
                 return 4;
             }
 
-            short* temp = dataArray + loper*dataSingleLength;
-
+            short* temp = data[loper];
+			int dataSingleLength = dataLength[loper];
             int time = (leadDefinition->getLeadLength(loper) * localFreq) / medianFreq;
 #if 0
             if (localFreq != medianFreq)

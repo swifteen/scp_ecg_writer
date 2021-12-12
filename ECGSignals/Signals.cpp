@@ -57,7 +57,7 @@ void Signals::setLeads(const vector<Signal>& leads)
     _Lead = leads;
 }
 
-const Signal& Signals::operator[](int i)
+Signal& Signals::operator[](int i)
 {
 	return ((_Lead.size() > 0) && (i < _Lead.size())) ? _Lead[i] : _Lead[0];
 }

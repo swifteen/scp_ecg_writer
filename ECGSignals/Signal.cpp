@@ -12,39 +12,52 @@ Signal::Signal()
     Type = LeadTypeUnknown;
     RhythmStart = 0;
     RhythmEnd = 0;
-    //Rhythm = null;
+    Rhythm = null;
+	RhythmLength = 0;
     //Median = null;
 }
 /// <summary>
 /// Function to make a deep copy of this object.
 /// </summary>
 /// <returns>copy of object</returns>
-#if 0 //todo
-Signal Signal::Clone()
+Signal::Signal(const Signal& rhs)
 {
-	Signal sig = new Signal();
-
-	sig.Type = this.Type;
-	sig.RhythmStart = this.RhythmStart;
-	sig.RhythmEnd = this.RhythmEnd;
-
-	if (this.Rhythm != null)
-	{
-		sig.Rhythm = new short[this.Rhythm.Length];
-		for (int i=0;i < sig.Rhythm.Length;i++)
-			sig.Rhythm[i] = this.Rhythm[i];
-	}
-
-	if (this.Median != null)
-	{
-		sig.Median = new short[this.Median.Length];
-		for (int i=0;i < sig.Median.Length;i++)
-			sig.Median[i] = this.Median[i];
-	}
-
-	return sig;
+	deepCopy(rhs);
 }
-#endif
+
+Signal& Signal::operator=(const Signal& rhs)
+{
+	// Prevent self-assignment
+	if( &rhs != this )
+	{
+		delete[] this->Rhythm;
+		this->Rhythm = null;		
+		RhythmLength = 0;
+		deepCopy(rhs);
+	}
+	return *this;
+}
+
+Signal::~Signal()
+{
+	delete[] Rhythm;
+}
+
+void Signal::deepCopy(const Signal& rhs)
+{
+	this->Type = rhs.Type;
+	this->RhythmStart = rhs.RhythmStart;
+	this->RhythmEnd = rhs.RhythmEnd;
+	this->RhythmLength = rhs.RhythmLength;
+	if((rhs.RhythmLength > 0) && (rhs.Rhythm != null))
+	{
+		this->Rhythm = new short[rhs.RhythmLength];
+		if(this->Rhythm != null)
+		{
+			memcpy(this->Rhythm,rhs.Rhythm,rhs.RhythmLength);
+		}
+	}
+}
 /// <summary>
 /// Function to apply a bandpass filter on Signal object
 /// </summary>

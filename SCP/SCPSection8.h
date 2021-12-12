@@ -27,12 +27,12 @@ public:
     int getDiagnosticStatements(Statements stat);
     // setting diagnositc information.
     int setDiagnosticStatements(Statements stat);
+    bool Works();
 protected:
     int _Write(uchar buffer[], int bufferLength,int offset);
     void _Empty();
     int _getLength();
     ushort getSectionID();
-    bool Works();
 private:
     // Defined in SCP.
     static ushort _SectionID;

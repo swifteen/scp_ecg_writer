@@ -10,7 +10,7 @@ namespace SCP
 /// <summary>
 /// Class contains section 5 (Reference beat data section).
 /// </summary>
-class SCPSection5 : SCPSection
+class SCPSection5 : public SCPSection
 {
 public:
     SCPSection5();
@@ -22,6 +22,7 @@ public:
     /// </summary>
     /// <param name="nrleads">nr of leads in section</param>
     void setNrLeads(ushort nrleads);
+#if 0 //current only support rhythm data
     /// <summary>
     /// Function to encode data in this section.
     /// </summary>
@@ -36,6 +37,7 @@ public:
 	    				SCPSection2* tables, 
 	    				ushort medianLength, 
 	    				uchar difference);
+#endif
     /// <summary>
     /// Function to get AVM.
     /// </summary>

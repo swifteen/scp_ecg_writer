@@ -35,8 +35,8 @@ public:
     /// <param name="leadDefinition">Lead Definitions to use for encoding</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
-    int EncodeData(short* dataArray,
-    				int dataSingleLength, 
+    int EncodeData(std::vector<short*>& data,
+					std::vector<int>& dataLength, 
     				SCPSection2* tables, 
     				SCPSection3* leadDefinition, 
     				SCPSection4* qrsLocations, 

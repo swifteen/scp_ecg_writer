@@ -381,6 +381,8 @@ uchar* SCPSection2::InhouseEncode(short* data, int dataLength,int time, uchar di
 #else		
 		memcpy(ret,buffer,retLength*sizeof(uchar));
 		*encodeLength = retLength;
+		delete[] buffer;
+		buffer = null;
 #endif
     }
     return ret;

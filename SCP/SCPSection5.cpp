@@ -135,6 +135,7 @@ void SCPSection5::setNrLeads(ushort nrleads)
     _NrLeads = nrleads;
 }
 
+#if 0 //current only support rhythm data
 /// <summary>
 /// Function to encode data in this section.
 /// </summary>
@@ -187,6 +188,7 @@ int SCPSection5::EncodeData(short* dataArray,
     }
     return 1;
 }
+#endif
 /// <summary>
 /// Function to get AVM.
 /// </summary>

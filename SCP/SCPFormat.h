@@ -9,13 +9,16 @@
 #include "SCPSection.h"    
 #include "ScpGlobal.h"
 
-using namespace ECGConversion.ECGSignals;
-using namespace ECGConversion.ECGDemographics;
-using namespace ECGConversion.ECGDiagnostic;	
-using namespace ECGConversion.ECGGlobalMeasurements;
-using namespace ECGConversion.ECGLeadMeasurements;
+using namespace std;
+using namespace ECGConversion::ECGSignals;
+using namespace ECGConversion::ECGDemographics;
+using namespace ECGConversion::ECGDiagnostic;	
+using namespace ECGConversion::ECGGlobalMeasurements;
+using namespace ECGConversion::ECGLeadMeasurements;
 
-namespace ECGConversion.SCP
+namespace ECGConversion
+{
+namespace SCP
 {
 /// <summary>
 /// Class containing the entire SCP format.
@@ -30,26 +33,31 @@ public:
     /// OptimizedHuffman is same as DefaultHuffman, because it isn't implemented
     /// </remarks>
     enum EncodingType
-    {None = 0, DefaultHuffman, OptimizedHuffman};
+    {
+	    EncodingTypeNone = 0, 
+	    EncodingTypeDefaultHuffman, 
+	    EncodingTypeOptimizedHuffman
+    };
 public:
     SCPFormat();
-
+	~SCPFormat();
     //region IECGFormat Members
+#if 0//todo
 	int Write(string file);	
 	int Write(Stream output);
-    int Write(byte[] buffer, int offset);
-    bool CheckFormat(byte[] buffer, int offset);
+#endif
+    int Write(uchar* buffer, int bufferLength, int offset);
     int getFileSize();
 
-    IDemographic getDemographic();
-    IDiagnostic getDiagnostic();
-    IGlobalMeasurement getGlobalMeasurements();
-    ISignal getSignals();
-    ILeadMeasurement getLeadMeasurements();
+    IDemographic* getDemographic();
+    IDiagnostic* getDiagnostic();
+    IGlobalMeasurement* getGlobalMeasurements();
+    ISignal* getSignals();
+    ILeadMeasurement* getLeadMeasurements();
 
     bool Works();
     void Empty();
-    int setSignals(Signals signals);
+    int setSignals(Signals& signals);
 
     /// <summary>
     /// Function to set pointers.
@@ -59,6 +67,7 @@ public:
     //region IDisposable Members
     void Dispose();
 
+#if 0//todo
     /// <summary>
     /// Function to convert to SCP.
     /// </summary>
@@ -66,6 +75,7 @@ public:
     /// <param name="dst">SCP file returned</param>
     /// <returns>0 on success</returns>
     static int ToSCP(IECGFormat src, ECGConfig cfg, out IECGFormat dst);
+#endif
 private:
     /// <summary>
     /// Function to empty entire format.
@@ -82,8 +92,8 @@ private:
     int _BimodalCompressionRate;
     EncodingType _EncodingType;
 
-    byte _DifferenceDataSection5Used;
-    byte _DifferenceDataSection6Used;
+    uchar _DifferenceDataSection5Used;
+    uchar _DifferenceDataSection6Used;
     bool _UseLeadMeasurements;
     static int _MinFileLength;
     static int _MinNrSections;
@@ -91,8 +101,8 @@ private:
     // data structure of format.
     ushort _CRC;
     int _Length;
-    SCPSection[] _Default;
+    std::vector<SCPSection*> _Default;
 };
 }
-
+}
 #endif  /*#ifndef _SCPFORMAT_H_*/
