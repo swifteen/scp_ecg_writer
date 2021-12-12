@@ -12,18 +12,20 @@ namespace ECGDiagnostic
 	/// </summary>
 	class IDiagnostic
 	{
+#if 0
 		/// <summary>
 		/// Function to get the diagnostic statements.
 		/// </summary>
 		/// <param name="stat">the diagnostic statements</param>
 		/// <returns>0 on success</returns></returns>
 		virtual int getDiagnosticStatements(Statements stat) = 0;
+#endif
 		/// <summary>
 		/// Function to set the diagnostic statements.
 		/// </summary>
 		/// <param name="stat">the diagnostic statements to set</param>
 		/// <returns>0 on success</returns></returns>
-		virtual int setDiagnosticStatements(Statements stat) = 0;
+		virtual int setDiagnosticStatements(Statements& stat) = 0;
 	};
 }
 }

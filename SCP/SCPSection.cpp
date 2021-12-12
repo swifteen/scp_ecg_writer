@@ -1,5 +1,5 @@
 #include "SCPSection.h"
-//#include "SCPFormat.h"//TODO
+#include "SCPFormat.h"
 #include "CRCTool.h"
 #include "BytesTool.h"
 
@@ -124,10 +124,8 @@ void SCPSection::Empty()
     CRC = 0;
     SectionID = getSectionID();
     Length = 0;
-#if 0//TODO
     SectionVersionNr = SCPFormat::DefaultSectionVersion;
     ProtocolVersionNr = SCPFormat::DefaultProtocolVersion;
-#endif
     Reserved[0] = 0; Reserved[1] = 0; Reserved[2] = 0;
     Reserved[3] = 0; Reserved[4] = 0; Reserved[5] = 0;
     _Empty();

@@ -23,16 +23,14 @@ class SCPSection8 : public SCPSection,  public IDiagnostic
 {
 public:
 	 SCPSection8();
-    // getting diagnositc information.
-    int getDiagnosticStatements(Statements stat);
     // setting diagnositc information.
-    int setDiagnosticStatements(Statements stat);
+    int setDiagnosticStatements(Statements& stat);
     bool Works();
+    ushort getSectionID();
 protected:
-    int _Write(uchar buffer[], int bufferLength,int offset);
+    int _Write(uchar* buffer, int bufferLength,int offset);
     void _Empty();
     int _getLength();
-    ushort getSectionID();
 private:
     // Defined in SCP.
     static ushort _SectionID;
@@ -40,11 +38,8 @@ private:
     // Part of the stored Data Structure.
     uchar _Confirmed ;
 
-
 	SCPDate _Date;
 	SCPTime _Time;
-    //SCPDate _Date ;
-   // SCPTime _Time ;
     uchar _NrStatements ;
     /// <summary>
     /// Class containing SCP diagnostic statement.

@@ -5,22 +5,22 @@
 namespace ECGConversion
 {
 
-	namespace ECGDiagnostic
-	{
+namespace ECGDiagnostic
+{
 
-	/// <summary>
-	/// Class containing diagnostic statements.
-	/// </summary>
-		class Statements
-		{
-		public:
-		    Statements();
-		public:
-		    bool confirmed;
-		    bool interpreted;
-		   DateTime time; 
-		    std::vector<std::string> statement;
-		};
-	}
+/// <summary>
+/// Class containing diagnostic statements.
+/// </summary>
+class Statements
+{
+public:
+    Statements();
+public:
+	bool confirmed;
+	bool interpreted;
+	DateTime time; 
+	std::vector<std::string> statement;
+};
+}
 }
 #endif /*Statements*/

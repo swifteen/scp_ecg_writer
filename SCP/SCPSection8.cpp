@@ -3,6 +3,7 @@
 #include "BytesTool.h"
 
 using namespace Communication_IO_Tools;
+using namespace ECGConversion::ECGDiagnostic;	
 
 namespace ECGConversion
 {
@@ -26,12 +27,54 @@ public:
     /// <param name="seqnr">sequence number</param>
     /// <param name="length">length of field</param>
     /// <param name="field">field to use</param>
-    SCPStatement(uchar seqnr, ushort length, uchar field[])
+    SCPStatement(uchar seqnr, ushort length, uchar* field)
     {
         SequenceNr = seqnr;
         Length = length;
         Field = field;
+		if(length > 0)
+		{
+			Field = new uchar[length];
+			if(Field != null)
+			{
+				memcpy(Field,field,length);
+			}
+		}
     }
+    SCPStatement(const SCPStatement& rhs)
+    {
+		deepCopy(rhs);
+    }
+	
+    SCPStatement& operator=(const SCPStatement& rhs)
+    {
+        // Prevent self-assignment
+        if( &rhs != this )
+        {
+			delete[] this->Field;
+			this->Field = null;
+			deepCopy(rhs);
+        }
+        return *this;
+    }
+	
+    ~SCPStatement()
+    {
+		delete[] Field;
+    }
+	
+	void deepCopy(const SCPStatement& rhs)
+    {
+		this->Length = rhs.Length;
+		if((rhs.Length > 0) && (rhs.Field != null))
+		{
+			this->Field = new uchar[rhs.Length];
+			if(this->Field != null)
+			{
+				memcpy(this->Field,rhs.Field,rhs.Length);
+			}
+		}
+	}
 
     /// <summary>
     /// Function to write SCP statement.
@@ -39,10 +82,9 @@ public:
     /// <param name="buffer">uchar array to write into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(uchar buffer[],int bufferLength, int offset)
+    int Write(uchar* buffer,int bufferLength, int offset)
     {
-        if ((Field == null))
-              //  ||  (Field.Length != Length))
+        if (Field == null)
         {
             return 0x1;
         }
@@ -65,8 +107,7 @@ public:
 
         if (Length > 0)
         {
-           // offset += BytesTool::copy(buffer, bufferLength,offset, Field, 0, Length);TODO
-
+           offset += BytesTool::copy(buffer, bufferLength,offset, Field, Length,0, Length);
         }
 
         return 0x0;
@@ -95,24 +136,20 @@ public:
 ushort SCPSection8::_SectionID = 8;
 SCPSection8::SCPSection8()
 {
-    // Part of the stored Data Structure.
-    uchar _Confirmed = 0;
-  
-    
-    uchar _NrStatements = 0;
-
-	 
-   // SCPStatement[] _Statements = null;
+	// Part of the stored Data Structure.
+	_Confirmed = 0;    
+	_NrStatements = 0;	 
+	_Statements.clear();
 }
 
-int SCPSection8::_Write(uchar buffer[],int bufferLength, int offset)
+int SCPSection8::_Write(uchar* buffer, int bufferLength, int offset)
 {
     BytesTool::writeBytes(_Confirmed, buffer,bufferLength, offset, sizeof(_Confirmed), true);
     offset +=sizeof(_Confirmed);
     _Date.Write(buffer,bufferLength,offset);
-    offset += _Date.Size;
+    offset += SCPDate::Size;
     _Time.Write(buffer, bufferLength,offset);
-    offset += _Time.Size;
+    offset += SCPTime::Size;
     BytesTool::writeBytes(_NrStatements, buffer,bufferLength, offset, sizeof(_NrStatements), true);
     offset += sizeof(_NrStatements);
 	_Statements.resize(_NrStatements);
@@ -127,18 +164,15 @@ int SCPSection8::_Write(uchar buffer[],int bufferLength, int offset)
 void SCPSection8::_Empty()
 {
     _Confirmed = 0;
-  //  _Date =  null;
-    // _Time = null;
     _NrStatements = 0;
-   // _Statements = null;
+	_Statements.clear();
 }
 
 int SCPSection8::_getLength()
-{
- 
+{ 
     if (Works())
     {
-        int sum =sizeof(_Confirmed) + _Date.Size + _Time.Size + sizeof(_NrStatements);
+        int sum =sizeof(_Confirmed) + SCPTime::Size + SCPTime::Size + sizeof(_NrStatements);
         for (int loper=0;loper < _NrStatements;loper++)
         {
             sum += _Statements[loper].getLength();
@@ -156,105 +190,39 @@ ushort SCPSection8::getSectionID()
 
 bool SCPSection8::Works()
 {
-
-
 	if (((_NrStatements == 0)
-                 ||	 ((_Statements.size()!=0)
-                      &&	  (_NrStatements <= _Statements.size()))))
-    {
-     
+         ||	 ((_Statements.size() != 0)  && (_NrStatements <= _Statements.size()))))
+    {     
         return true;
     }
-   
-    
+       
     return false;
 }
 
-
-
-/*
-
-// getting diagnositc information.
-int SCPSection8::getDiagnosticStatements(Statements stat)
-{
-   // stat = null;
-    if (  (_NrStatements > 0))
-    {
-      //  stat = new Statements();
-        stat.confirmed = (_Confirmed == 1);
-
-        if ((_Date.Year != 0)
-                &&	(_Date.Month != 0)
-                &&	(_Date.Day != 0))
-        	{
-           // stat.time = new DateTime(_Date.Year, _Date.Month, _Date.Day, _Time.Hour, _Time.Min, _Time.Sec);
-                	}
-        else
-        	{
-          //  stat.time = DateTime.MinValue;
-        	}
-
-        //stat.statement = new string[_NrStatements];
-
-		for (int loper=0;loper < _NrStatements;loper++)
-        {
-            if (
-                      (_Statements[loper].Field != null)
-                    &&  (_Statements[loper].Length <= _Statements[loper].Field.Length))
-            {
-                stat.statement[loper] = BytesTool::readString(_Encoding, _Statements[loper].Field, 0, _Statements[loper].Length);
-            }
-        }
-
-        if  ((stat.statement.Length == 1)
-             &&   ((stat.statement[0] == null)
-                   ||	  (stat.statement[0].Length == 0)))
-        {
-            stat = null;
-
-            return 1;
-        }
-
-        return 0;
-    }
-    return 1;
-}*/
-
-/*
-
 // setting diagnositc information.
-int SCPSection8::setDiagnosticStatements(Statements stat)
+int SCPSection8::setDiagnosticStatements(Statements& stat)
 {
-    if ((stat != null)
-            &&  (stat.time.Year > 1000)
-            &&  (stat.statement != null)
-            &&  (stat.statement.Length > 0))
+    if ((stat.time.Year > 1000)
+        &&  (stat.statement.size() > 0))
     {
         Empty();
         _Confirmed = (uchar) (stat.confirmed ? 1 : 0);
 
-        if (stat.time == DateTime.MinValue)
-        {
-            _Date = new SCPDate();
-            _Time = new SCPTime();
-        }
-        else
-        {
-            _Date = new SCPDate(stat.time.Year, stat.time.Month, stat.time.Day);
-            _Time = new SCPTime(stat.time.Hour, stat.time.Minute, stat.time.Second);
-        }
+        _Date = SCPDate(stat.time.Year, stat.time.Month, stat.time.Day);
+        _Time = SCPTime(stat.time.Hour, stat.time.Minute, stat.time.Second);
 
-        _NrStatements = (uchar) stat.statement.Length;
-        _Statements = new SCPStatement[_NrStatements];
+        _NrStatements = (uchar) stat.statement.size();
+		_Statements.resize(_NrStatements);
         for (int loper=0;loper < _NrStatements;loper++)
         {
-            _Statements[loper] = new SCPStatement();
             _Statements[loper].SequenceNr = (uchar) (loper + 1);
-            if (stat.statement[loper] != null)
+            if (stat.statement[loper].length() > 0)
             {
-                _Statements[loper].Length = (ushort) (stat.statement[loper].Length + 1);
+                _Statements[loper].Length = (ushort) (stat.statement[loper].length() + 1);
                 _Statements[loper].Field = new uchar[_Statements[loper].Length];
+#if 0//todo
                 BytesTool::writeString(_Encoding, stat.statement[loper], _Statements[loper].Field, 0, _Statements[loper].Length);
+#endif
             }
             else
             {
@@ -266,6 +234,5 @@ int SCPSection8::setDiagnosticStatements(Statements stat)
     }
     return 1;
 }
-*/
 }
 }
