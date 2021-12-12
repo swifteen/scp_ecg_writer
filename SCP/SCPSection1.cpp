@@ -444,7 +444,11 @@ int SCPSection1::setLanguageSupportCode(const std::string& enc)
     default: ret = 1; break;
     }
 #endif
-	if(enc.compare("GB18030") == 0)
+	if(enc.compare("ASCII") == 0)
+	{
+		lsc = 0x27;
+	}
+	else if(enc.compare("GB18030") == 0)
 	{
 		lsc = 0x27;
 	}
@@ -955,7 +959,7 @@ void SCPSection1::setDiastolicBloodPressure(ushort DiastolicBloodPressure)
     }
 }
 
-void SCPSection1::setDrugs(std::vector<Drug> Drugs)
+void SCPSection1::setDrugs(std::vector<Drug>& Drugs)
 {
 	int size = Drugs.size();
     for (int loper=0;loper < size;loper++)

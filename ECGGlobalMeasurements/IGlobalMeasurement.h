@@ -11,6 +11,7 @@ namespace ECGGlobalMeasurements
 	/// </summary>
 	class IGlobalMeasurement
 	{
+		public:
 #if 0
 		/// <summary>
 		/// Function to get the global measurements of ECG.

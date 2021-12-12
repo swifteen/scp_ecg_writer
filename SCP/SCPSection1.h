@@ -109,7 +109,7 @@ public:
     void setTechnicianDescription(const string& TechnicianDescription);
     void setSystolicBloodPressure(ushort SystolicBloodPressure);
     void setDiastolicBloodPressure(ushort DiastolicBloodPressure);
-    void setDrugs(std::vector<Drug> Drugs);
+    void setDrugs(std::vector<Drug>& Drugs);
     void setReferralIndication(const std::vector<string>& ReferralIndication);
     void setRoomDescription(const string& RoomDescription);
     void setStatCode(uchar StatCode);

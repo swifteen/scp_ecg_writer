@@ -14,6 +14,7 @@ namespace ECGDemographics
 	/// </summary>
 	class IDemographic
 	{
+		public:
 		/// <summary>
 		/// Function to initialize demographics information.
 		/// </summary>
@@ -46,7 +47,7 @@ namespace ECGDemographics
 		virtual void setTechnicianDescription(const string& TechnicianDescription) = 0;
 		virtual void setSystolicBloodPressure(ushort SystolicBloodPressure) = 0;
 		virtual void setDiastolicBloodPressure(ushort DiastolicBloodPressure) = 0;
-		virtual void setDrugs(std::vector<Drug> Drugs) = 0;
+		virtual void setDrugs(std::vector<Drug>& Drugs) = 0;
 		virtual void setReferralIndication(const std::vector<string>& ReferralIndication) = 0;
 		virtual void setRoomDescription(const string& RoomDescription) = 0;
 		virtual void setStatCode(uchar StatCode) = 0;

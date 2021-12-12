@@ -69,11 +69,11 @@ SCPFormat::~SCPFormat()
 	}
 }
 
-#if 0//todo
-int SCPFormat::Write(string file)
+int SCPFormat::Write(const string& file)
 {
-	if (file != null)
+	if (file.length() > 0)
 	{
+#if 0//todo
 		// open stream to write to.
 		Stream output = new FileStream(file, FileMode.Create);
 		// use write function for streams.
@@ -81,9 +81,11 @@ int SCPFormat::Write(string file)
 		// close stream after writing.
 		output.Close();
 		return ret << 1;
+#endif
 	}
 	return 0x1;
 }
+#if 0//todo
 
 int SCPFormat::Write(Stream output)
 {

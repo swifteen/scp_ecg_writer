@@ -15,7 +15,7 @@ int SCPSection::Size = 16;
 /// </summary>
 SCPSection::SCPSection()
 {
-//    _Encoding = System.Text.Encoding.Default;//TODO
+	_Encoding = "ASCII";
     SectionID = 0;
 	memset(Reserved,0,sizeof(Reserved));
     SectionID = getSectionID();

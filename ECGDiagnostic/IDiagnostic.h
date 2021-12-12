@@ -12,6 +12,7 @@ namespace ECGDiagnostic
 	/// </summary>
 	class IDiagnostic
 	{
+		public:
 #if 0
 		/// <summary>
 		/// Function to get the diagnostic statements.

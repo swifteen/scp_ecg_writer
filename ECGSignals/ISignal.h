@@ -11,6 +11,7 @@ namespace ECGSignals
 	/// </summary>
 	class ISignal
 	{
+		public:
 		/// <summary>
 		/// Function to set the signals of an ECG.
 		/// </summary>

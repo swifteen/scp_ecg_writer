@@ -42,8 +42,8 @@ public:
     SCPFormat();
 	~SCPFormat();
     //region IECGFormat Members
+	int Write(const string& file);	
 #if 0//todo
-	int Write(string file);	
 	int Write(Stream output);
 #endif
     int Write(uchar* buffer, int bufferLength, int offset);
