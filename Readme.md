@@ -2,7 +2,7 @@
 
 # 项目起源
 
-受限于嵌入式平台，只能运行C和C++程序，在网上找不到C++相关的SCP-ECG格式实现，最后参考开源工程 [C# ECG Toolkit](https://sourceforge.net/projects/ecgtoolkit-cs/)，将C#代码转换为C++实现，完成了SCP-ECG格式的写入功能
+受限于嵌入式平台，只能运行C和C++程序，在网上找不到C++相关的SCP-ECG格式实现，最后参考开源工程 [C# ECG Toolkit](https://sourceforge.net/projects/ecgtoolkit-cs/)，将C#代码转换为C++实现，仅仅只完成了SCP-ECG格式的写入功能
 
 # C# ECG Toolkit
 
@@ -18,7 +18,9 @@ https://sourceforge.net/projects/ecgtoolkit-cs/
 
 ```
 
+# 例子代码
 
+见根目录文件TestScpEcgWriter.cpp
 
 # C#转换为C++实现细节
 

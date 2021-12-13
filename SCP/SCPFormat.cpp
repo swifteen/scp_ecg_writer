@@ -73,6 +73,22 @@ int SCPFormat::Write(const string& file)
 {
 	if (file.length() > 0)
 	{
+		FILE* outputFile = fopen(file.c_str(), "wb");
+		if(outputFile != null)
+		{
+			// set pointers
+			setPointers();
+			int fileSize = getFileSize();
+			uchar* buffer = new uchar[fileSize];
+			// use write function for byte arrays.
+			int err = Write(buffer, fileSize,0);
+			if (err == 0)
+			{
+				fwrite(buffer, 1, fileSize, outputFile);
+			}
+			fclose(outputFile);
+			return 0;
+		}
 #if 0//todo
 		// open stream to write to.
 		Stream output = new FileStream(file, FileMode.Create);
