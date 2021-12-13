@@ -18,8 +18,8 @@ SCPSection::SCPSection()
 	_Encoding = "ASCII";
     SectionID = 0;
 	memset(Reserved,0,sizeof(Reserved));
-    SectionID = getSectionID();
-    Empty();
+    SectionID = getSectionID();	
+//    Empty();//Usually you get this error when call your virtual function from constructor or destructor.
 }
 
 /// <summary>

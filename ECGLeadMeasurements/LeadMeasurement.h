@@ -19,13 +19,13 @@ public:
 	short getMeasurement(MeasurementType mt);	
 	void setMeasurement(MeasurementType mt,short measurementValue);
     int getMeasurementCount();
-    short getValueByIndex(int index);
-    MeasurementType getKeyByIndex(int index);
+	bool getMeasurementValid(MeasurementType mt);
 public:
     LeadType leadType ;
     static short NoValue ;
 private:
-    std::map <int,int> _List;
+    short measurementValueArray[MeasurementTypeSum];	
+	bool measurementExistArray[MeasurementTypeSum];	
 };
 }
 }

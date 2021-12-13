@@ -1,4 +1,5 @@
 #include "BytesTool.h"
+#include <cstring>
 #include <iconv.h>
 
 namespace Communication_IO_Tools
@@ -72,19 +73,20 @@ void BytesTool::writeString(const std::string& dstEncoding,
 		
 		if (nrChars > 0)
 		{
-			char * dst_cstr = new char [nrChars];
+			char * dst_cstr = new char[nrChars];
 			if(dst_cstr == null)
 			{
 				delete[] src_cstr;
 				return;
 			}
+			bool convRet = false;
 			do
 			{
 				iconv_t icd = iconv_open(dstEncoding.c_str(), "UTF−8");
 				
 				if((iconv_t)-1 == icd)
 				{
-					SCP_PE("iconv_open error,dstEncoding[%s]\n", dstEncoding.c_str());
+					SCP_PE("iconv_open error,dstEncoding[%s],errno[%d]\n", dstEncoding.c_str(),errno);
 					break;
 				}
 				memset(dst_cstr,0,nrChars);
@@ -97,8 +99,17 @@ void BytesTool::writeString(const std::string& dstEncoding,
 				}
 				
 				iconv_close(icd);	
-				memcpy(buffer + offset,dst_cstr,nrChars);
+				convRet = true;
 			}while(0);
+			if(convRet)
+			{
+				memcpy(buffer + offset,dst_cstr,nrChars);
+			}
+			else
+			{
+				memcpy(buffer + offset,src_cstr,nrChars);
+			}
+			
 			delete[] dst_cstr;
 		}
 		delete[] src_cstr;

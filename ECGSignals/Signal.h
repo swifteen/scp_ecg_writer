@@ -2,6 +2,7 @@
 #define _SIGNAL_H_
 #include "ScpGlobal.h"
 #include "LeadType.h"
+#include <vector>
 using namespace std;
 
 namespace ECGConversion{

@@ -69,6 +69,7 @@ public:
 	
 	void deepCopy(const SCPHeaderField& rhs)
     {
+	    this->Tag = rhs.Tag;
 		this->Length = rhs.Length;
 		if((rhs.Length > 0) && (rhs.Value != null))
 		{
@@ -183,7 +184,7 @@ bool SCPSection1::Works()
 void SCPSection1::Init()
 {
     _Empty();
-	_Fields.reserve(_ResizeSpeed);
+	_Fields.resize(_ResizeSpeed);
     _Fields[_NrFields++] = SCPHeaderField(_DemographicTerminator, 0, null);
 }
 
@@ -249,7 +250,7 @@ int SCPSection1::Insert(const SCPHeaderField& field)
 		SCP_PE("field.Length:%d\n",field.Length);
         return 0x2;
     }
-	SCP_PE("field.Tag:%d\n",field.Tag);
+	SCP_PE("field.Tag:%d,_NrFields:%d,_Fields.size:%d\n",field.Tag,_NrFields ,_Fields.size());
     return 0x1;
 }
 
@@ -333,10 +334,10 @@ int SCPSection1::_SearchField(uchar tag)
     }
     if ((m >= 0) && (m < _NrFields) && (_Fields[m].Tag == tag))
     {
+		SCP_PW("duplicate tag:%d \n",tag);
         return m;
     }
 	
-	SCP_PW("tag:%d not found\n",tag);
     return -1;
 }
 
@@ -379,7 +380,7 @@ bool SCPSection1::CheckInstances()
         }
         return true;
     }
-	SCP_PE("_NrFields:%d,_Fields.size:%d\n",_NrFields,_Fields.size());
+	SCP_PE("NrFields:%d,Fields size:%d\n",_NrFields,(int)_Fields.size());
     return false;
 }
 

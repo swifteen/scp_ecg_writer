@@ -2,6 +2,12 @@ project(scp_ecg_writer)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 #add C++11 support
 set (CMAKE_CXX_STANDARD 11)
+SET(CMAKE_BUILD_TYPE "Debug") 
+SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0  -g -ggdb")
+SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+#解决__FILE__为绝对路径
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst  ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-builtin-macro-redefined")
 
 #库输出目录 
 SET(out_dir "${PROJECT_SOURCE_DIR}/build")
@@ -35,7 +41,7 @@ include_directories(${PROJECT_SOURCE_DIR}
 
 #add_definitions(-DBUILDING_DLL)
 
-add_library(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME} 
 			${Root_FILES} 
 			${Tools_FILES} 
             ${ECGDemographics_FILES} 
@@ -46,7 +52,7 @@ add_library(${PROJECT_NAME}
 			${SCP_FILES}
 			)
 
-#target_link_libraries(${PROJECT_NAME}  json-c)
+target_link_libraries(${PROJECT_NAME}  iconv)
 
 # add the install targets
 install (TARGETS ${PROJECT_NAME}  DESTINATION ${out_dir})

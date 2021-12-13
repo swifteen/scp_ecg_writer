@@ -128,11 +128,45 @@ static int SignalCopy(ISignal* dst)
 
 	// Do copy of signals
 	Signals signals;
+	signals.setNrLeads(12);
+	std::vector<Signal> leads;
+	LeadType leadTypeArray[] = 
+	{	
+		LeadTypeI, 
+		LeadTypeII, 
+		LeadTypeV1, 
+		LeadTypeV2, 
+		LeadTypeV3, 
+		LeadTypeV4, 
+		LeadTypeV5, 
+		LeadTypeV6,
+		LeadTypeIII, 
+		LeadTypeaVR, 
+		LeadTypeaVL, 
+		LeadTypeaVF,
+	};
+	for (int i = 0; i < 12; i++)
+	{
+		Signal leadSignal;
+		leadSignal.Type = leadTypeArray[i];
+		leadSignal.RhythmStart = 0;
+		leadSignal.RhythmEnd = 5000;		
+		leadSignal.Rhythm = new short[5000];
+		for (int k = 0; k < 5000; k++)
+		{
+			leadSignal.Rhythm[k] = i;
+		}
+		leadSignal.RhythmLength = 5000;
+		leads.push_back(leadSignal);
+	}
+	
+	signals.setLeads(leads);
 	if (dst->setSignals(signals) != 0)
 	{
+		//TODO free leadSignal.Rhythm
 		return 8;
 	}
-
+	//TODO free leadSignal.Rhythm
 	return 0;
 }
 
@@ -206,6 +240,16 @@ static int LeadMeasurementCopy(ILeadMeasurement* dst)
 	LeadMeasurements mes(12);
 	mes.Measurements[0] = leadMeas1;
 	mes.Measurements[1] = leadMeas2;
+	mes.Measurements[2] = leadMeas1;
+	mes.Measurements[3] = leadMeas2;
+	mes.Measurements[4] = leadMeas1;
+	mes.Measurements[5] = leadMeas2;
+	mes.Measurements[6] = leadMeas1;
+	mes.Measurements[7] = leadMeas2;
+	mes.Measurements[8] = leadMeas1;
+	mes.Measurements[9] = leadMeas2;
+	mes.Measurements[10] = leadMeas1;
+	mes.Measurements[11] = leadMeas2;
 	if (dst->setLeadMeasurements(mes) != 0)
 	{
 		return 8;
@@ -236,7 +280,7 @@ int main()
 		int ret = SignalCopy(sigdst);
 		if(ret != 0)
 		{
-			SCP_PE("DemographicCopy failed,ret[%d]\n",ret);
+			SCP_PE("SignalCopy failed,ret[%d]\n",ret);
 		}
 	}
 	if (diadst != null)
@@ -244,7 +288,7 @@ int main()
 		int ret = DiagnosticCopy(diadst);
 		if(ret != 0)
 		{
-			SCP_PE("DemographicCopy failed,ret[%d]\n",ret);
+			SCP_PE("DiagnosticCopy failed,ret[%d]\n",ret);
 		}
 	}
 	if (mesdst != null)
@@ -252,7 +296,7 @@ int main()
 		int ret = GlobalMeasurementCopy(mesdst);
 		if(ret != 0)
 		{
-			SCP_PE("DemographicCopy failed,ret[%d]\n",ret);
+			SCP_PE("DemogrGlobalMeasurementCopyaphicCopy failed,ret[%d]\n",ret);
 		}
 	}
 	if (leaddst != null)

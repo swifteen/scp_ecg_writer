@@ -31,6 +31,9 @@ namespace SCP
 // Static settings of format.
 uchar SCPFormat::DefaultSectionVersion = 20;
 uchar SCPFormat::DefaultProtocolVersion = 20;
+int SCPFormat::_MinFileLength = 158;
+int SCPFormat::_MinNrSections = 12;
+int SCPFormat::_MinNrWorkingSections = 2;
 
 SCPFormat::SCPFormat()
 {
@@ -42,9 +45,6 @@ SCPFormat::SCPFormat()
     _DifferenceDataSection6Used = 2;
     _UseLeadMeasurements = false;
 
-    _MinFileLength = 158;
-    _MinNrSections = 12;
-    _MinNrWorkingSections = 2;
     // data structure of format.
     _CRC = 0;
     _Default = {	new SCPSection0(),

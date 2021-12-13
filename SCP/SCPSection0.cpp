@@ -59,7 +59,7 @@ ushort SCPSection0::_SectionID = 0;
 SCPSection0::SCPSection0()
 {
     // Part of the stored Data Structure.
-    _MandatoryPointers.reserve(kNrMandatory);
+    _MandatoryPointers.resize(kNrMandatory);
 }
 
 int SCPSection0::_Write(uchar* buffer, int bufferLength, int offset)
@@ -123,7 +123,7 @@ void SCPSection0::setNrPointers(int nr)
     if ((nr != current)
             &&  (nr >= kNrMandatory))
     {
-		_MandatoryPointers.reserve(kNrMandatory);
+		_MandatoryPointers.resize(kNrMandatory);
     }
 }
 

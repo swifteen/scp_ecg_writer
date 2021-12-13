@@ -63,6 +63,7 @@ enum MeasurementType
     MeasurementTypeRRonset = MeasurementTypeSoffset,
     MeasurementTypeSSonset = MeasurementTypeRRoffset,
     MeasurementTypeRRRonset = MeasurementTypeSSoffset,
+    MeasurementTypeSum,
 };
 
 

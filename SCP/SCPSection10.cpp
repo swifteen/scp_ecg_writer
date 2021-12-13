@@ -56,6 +56,7 @@ public:
                 &&	(temp >= ushort_MinValue))
         {
             _LeadLength = (ushort) temp;
+			setLeadLength(_LeadLength);
         }
     }
     int getCount()
@@ -297,18 +298,20 @@ int SCPSection10::setLeadMeasurements(LeadMeasurements& mes)
     for (int i=0;i < nrLeads;i++)
     {
         int nrValues = mes.Measurements[i].getMeasurementCount();
-
-        nrValues = (nrLeads > 0) ? ((int) mes.Measurements[i].getKeyByIndex(nrValues-1))+1 : 0;
+//        nrValues = (nrLeads > 0) ? ((int) mes.Measurements[i].getKeyByIndex(nrValues-1))+1 : 0;
 
         _LeadMeasurements[i].setLeadType(mes.Measurements[i].leadType);
-        _LeadMeasurements[i].setCount(nrValues);
+        _LeadMeasurements[i].setCount(MeasurementTypeSum);
 
         nrValues = mes.Measurements[i].getMeasurementCount();
 
-        for (int j=0;j < nrValues;j++)
+        for (int j=0;j < (int)MeasurementTypeSum;j++)//每个导联的测量矩阵
         {
-        	_LeadMeasurements[i].setMeasurement(mes.Measurements[i].getKeyByIndex(j),
-												mes.Measurements[i].getValueByIndex(j));
+        	if(mes.Measurements[i].getMeasurementValid((MeasurementType) i))
+        	{
+				_LeadMeasurements[i].setMeasurement((MeasurementType)j,
+													mes.Measurements[i].getMeasurement((MeasurementType)j));
+			}
 		}
     }
 

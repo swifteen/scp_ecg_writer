@@ -14,77 +14,67 @@ short LeadMeasurement::NoValue = 29999;
 LeadMeasurement::LeadMeasurement()
 {
 	leadType = LeadTypeUnknown;
-    _List.clear();
+	for (int i = 0; i < MeasurementTypeSum; i++)
+	{
+		measurementExistArray[i] = false;
+	}	
 }
 
 LeadMeasurement::LeadMeasurement(LeadType lt)
 {
     leadType = lt;
-    _List.clear();
+	for (int i = 0; i < MeasurementTypeSum; i++)
+	{
+		measurementExistArray[i] = false;
+	}	
 }
 
 short LeadMeasurement::getMeasurement(MeasurementType mt)
 {
-    int index =-1;
-
-    for(int i=0;i<_List.size();i++)
-    {
-        if(_List.at(i)==mt)
-        {
-            index =i;
-            break;
-        }
-    }
-    return  (index >= 0 ? (short) _List.at(index) : NoValue);  
+	if((mt < MeasurementTypeSum) && (measurementExistArray[(int)mt]))
+	{
+		return measurementValueArray[(int)mt];
+	}
+	return NoValue;
 }
 
 void LeadMeasurement::setMeasurement(MeasurementType mt,short measurementValue)
 {
-    std::map<int,int>::iterator  it;
-
-    int index =-1;
-
-    for(int i=0;i<_List.size();i++)
-    {
-        if(_List.at(i)==mt)
-        {
-            index =i;
-            break;
-        }
-    }
-
-    if (measurementValue == NoValue)
-    {
-        if (index >= 0)
-        {
-            it=_List.find(index);
-            _List.erase(it);
-        }
-    }
-    else
-    {
-        if (index >= 0)
-            _List[index] = measurementValue;
-        else
-            _List[mt] = measurementValue;
-    }
+	if((MeasurementTypeNone < mt) && (mt < MeasurementTypeSum))
+	{
+		if (measurementValue == NoValue)
+		{
+			measurementExistArray[(int)mt] = false;
+		}
+		else
+		{
+			measurementExistArray[(int)mt] = true;
+			measurementValueArray[(int)mt] = measurementValue;
+		}
+	}
 }
 
 int LeadMeasurement::getMeasurementCount()
 {
-    return _List.size();
+	int count = 0;
+	for (int i = 0; i < MeasurementTypeSum; i++)
+	{
+		if(measurementExistArray[i])
+		{
+			return count++;
+		}
+	}	
+    return count;
 }
 
-short LeadMeasurement::getValueByIndex(int index)
+bool LeadMeasurement::getMeasurementValid(MeasurementType mt)
 {
-    return (index >= 0) && (index < _List.size()) ? (short) _List.at(index) : NoValue;
+	if(mt < MeasurementTypeSum) 
+	{
+		return measurementExistArray[(int)mt];
+	}
+	return false;
 }
-
-MeasurementType  LeadMeasurement::getKeyByIndex(int index)
-{
-    return (index >= 0) && (index < _List.size()) ? (MeasurementType) ((int) _List.at(index)) :(MeasurementType) -1;
-}
-
 
 }
 }
