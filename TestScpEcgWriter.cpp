@@ -129,6 +129,8 @@ static int SignalCopy(ISignal* dst)
 	// Do copy of signals
 	Signals signals;
 	signals.setNrLeads(12);
+	signals.SetAVM(2.5);// AVM in uV
+	signals.RhythmSamplesPerSecond = 500;
 	std::vector<Signal> leads;
 	LeadType leadTypeArray[] = 
 	{	

@@ -41,7 +41,7 @@ Signal& Signal::operator=(const Signal& rhs)
 Signal::~Signal()
 {
 	delete[] Rhythm;
-	SCP_PD("Type[%d]\n",(int)Type);
+//	SCP_PD("Type[%d]\n",(int)Type);
 }
 
 void Signal::deepCopy(const Signal& rhs)

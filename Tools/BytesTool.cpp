@@ -86,7 +86,7 @@ void BytesTool::writeString(const std::string& dstEncoding,
 				
 				if((iconv_t)-1 == icd)
 				{
-					SCP_PE("iconv_open error,dstEncoding[%s],errno[%d]\n", dstEncoding.c_str(),errno);
+					SCP_PE("iconv_open error,dstEncoding[%s],errno[%d],src_cstr[%s]\n", dstEncoding.c_str(),errno,src_cstr);
 					break;
 				}
 				memset(dst_cstr,0,nrChars);

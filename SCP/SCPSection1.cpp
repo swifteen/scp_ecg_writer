@@ -334,7 +334,7 @@ int SCPSection1::_SearchField(uchar tag)
     }
     if ((m >= 0) && (m < _NrFields) && (_Fields[m].Tag == tag))
     {
-		SCP_PW("duplicate tag:%d \n",tag);
+		SCP_PD("_SearchField ok tag:%d \n",tag);
         return m;
     }
 	
@@ -833,7 +833,7 @@ void SCPSection1::setTimeAcquisition(const DateTime& time)
         scptime.Sec = (uchar) time.Second;
         scptime.Write(time_field.Value, time_field.Length,0);
 
-        Insert(field);
+        Insert(time_field);
     }
 }
 
