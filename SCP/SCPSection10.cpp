@@ -297,7 +297,7 @@ int SCPSection10::setLeadMeasurements(LeadMeasurements& mes)
         _LeadMeasurements[i].setCount(MeasurementTypeSum);
         nrValues = mes.Measurements[i].getMeasurementCount();
 
-        for (int j = 0; j < (int)MeasurementTypeSum; j++) { //每个导联的测量矩阵
+        for (int j = 0; j < (int)MeasurementTypeSum; j++) { 
             if (mes.Measurements[i].getMeasurementValid((MeasurementType) i)) {
                 _LeadMeasurements[i].setMeasurement((MeasurementType)j,
                                                     mes.Measurements[i].getMeasurement((MeasurementType)j));

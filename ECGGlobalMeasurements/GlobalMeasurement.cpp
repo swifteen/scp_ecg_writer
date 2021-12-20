@@ -131,6 +131,12 @@ void GlobalMeasurement::setQTdur(ushort QTdur)
         Toffset = NoValue;
     }
 }
+void GlobalMeasurement::setAxis(short Paxis, short QRSaxis, short Taxis)
+{
+    this->Paxis = Paxis;
+    this->QRSaxis = QRSaxis;
+    this->Taxis = Taxis;
+}
 
 ushort GlobalMeasurement::calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType)
 {

@@ -57,6 +57,7 @@ ushort SCPSection0::_SectionID = 0;
 
 SCPSection0::SCPSection0()
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
     _MandatoryPointers.resize(kNrMandatory);
 }

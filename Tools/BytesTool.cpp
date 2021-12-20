@@ -23,11 +23,11 @@ bool BytesTool::writeBytes(long values, uchar* buffer, int bufferLength, int off
             buffer[offset + (littleEndian ? read : (bytes - read - 1))] = (uchar)((values >> (read << 3)) & 0xff);
         }
 
-        SCP_PD("writeBytes ok,values:%ld,bufferLength:%d,offset:%d,bytes:%d\n", values, bufferLength, offset, bytes);
+        //      SCP_PD("values:%ld,bufferLength:%d,offset:%d,bytes:%d\n",values,bufferLength,offset,bytes);
         return true;
     }
 
-    SCP_PE("writeBytes error,values:%ld,bufferLength:%d,offset:%d,bytes:%d\n", values, bufferLength, offset, bytes);
+    SCP_PE("values:%ld,bufferLength:%d,offset:%d,bytes:%d\n", values, bufferLength, offset, bytes);
     return false;
 }
 
@@ -59,62 +59,102 @@ void BytesTool::writeString(const std::string& dstEncoding,
 {
     if ((src.length() > 0) && (buffer != null)) {
         char* src_cstr = new char [src.length() + 1];
+        char* tmp_src_cstr = src_cstr;
 
         if (src_cstr == null) {
             return;
         }
 
+        memset(src_cstr, 0, src.length() + 1);
         snprintf(src_cstr, src.length() + 1, "%s", src.c_str());
-        size_t src_cstr_len = strlen(src_cstr);
+        size_t src_cstr_len = strlen(src_cstr) + 1;
         //The maximum number of characters produced by decoding the specified number of bytes.
         size_t nrChars = (bufferLength < (offset + length)) ? bufferLength - offset : length;
         nrChars = (src.length() < nrChars) ? src.length() : nrChars;
 
         if (nrChars > 0) {
-            char* dst_cstr = new char[nrChars];
+            /* Assign enough space to put the UTF-8. */
+            size_t outbytesleft = 2 * nrChars;
+            char* outbuf = new char[outbytesleft];
 
-            if (dst_cstr == null) {
+            if (outbuf == null) {
                 delete[] src_cstr;
                 return;
             }
 
-            bool convRet = false;
+            memset(outbuf, 0, outbytesleft);
+            int ret = convert_charset("UTF-8", dstEncoding.c_str(), src_cstr, src_cstr_len, outbuf, &outbytesleft);
 
-            do {
-                iconv_t icd = iconv_open(dstEncoding.c_str(), "UTF−8");
-
-                if ((iconv_t) - 1 == icd) {
-                    SCP_PE("iconv_open error,dstEncoding[%s],errno[%d],src_cstr[%s]\n", dstEncoding.c_str(), errno, src_cstr);
-                    break;
-                }
-
-                memset(dst_cstr, 0, nrChars);
-                int ret = iconv(icd, &src_cstr, &src_cstr_len, &dst_cstr, &nrChars);
-
-                if (0 != ret) {
-                    SCP_PE("iconv error,ret[%d]dstEncoding[%s]src_cstr[%s]\n", ret, dstEncoding.c_str(), src_cstr);
-                    break;
-                }
-
-                iconv_close(icd);
-                convRet = true;
+            if (0 == ret) {
+                memcpy(buffer + offset, outbuf, outbytesleft);
             }
-            while (0);
-
-            if (convRet) {
-                memcpy(buffer + offset, dst_cstr, nrChars);
-            }
-            else {
-                memcpy(buffer + offset, src_cstr, nrChars);
+            else
+            {
+                SCP_PD("iconv failed: in string '%s', length %d, "
+                       "out string '%s', length %d",
+                       src_cstr, (int)src_cstr_len, outbuf, (int)outbytesleft);
+                memcpy(buffer + offset, src_cstr, src_cstr_len);
             }
 
-            delete[] dst_cstr;
+            delete[] outbuf;
         }
 
         delete[] src_cstr;
     }
 }
 
+int BytesTool::convert_charset(const char* from_charset,
+                               const char* to_charset,
+                               char* src_buf,
+                               size_t src_len,
+                               char* dst_buf,
+                               size_t* p_dst_len)
+{
+    iconv_t icd = iconv_open(to_charset, from_charset);
+
+    if ((iconv_t) - 1 == icd) {
+        /* Initialization failure. */
+        if (errno == EINVAL) {
+            SCP_PE("Conversion from '%s' to '%s' is not supported.\n", from_charset, to_charset);
+        }
+        else {
+            SCP_PE("Initialization failure: %s\n", strerror(errno));
+        }
+
+        return -1;
+    }
+
+    char** pin = &src_buf;
+    char** pout = &dst_buf;
+    size_t iconv_value = iconv(icd, pin, &src_len, pout, p_dst_len);
+
+    if (iconv_value == (size_t) - 1) {
+        switch (errno) {
+            /* See "man 3 iconv" for an explanation. */
+            case EILSEQ:
+                SCP_PE("Invalid multibyte sequence.\n");
+                break;
+
+            case EINVAL:
+                SCP_PE("Incomplete multibyte sequence.\n");
+                break;
+
+            case E2BIG:
+                SCP_PE("No more room.\n");
+                break;
+
+            default:
+                SCP_PE("Error: %s.\n", strerror(errno));
+                break;
+        }
+
+        iconv_close(icd);
+        return -1;
+    }
+
+    iconv_close(icd);
+    return 0;
+}
 /// <summary>
 /// Function to copy content of one buffer to another.
 /// </summary>

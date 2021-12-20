@@ -41,7 +41,12 @@ public:
                             int bufferLength,
                             int offset,
                             int length);
-
+    static int convert_charset(const char* from_charset,
+                               const char* to_charset,
+                               char* src_buf,
+                               size_t src_len,
+                               char* dst_buf,
+                               size_t* dst_len);
     /// <summary>
     /// Function to copy content of one buffer to another.
     /// </summary>

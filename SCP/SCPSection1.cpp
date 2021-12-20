@@ -47,6 +47,9 @@ public:
 
     SCPHeaderField(const SCPHeaderField& rhs)
     {
+        Tag = 0;
+        Length = 0;
+        Value = null;//need init as null
         deepCopy(rhs);
     }
 
@@ -54,8 +57,11 @@ public:
     {
         // Prevent self-assignment
         if (&rhs != this) {
-            delete[] this->Value;
-            this->Value = null;
+            if (this->Value != null) {
+                delete[] this->Value;
+                this->Value = null;
+            }
+
             deepCopy(rhs);
         }
 
@@ -64,9 +70,11 @@ public:
 
     ~SCPHeaderField()
     {
-        delete[] Value;
+        if (this->Value != null) {
+            delete[] this->Value;
+            this->Value = null;
+        }
     }
-
     void deepCopy(const SCPHeaderField& rhs)
     {
         this->Tag = rhs.Tag;
@@ -105,6 +113,7 @@ int SCPSection1::_ResizeSpeed = 8;
 SCPSection1::SCPSection1():
     _NrFields(0)
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
     _Fields.clear();
 }
@@ -112,6 +121,7 @@ SCPSection1::SCPSection1():
 int SCPSection1::_Write(uchar* buffer, int bufferLength, int offset)
 {
     for (int loper = 0; loper < _NrFields; loper++) {
+        SCP_PD("loper[%d],Tag[%d],FieldsLength[%d]\n", loper, _Fields[loper].Tag, _Fields[loper].Length);
         BytesTool::writeBytes(_Fields[loper].Tag, buffer, bufferLength, offset, sizeof(_Fields[loper].Tag), true);
         offset += sizeof(_Fields[loper].Tag);
         BytesTool::writeBytes(_Fields[loper].Length, buffer, bufferLength, offset, sizeof(_Fields[loper].Length), true);
@@ -185,6 +195,7 @@ void SCPSection1::Init()
 {
     _Empty();
     _Fields.resize(_ResizeSpeed);
+    SCP_PD("Init\n");
     _Fields[_NrFields++] = SCPHeaderField(_DemographicTerminator, 0, null);
 }
 
@@ -250,7 +261,7 @@ int SCPSection1::Insert(const SCPHeaderField& field)
         return 0x2;
     }
 
-    SCP_PE("field.Tag:%d,_NrFields:%d,_Fields.size:%d\n", field.Tag, _NrFields, _Fields.size());
+    SCP_PE("field.Tag:%d,_NrFields:%d,_Fields.size:%d\n", field.Tag, _NrFields, (int)_Fields.size());
     return 0x1;
 }
 
@@ -288,7 +299,9 @@ int SCPSection1::Remove(uchar tag)
 /// </summary>
 void SCPSection1::Resize()
 {
+    SCP_PD("_NrFields[%d],_ResizeSpeed[%d]\n", _NrFields, _ResizeSpeed);
     _Fields.resize(_NrFields + _ResizeSpeed);//additional default-inserted elements are appended
+    //resize会执行拷贝构造
 }
 
 #if 0
@@ -334,7 +347,7 @@ int SCPSection1::_SearchField(uchar tag)
     }
 
     if ((m >= 0) && (m < _NrFields) && (_Fields[m].Tag == tag)) {
-        SCP_PD("_SearchField ok tag:%d \n", tag);
+        //      SCP_PD("_SearchField ok tag:%d \n",tag);
         return m;
     }
 
@@ -495,7 +508,7 @@ int SCPSection1::setLanguageSupportCode(const std::string& enc)
 #endif
 
     if (enc.compare("ASCII") == 0) {
-        lsc = 0x27;
+        lsc = 0;
     }
     else if (enc.compare("GB18030") == 0) {
         lsc = 0x27;
@@ -523,9 +536,6 @@ int SCPSection1::setLanguageSupportCode(const std::string& enc)
     }
     else if (enc.compare("ISO−8859−13") == 0) {
         lsc = 0x33;
-    }
-    else if (enc.compare("ISO−8859−15") == 0) {
-        lsc = 0x3b;
     }
     else if (enc.compare("ISO−8859−15") == 0) {
         lsc = 0x3b;
@@ -615,6 +625,7 @@ void SCPSection1::setFirstName(const string& value)
 
 void SCPSection1::setPatientID(const string& value)
 {
+    SCP_PD("PatientID:%s\n", value.c_str());
     setText(2, value);
 }
 

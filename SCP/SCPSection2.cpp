@@ -85,6 +85,7 @@ ushort SCPSection2::_DefaultTable = 19999;
 /// </remarks>
 SCPSection2::SCPSection2()
 {
+    SCPSection::Empty();
     // currently selected table.
     _Selected = 0;
     // Part of the stored Data Structure.

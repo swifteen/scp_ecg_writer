@@ -45,6 +45,10 @@ public:
     }
     SCPStatement(const SCPStatement& rhs)
     {
+        SequenceNr = 0;
+        TypeID = 0;
+        Length = 0;
+        Field = null;
         deepCopy(rhs);
     }
 

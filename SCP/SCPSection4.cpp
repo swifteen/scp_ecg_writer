@@ -132,6 +132,7 @@ ushort SCPSection4::_SectionID = 4;
 /// </summary>
 SCPSection4::SCPSection4()
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
     _MedianDataLength = 0;
     _FirstFiducial = 0;

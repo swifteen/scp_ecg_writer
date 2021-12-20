@@ -9,6 +9,49 @@ namespace ECGConversion
 {
 namespace SCP
 {
+class SCPExtraMeasurements
+{
+public:
+    SCPExtraMeasurements();
+    /// <summary>
+    /// Function to read SCP extra measurements.
+    /// </summary>
+    /// <param name="buffer">byte array to read from</param>
+    /// <param name="offset">position to start reading</param>
+    /// <returns>0 on success</returns>
+
+    /// <summary>
+    /// Function to write SCP extra measurements.
+    /// </summary>
+    /// <param name="buffer">byte array to write into</param>
+    /// <param name="offset">position to start writing</param>
+    /// <returns>0 on success</returns>
+    int Write(uchar* buffer, int bufferLength, int offset);
+    /// <summary>
+    /// Function to empty this extra measurements.
+    /// </summary>
+    void Empty();
+    /// <summary>
+    /// Function to get length of extra measurements.
+    /// </summary>
+    /// <returns>length of extra measurements</returns>
+    int getLength();
+    /// <summary>
+    /// Function to check if extra measurements works
+    /// </summary>
+    /// <returns>if writeable is true</returns>
+    bool Works();
+public:
+    ushort VentRate ;
+    ushort AtrialRate;
+    ushort QTc;
+    uchar FormulaType;
+    ushort TaggedFieldSize;
+#if 0
+    // Tagged Field are not implemented.
+    uchar* TaggedFields;
+#endif
+};
 /// <summary>
 /// Class contains section 7 (contains the global measurements section).
 /// </summary>
@@ -63,8 +106,7 @@ private:
     /// <summary>
     /// Class containing SCP extra measurements. (no compatability with UNIPRO at all)
     /// </summary>
-    class SCPExtraMeasurements;
-    SCPExtraMeasurements* _ExtraMeasurements;
+    SCPExtraMeasurements _ExtraMeasurements;
 
     // Manufactor specific block (Not implemented, because UNIPRO doesn't store this kind of info).
     uchar* _Rest ;

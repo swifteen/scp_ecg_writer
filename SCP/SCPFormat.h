@@ -42,9 +42,6 @@ public:
     ~SCPFormat();
     //region IECGFormat Members
     int Write(const string& file);
-#if 0//todo
-    int Write(Stream output);
-#endif
     int Write(uchar* buffer, int bufferLength, int offset);
     int getFileSize();
 
@@ -65,16 +62,6 @@ public:
 
     //region IDisposable Members
     void Dispose();
-
-#if 0//todo
-    /// <summary>
-    /// Function to convert to SCP.
-    /// </summary>
-    /// <param name="src">an ECG file to convert</param>
-    /// <param name="dst">SCP file returned</param>
-    /// <returns>0 on success</returns>
-    static int ToSCP(IECGFormat src, ECGConfig cfg, out IECGFormat dst);
-#endif
 private:
     /// <summary>
     /// Function to empty entire format.

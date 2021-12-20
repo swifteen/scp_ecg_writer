@@ -28,6 +28,7 @@ public:
     ushort getQRSdur();
     void setQTdur(ushort QTdur);
     ushort getQTdur();
+    void setAxis(short Paxis, short QRSaxis, short Taxis);
     void setQTc(ushort QTc);
     ushort getQTc();
     void setQTcType(GlobalMeasurement::QTcCalcType QTcType);

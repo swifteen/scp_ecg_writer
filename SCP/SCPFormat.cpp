@@ -87,44 +87,15 @@ int SCPFormat::Write(const string& file)
             }
 
             fclose(outputFile);
+            delete [] buffer;
             return 0;
         }
 
-#if 0//todo
-        // open stream to write to.
-        Stream output = new FileStream(file, FileMode.Create);
-        // use write function for streams.
-        int ret = Write(output);
-        // close stream after writing.
-        output.Close();
-        return ret << 1;
-#endif
+        return 2;
     }
 
     return 0x1;
 }
-#if 0//todo
-
-int SCPFormat::Write(Stream output)
-{
-    if ((output != null)
-        && (output.CanWrite)) {
-        // set pointers
-        setPointers();
-        byte[] buffer = new byte[getFileSize()];
-        // use write function for byte arrays.
-        int err = Write(buffer, 0);
-
-        if (err == 0) {
-            output.Write(buffer, 0, buffer.Length);
-        }
-
-        return err << 1;
-    }
-
-    return 0x1;
-}
-#endif
 
 int SCPFormat::Write(uchar* buffer, int bufferLength, int offset)
 {
@@ -510,39 +481,5 @@ void SCPFormat::Dispose()
         _Default.clear();
     }
 }
-
-#if 0//todo
-/// <summary>
-/// Function to convert to SCP.
-/// </summary>
-/// <param name="src">an ECG file to convert</param>
-/// <param name="dst">SCP file returned</param>
-/// <returns>0 on success</returns>
-static int SCPFormat::ToSCP(IECGFormat src, ECGConfig cfg, out IECGFormat dst)
-{
-    dst = null;
-
-    if (src != null) {
-        dst = new SCPFormat();
-
-        if ((cfg != null)
-            && ((dst.Config == null)
-                ||  !dst.Config.Set(cfg))) {
-            return 1;
-        }
-
-        int err = ECGConverter.Convert(src, dst);
-
-        if (err != 0) {
-            return err;
-        }
-
-        ((SCPFormat)dst).setPointers();
-        return 0;
-    }
-
-    return 1;
-}
-#endif
 }
 }

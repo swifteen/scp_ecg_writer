@@ -10,114 +10,100 @@ namespace ECGConversion
 namespace SCP
 {
 
-class SCPSection7::SCPExtraMeasurements
+SCPExtraMeasurements::SCPExtraMeasurements()
 {
-public:
-    SCPExtraMeasurements()
-    {
-        VentRate = GlobalMeasurement::NoValue;
-        AtrialRate = GlobalMeasurement::NoValue;
-        QTc = GlobalMeasurement::NoValue;
-        FormulaType = 0;
-        TaggedFieldSize = 0;
-#if 0
-        // Tagged Field are not implemented.
-        TaggedFields = null;
-#endif
-    }
-    /// <summary>
-    /// Function to read SCP extra measurements.
-    /// </summary>
-    /// <param name="buffer">byte array to read from</param>
-    /// <param name="offset">position to start reading</param>
-    /// <returns>0 on success</returns>
-
-    /// <summary>
-    /// Function to write SCP extra measurements.
-    /// </summary>
-    /// <param name="buffer">byte array to write into</param>
-    /// <param name="offset">position to start writing</param>
-    /// <returns>0 on success</returns>
-    int Write(uchar* buffer, int bufferLength, int offset)
-    {
-        BytesTool::writeBytes(VentRate, buffer, bufferLength, offset, sizeof(VentRate), true);
-        offset += sizeof(VentRate);
-        BytesTool::writeBytes(AtrialRate, buffer, bufferLength, offset, sizeof(AtrialRate), true);
-        offset += sizeof(AtrialRate);
-        BytesTool::writeBytes(QTc, buffer, bufferLength, offset, sizeof(QTc), true);
-        offset += sizeof(QTc);
-        BytesTool::writeBytes(FormulaType, buffer, bufferLength, offset, sizeof(FormulaType), true);
-        offset += sizeof(FormulaType);
-        BytesTool::writeBytes(TaggedFieldSize, buffer, bufferLength, offset, sizeof(TaggedFieldSize), true);
-        offset += sizeof(TaggedFieldSize);
-#if 0
-
-        if (TaggedFields != null) {
-            offset += BytesTool::copy(buffer, offset, TaggedFields, 0, TaggedFieldSize);
-        }
-
-#endif
-        return 0x0;
-    }
-    /// <summary>
-    /// Function to empty this extra measurements.
-    /// </summary>
-    void Empty()
-    {
-        VentRate = 0;
-        AtrialRate = 0;
-        QTc = 0;
-        FormulaType = 0;
-        TaggedFieldSize = 0;
-#if 0
-        TaggedFields = null;
-#endif
-    }
-    /// <summary>
-    /// Function to get length of extra measurements.
-    /// </summary>
-    /// <returns>length of extra measurements</returns>
-    int getLength()
-    {
-        if (Works()) {
-            int sum = sizeof(VentRate) + sizeof(AtrialRate);
-            sum += sizeof(QTc) + sizeof(FormulaType) + sizeof(TaggedFieldSize);
-            sum += TaggedFieldSize;
-            return ((sum % 2) == 0 ? sum : sum + 1);
-        }
-
-        return 0;
-    }
-    /// <summary>
-    /// Function to check if extra measurements works
-    /// </summary>
-    /// <returns>if writeable is true</returns>
-    bool Works()
-    {
-        if (TaggedFieldSize == 0) {
-            return true;
-        }
-
-#if 0
-        else if ((TaggedFields != null)
-                 && (TaggedFields.Length >= TaggedFieldSize)) {
-            return true;
-        }
-
-#endif
-        return false;
-    }
-public:
-    ushort VentRate ;
-    ushort AtrialRate;
-    ushort QTc;
-    uchar FormulaType;
-    ushort TaggedFieldSize;
+    VentRate = GlobalMeasurement::NoValue;
+    AtrialRate = GlobalMeasurement::NoValue;
+    QTc = GlobalMeasurement::NoValue;
+    FormulaType = 0;
+    TaggedFieldSize = 0;
 #if 0
     // Tagged Field are not implemented.
-    uchar* TaggedFields;
+    TaggedFields = null;
 #endif
-};
+}
+/// <summary>
+/// Function to read SCP extra measurements.
+/// </summary>
+/// <param name="buffer">byte array to read from</param>
+/// <param name="offset">position to start reading</param>
+/// <returns>0 on success</returns>
+
+/// <summary>
+/// Function to write SCP extra measurements.
+/// </summary>
+/// <param name="buffer">byte array to write into</param>
+/// <param name="offset">position to start writing</param>
+/// <returns>0 on success</returns>
+int SCPExtraMeasurements::Write(uchar* buffer, int bufferLength, int offset)
+{
+    BytesTool::writeBytes(VentRate, buffer, bufferLength, offset, sizeof(VentRate), true);
+    offset += sizeof(VentRate);
+    BytesTool::writeBytes(AtrialRate, buffer, bufferLength, offset, sizeof(AtrialRate), true);
+    offset += sizeof(AtrialRate);
+    BytesTool::writeBytes(QTc, buffer, bufferLength, offset, sizeof(QTc), true);
+    offset += sizeof(QTc);
+    BytesTool::writeBytes(FormulaType, buffer, bufferLength, offset, sizeof(FormulaType), true);
+    offset += sizeof(FormulaType);
+    BytesTool::writeBytes(TaggedFieldSize, buffer, bufferLength, offset, sizeof(TaggedFieldSize), true);
+    offset += sizeof(TaggedFieldSize);
+#if 0
+
+    if (TaggedFields != null) {
+        offset += BytesTool::copy(buffer, offset, TaggedFields, 0, TaggedFieldSize);
+    }
+
+#endif
+    return 0x0;
+}
+/// <summary>
+/// Function to empty this extra measurements.
+/// </summary>
+void SCPExtraMeasurements::Empty()
+{
+    VentRate = 0;
+    AtrialRate = 0;
+    QTc = 0;
+    FormulaType = 0;
+    TaggedFieldSize = 0;
+#if 0
+    TaggedFields = null;
+#endif
+}
+/// <summary>
+/// Function to get length of extra measurements.
+/// </summary>
+/// <returns>length of extra measurements</returns>
+int SCPExtraMeasurements::getLength()
+{
+    if (Works()) {
+        int sum = sizeof(VentRate) + sizeof(AtrialRate);
+        sum += sizeof(QTc) + sizeof(FormulaType) + sizeof(TaggedFieldSize);
+        sum += TaggedFieldSize;
+        return ((sum % 2) == 0 ? sum : sum + 1);
+    }
+
+    return 0;
+}
+/// <summary>
+/// Function to check if extra measurements works
+/// </summary>
+/// <returns>if writeable is true</returns>
+bool SCPExtraMeasurements::Works()
+{
+    if (TaggedFieldSize == 0) {
+        return true;
+    }
+
+#if 0
+    else if ((TaggedFields != null)
+             && (TaggedFields.Length >= TaggedFieldSize)) {
+        return true;
+    }
+
+#endif
+    return false;
+}
 
 
 /// <summary>
@@ -246,6 +232,7 @@ public:
     int Write(uchar* buffer, int bufferLength, int offset)
     {
         if ((offset + Size) > bufferLength) {
+            SCP_PE("offset[%d],Size[%d],bufferLength[%d]\n", offset, Size, bufferLength);
             return 0x1;
         }
 
@@ -269,6 +256,7 @@ ushort SCPSection7::_SectionID = 7;
 
 SCPSection7::SCPSection7()
 {
+    SCPSection::Empty();
     // Special variables for this section.
     _AfterSpikes = false;
     _AfterSpikesInfo = false;
@@ -283,7 +271,6 @@ SCPSection7::SCPSection7()
     _SpikesInfo.clear();
     _NrQRS = 0;
     _QRSType = null;
-    _ExtraMeasurements = new SCPExtraMeasurements;
     // Manufactor specific block (Not implemented, because UNIPRO doesn't store this kind of info).
     _Rest = null;
 }
@@ -292,7 +279,6 @@ SCPSection7::~SCPSection7()
 {
     delete[] _QRSType;
     delete[] _Rest;
-    delete _ExtraMeasurements;
 }
 
 int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
@@ -311,6 +297,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
             int err = _Measurements[loper].Write(buffer, bufferLength, offset);
 
             if (err != 0) {
+                SCP_PE("_Measurements[%d].Write failed,_NrRefTypeQRS[%d]\n", loper, _NrRefTypeQRS);
                 return 0x1;
             }
 
@@ -323,6 +310,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
             int err = _Spikes[loper].Write(buffer, bufferLength, offset);
 
             if (err != 0) {
+                SCP_PE("_Spikes[%d].Write failed,_NrSpikes[%d]\n", loper, _NrSpikes);
                 return 0x2;
             }
 
@@ -330,6 +318,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
         }
 
         if (!_AfterSpikes) {
+            SCP_PD("no _SpikesInfo\n");
             return 0;
         }
 
@@ -337,6 +326,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
             int err = _SpikesInfo[loper].Write(buffer, bufferLength, offset);
 
             if (err != 0) {
+                SCP_PE("_SpikesInfo[%d].Write failed,_NrSpikes[%d]\n", loper, _NrSpikes);
                 return 0x4;
             }
 
@@ -345,6 +335,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
     }
 
     if (!_AfterSpikesInfo) {
+        SCP_PD("no _QRSType\n");
         return 0;
     }
 
@@ -360,19 +351,21 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
     }
 
     if (!_AfterQRSType) {
+        SCP_PD("no _ExtraMeasurements\n");
         return 0;
     }
 
-    if (_ExtraMeasurements != null) {
-        int err = _ExtraMeasurements->Write(buffer, bufferLength, offset);
+    //    if (_ExtraMeasurements != null)
+    //    {
+    int err = _ExtraMeasurements.Write(buffer, bufferLength, offset);
 
-        if (err != 0) {
-            return 0x8;
-        }
-
-        offset += _ExtraMeasurements->getLength();
+    if (err != 0) {
+        SCP_PE("_ExtraMeasurements.Write failed\n");
+        return 0x8;
     }
 
+    offset += _ExtraMeasurements.getLength();
+    //    }
 #if 0 //for read
 
     if ((_Rest != null)
@@ -381,6 +374,7 @@ int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
     }
 
 #endif
+    SCP_PD("over\n");
     return 0x0;
 }
 
@@ -396,11 +390,9 @@ void SCPSection7::_Empty()
     _AfterSpikes = false;
     _NrQRS = 0;
     _AfterQRSType = false;
-    delete[] _QRSType;
     _QRSType = null;
-    delete[] _Rest;
     _Rest = null;
-    _ExtraMeasurements->Empty();
+    _ExtraMeasurements.Empty();
 }
 
 int SCPSection7::_getLength()
@@ -414,7 +406,7 @@ int SCPSection7::_getLength()
             sum += sizeof(_NrQRS) + (_NrQRS * sizeof(uchar));
 
             if (_AfterQRSType) {
-                sum += _ExtraMeasurements->getLength();
+                sum += _ExtraMeasurements.getLength();
 #if 0 //for read
 
                 if (_Rest != null) {
@@ -428,6 +420,7 @@ int SCPSection7::_getLength()
         return sum;
     }
 
+    SCP_PW("Length is 0\n");
     return 0;
 }
 
@@ -453,8 +446,7 @@ bool SCPSection7::Works()
 
                 if ((_NrQRS == 0)
                     || (_QRSType != null)) {
-                    return (!_AfterQRSType
-                            || (_ExtraMeasurements != null));
+                    return ((!_AfterQRSType)  || (_ExtraMeasurements.Works()));
                 }
             }
         }
@@ -462,6 +454,7 @@ bool SCPSection7::Works()
         return true;
     }
 
+    SCP_PW("not work\n");
     return false;
 }
 
@@ -504,22 +497,22 @@ int SCPSection7::setGlobalMeasurements(GlobalMeasurements& mes)
         delete[] _QRSType;
         _QRSType = null;
         _AfterQRSType = true;
+        //      if(_ExtraMeasurements != null)
+        //      {
+        _ExtraMeasurements.VentRate = mes.getVentRate();
+        _ExtraMeasurements.QTc = mes.getQTc();
+        uchar temp = (uchar)(mes.getQTcType() + 1);
 
-        if (_ExtraMeasurements != null) {
-            _ExtraMeasurements->VentRate = mes.getVentRate();
-            _ExtraMeasurements->QTc = mes.getQTc();
-            uchar temp = (uchar)(mes.getQTcType() + 1);
-
-            if (temp > 2) {
-                temp = 0;
-            }
-
-            _ExtraMeasurements->FormulaType = temp;
+        if (temp > 2) {
+            temp = 0;
         }
 
+        _ExtraMeasurements.FormulaType = temp;
+        //      }
         return 0;
     }
 
+    SCP_PW("setGlobalMeasurements is  null\n");
     return 1;
 }
 }

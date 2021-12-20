@@ -105,6 +105,15 @@ ushort GlobalMeasurements::getQTdur()
     return GlobalMeasurement::NoValue;
 }
 
+void GlobalMeasurements::setAxis(short Paxis, short QRSaxis, short Taxis)
+{
+    if (measurment.size() == 0) {
+        measurment.resize(1);
+    }
+
+    measurment[0].setAxis(Paxis, QRSaxis, Taxis);
+}
+
 void GlobalMeasurements::setQTc(ushort QTc)
 {
     _QTc = QTc;

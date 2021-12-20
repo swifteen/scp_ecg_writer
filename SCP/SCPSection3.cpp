@@ -71,9 +71,11 @@ int SCPSection3::SCPLead::Size = 9;
 ushort SCPSection3::_SectionID = 3;
 SCPSection3::SCPSection3()
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
     _NrLeads = 0;
     _Flags = 0;
+    _Flags |= 0x01;//Current :Reference beat subtraction not used for compression
     _Leads.clear();
 }
 
@@ -100,6 +102,7 @@ void SCPSection3::_Empty()
 {
     _NrLeads = 0;
     _Flags = 0;
+    _Flags |= 0x01;//Current :Reference beat subtraction not used for compression
 }
 int SCPSection3::_getLength()
 {
@@ -306,6 +309,7 @@ int SCPSection3::setSignals(Signals& signals)
         _NrLeads = (uchar) signals.getNrLeads();
         _Leads.resize(_NrLeads);
         _Flags = 0;
+        _Flags |= 0x01;//Current :Reference beat subtraction not used for compression
 
         for (int loper = 0; loper < _NrLeads; loper++) {
 #if 0//only support rhythm data

@@ -32,6 +32,10 @@ set print array-indexes on
 
 # 每行打印一个结构体成员
 set print pretty on
+set history save on
+set history size unlimited
+set history remove-duplicates unlimited
+set history expansion on
 ```
 
 
@@ -109,9 +113,65 @@ Num     Type           Disp Enb Address            What
 2       breakpoint     keep y   0x000000000043ccf6 in main() at /home/zq1219/targetNFS/zq_scp_ecg/TestScpEcgWriter.cpp:220
 ```
 
+## 查看变量值
+
+1、每次停在断点时，自动打印变量值
+
+Use the `display` command:
+
+```
+(gdb> display decoder.m_msg
+```
+
+2、打印所有变量
+
+This will cause `decoder.m_msg` to be printed every time that the prompt is shown (not only after a breakpoint).
+
+Type [`info variables`](http://sourceware.org/gdb/current/onlinedocs/gdb/Symbols.html#index-info-variables-918) to list "All global and static variable names".
+
+Type [`info locals`](http://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#index-info-locals-435) to list "Local variables of current stack frame" (names and values), including static variables in that function.
+
+Type [`info args`](https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#index-info-args) to list "Arguments of the current stack frame" (names and values).
+
+## 常用命令
+
+| cmd                                                          | comment                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| r[un]                                                        | Run to next [breakpoint](https://ccrma.stanford.edu/~jos/sasp/Envelope_Compression.html) or to end |
+| s[tep]                                                       | Single-step, descending into functions                       |
+| n[ext]                                                       | Single-step *without* descending into functions              |
+| fin[ish]                                                     | Finish current function, loop, etc. (useful!)                |
+| c[ontinue]                                                   | Continue to next breakpoint or end                           |
+| up                                                           | Go up one context level on stack (to caller)                 |
+| do[wn]                                                       | Go down one level (only possible after `up`)                 |
+| l[ist]                                                       | Show lines of code surrounding the current point             |
+| p[rint] ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Print value of variable called ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| p ![$ \ast<$](https://ccrma.stanford.edu/~jos/stkintro/img3.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Print what is pointed to by ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| p/x ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Print value of ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) in hex format |
+| p ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) @![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) n![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | print ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) n![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) values starting at ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| p ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) chars![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) tab![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | List all variables starting with ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) chars![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| x/s   &Sample                                                | prints the whole string                                      |
+| x/3c  &Sample                                                | prints: "T" "h" "i"                                          |
+| b[reak] ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Set a breakpoint at function ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| b ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) class![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) ::![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Set a breakpoint at ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) name![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) in ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) class![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| b ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) class![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) ::![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) tab![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | List all members in ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) class![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) |
+| h[elp] b                                                     | Documentation for setting breakpoints                        |
+| i[nfo] b                                                     | List breakpoints                                             |
+| i                                                            | List all info commands                                       |
+| dis[able] 1                                                  | Disable breakpoint 1                                         |
+| en[able] 1                                                   | Enable breakpoint 1                                          |
+| d[elete] 1                                                   | Delete breakpoint 1                                          |
+| d 1 2                                                        | Delete breakpoints 1 and 2                                   |
+| d                                                            | Delete all breakpoints                                       |
+| cond[ition] 1 ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) expr![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) | Stop at breakpoint 1 only if ![$ <$](https://ccrma.stanford.edu/~jos/stkintro/img1.png) expr![$ >$](https://ccrma.stanford.edu/~jos/stkintro/img2.png) is true |
+| cond 1                                                       | Make breakpoint 1 unconditional                              |
+| comm[ands] 1                                                 | Add a list of `gdb` commands to execute                      |
+|                                                              | each time breakpoint 1 is hit                                |
+|                                                              | (usually just `print <var>`)                                 |
+
 # 遇到错误
 
-## 1、权限问题
+## 1、C库函数符号找不到
 
 https://stackoverflow.com/questions/48278881/gdb-complaining-about-missing-raise-c/48287761#48287761
 

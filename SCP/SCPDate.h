@@ -22,19 +22,12 @@ public:
     {
         // Prevent self-assignment
         if (&date != this) {
-            this->Year = 0;
-            this->Month = 0;
-            this->Day  = 0;
-            deepCopy(date);
+            this->Year  = date.Year;
+            this->Month = date.Month;
+            this->Day   = date.Day;
         }
 
         return *this;
-    }
-    void deepCopy(const SCPDate& date)
-    {
-        this->Year  = date.Year;
-        this->Month = date.Month;
-        this->Day   = date.Day;
     }
 
     /// <summary>

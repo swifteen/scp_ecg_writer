@@ -4,7 +4,7 @@
 
 namespace ECGConversion
 {
-namespace  ECGGlobalMeasurements
+namespace   ECGGlobalMeasurements
 {
 
 /// <summary>
@@ -32,6 +32,7 @@ public:
     void setTdur(ushort Tdur);
     ushort getQTdur();
     void setQTdur(ushort QTdur);
+    void setAxis(short Paxis, short QRSaxis, short Taxis);
     ushort calcQTc(ushort AvgRR, ushort HR, QTcCalcType calcType);
 public:
     static ushort NoValue;

@@ -14,6 +14,7 @@ class SCPSectionUnknown : public SCPSection
 public:
     SCPSectionUnknown();
     SCPSectionUnknown(ushort sectionId);
+    ~SCPSectionUnknown();
     ushort getSectionID();
     bool Works();
     /// <summary>

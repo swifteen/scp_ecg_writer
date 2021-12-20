@@ -15,11 +15,14 @@ int SCPSection::Size = 16;
 /// </summary>
 SCPSection::SCPSection()
 {
-    _Encoding = "ASCII";
+    _Encoding = "GB18030";
     SectionID = 0;
     memset(Reserved, 0, sizeof(Reserved));
     SectionID = getSectionID();
     //    Empty();//Usually you get this error when call your virtual function from constructor or destructor.
+}
+SCPSection::~SCPSection()
+{
 }
 
 /// <summary>
@@ -106,13 +109,18 @@ int SCPSection::Write(uchar* buffer, int bufferLength, int offset)
                 CRC = crc.CalcCRCITT(buffer, bufferLength, crcoffset + sizeof(CRC), Length - sizeof(CRC));
                 BytesTool::writeBytes(CRC, buffer, bufferLength, crcoffset, sizeof(CRC), true);
             }
+            else {
+                SCP_PW("_Write failed,offset: %d,offset: %d,bufferLength: %d\n", offset, offset, bufferLength);
+            }
 
             return err << 2;
         }
 
+        SCP_PW("out of range,offset: %d,Length: %d,bufferLength: %d\n", offset, Length, bufferLength);
         return 0x2;
     }
 
+    SCP_PW("not work\n");
     return 0x1;
 }
 /// <summary>

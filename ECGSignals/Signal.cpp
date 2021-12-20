@@ -23,6 +23,12 @@ Signal::Signal()
 /// <returns>copy of object</returns>
 Signal::Signal(const Signal& rhs)
 {
+    Type = LeadTypeUnknown;
+    RhythmStart = 0;
+    RhythmEnd = 0;
+    Rhythm = null;
+    RhythmLength = 0;
+    //Median = null;
     deepCopy(rhs);
 }
 

@@ -17,6 +17,7 @@ ushort SCPSection5::_SectionID = 5;
 
 SCPSection5::SCPSection5()
 {
+    SCPSection::Empty();
     // special variable for setting nr leads before a read.
     _NrLeads = 0;
     // Part of the stored Data Structure.

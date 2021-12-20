@@ -19,7 +19,7 @@ public:
     /// Constructor for a SCP Section.
     /// </summary>
     SCPSection();
-
+    virtual ~SCPSection();
     /// <summary>
     /// Set encoding used for section.
     /// </summary>

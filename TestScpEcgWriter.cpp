@@ -132,10 +132,11 @@ static int SignalCopy(ISignal* dst)
         LeadTypeV5,
         LeadTypeV6,
         LeadTypeIII,
-        LeadTypeaVR,
-        LeadTypeaVL,
-        LeadTypeaVF,
+        LeadType_aVR,
+        LeadType_aVL,
+        LeadType_aVF,
     };
+    srand(time(null));
 
     for (int i = 0; i < 12; i++) {
         Signal leadSignal;
@@ -145,10 +146,10 @@ static int SignalCopy(ISignal* dst)
         leadSignal.Rhythm = new short[5000];
 
         for (int k = 0; k < 5000; k++) {
-            leadSignal.Rhythm[k] = i;
+            leadSignal.Rhythm[k] = rand() % 1000;
         }
 
-        leadSignal.RhythmLength = 5000;
+        leadSignal.RhythmLength = 5000 * sizeof(short); //byte size
         leads.push_back(leadSignal);
     }
 
@@ -198,13 +199,14 @@ static int GlobalMeasurementCopy(IGlobalMeasurement* dst)
 
     // Do copy of measurements
     GlobalMeasurements mes;
-    mes.setVentRate(80);
+    mes.setVentRate(72);
     mes.setPdur(50);
-    mes.setPRint(60);
-    mes.setQRSdur(70);
-    mes.setQTdur(80);
-    mes.setQTc(90);
+    mes.setPRint(134);
+    mes.setQRSdur(76);
+    mes.setQTdur(404);
     mes.setQTcType(GlobalMeasurement::QTcCalcTypeBazett);
+    mes.setQTc(425);
+    mes.setAxis(39, 38, 45);
 
     if (dst->setGlobalMeasurements(mes) != 0) {
         return 8;
@@ -293,6 +295,7 @@ int main()
         }
     }
 
+#if 0
     if (leaddst != null) {
         int ret = LeadMeasurementCopy(leaddst);
 
@@ -300,6 +303,7 @@ int main()
             SCP_PE("LeadMeasurementCopy failed,ret[%d]\n", ret);
         }
     }
+#endif
 
     scp.setPointers();
     scp.Write("test.scp");

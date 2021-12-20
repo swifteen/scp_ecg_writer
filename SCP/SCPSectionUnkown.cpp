@@ -13,13 +13,23 @@ namespace SCP
 /// </summary>
 SCPSectionUnknown::SCPSectionUnknown()
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
-    _Data = null;
 }
 
 SCPSectionUnknown::SCPSectionUnknown(ushort sectionId)
 {
+    SCPSection::Empty();
     this->SectionID = sectionId;
+}
+
+SCPSectionUnknown::~SCPSectionUnknown()
+{
+    // Part of the stored Data Structure.
+    if (_Data != null) {
+        delete[] _Data;
+        _Data = null;
+    }
 }
 
 int SCPSectionUnknown::_Write(uchar* buffer, int bufferLength, int offset)
@@ -30,7 +40,7 @@ int SCPSectionUnknown::_Write(uchar* buffer, int bufferLength, int offset)
 
 void SCPSectionUnknown::_Empty()
 {
-    delete []_Data;
+    _Data = null;
 }
 
 int SCPSectionUnknown::_getLength()
@@ -63,7 +73,11 @@ void SCPSectionUnknown::setInternalData(uchar* InternalData, int InternalDataLen
             delete [] _Data;
         }
 
-        memcpy(_Data, InternalData, InternalDataLength);
+        _Data = new uchar[InternalDataLength];
+
+        if (_Data != null) {
+            memcpy(_Data, InternalData, InternalDataLength);
+        }
     }
 }
 }

@@ -20,7 +20,11 @@ public:
     /// Constructor for an SCP statement.
     /// </summary>
     SCPStatement()
-    {}
+    {
+        SequenceNr = 0;
+        Length = 0;
+        Field = null;
+    }
     /// <summary>
     /// Constructor for an SCP statement.
     /// </summary>
@@ -43,6 +47,9 @@ public:
     }
     SCPStatement(const SCPStatement& rhs)
     {
+        SequenceNr = 0;
+        Length = 0;
+        Field = null;
         deepCopy(rhs);
     }
 
@@ -133,6 +140,7 @@ public:
 ushort SCPSection8::_SectionID = 8;
 SCPSection8::SCPSection8()
 {
+    SCPSection::Empty();
     // Part of the stored Data Structure.
     _Confirmed = 0;
     _NrStatements = 0;
