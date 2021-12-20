@@ -12,10 +12,9 @@ namespace SCP
 class SCPSection
 {
 public:
-	enum
-	{
-		kReservedLength = 6,
-	};
+    enum {
+        kReservedLength = 6,
+    };
     /// <summary>
     /// Constructor for a SCP Section.
     /// </summary>
@@ -62,7 +61,10 @@ public:
     /// Function to get section ID of section.
     /// </summary>
     /// <returns>section id</returns>
-    virtual ushort getSectionID() {return 0;}
+    virtual ushort getSectionID()
+    {
+        return 0;
+    }
     /// <summary>
     /// Function to check working of section.
     /// </summary>

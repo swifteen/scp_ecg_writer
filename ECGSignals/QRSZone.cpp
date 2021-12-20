@@ -1,6 +1,7 @@
 #include "QRSZone.h"
 
-namespace ECGConversion{
+namespace ECGConversion
+{
 
 namespace ECGSignals
 {
@@ -8,7 +9,7 @@ namespace ECGSignals
 /// Class containing a QRS zone.
 /// </summary>
 QRSZone::QRSZone()
-{    
+{
     Type = ushort_MaxValue;
     Start = 0;
     Fiducial = 0;

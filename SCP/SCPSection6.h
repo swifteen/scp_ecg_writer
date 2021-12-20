@@ -16,8 +16,8 @@ class SCPSection6 : public SCPSection
 {
     // Defined in SCP.
 public:
-	SCPSection6();
-	~SCPSection6();
+    SCPSection6();
+    ~SCPSection6();
     ushort getSectionID();
     bool Works();
 
@@ -36,12 +36,12 @@ public:
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
     int EncodeData(std::vector<short*>& data,
-					std::vector<int>& dataLength, 
-    				SCPSection2* tables, 
-    				SCPSection3* leadDefinition, 
-    				SCPSection4* qrsLocations, 
-    				int medianFreq, 
-    				uchar difference);
+                   std::vector<int>& dataLength,
+                   SCPSection2* tables,
+                   SCPSection3* leadDefinition,
+                   SCPSection4* qrsLocations,
+                   int medianFreq,
+                   uchar difference);
 
     /// <summary>
     /// Function to get AVM.

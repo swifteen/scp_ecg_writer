@@ -18,9 +18,9 @@ int SCPDate::Size = 4;
 /// </summary>
 SCPDate::SCPDate()
 {
-	Year = 0;
-	Month = 0;
-	Day = 0;
+    Year = 0;
+    Month = 0;
+    Day = 0;
 }
 /// <summary>
 /// Constructor of a SCP date.
@@ -41,20 +41,18 @@ SCPDate::SCPDate(int year, int month, int day)
 /// <param name="buffer">byte array to write in</param>
 /// <param name="offset">position to start writing</param>
 /// <returns></returns>
-int SCPDate::Write(uchar* buffer, int bufferLength,int offset)
+int SCPDate::Write(uchar* buffer, int bufferLength, int offset)
 {
-    if ((offset + Size) > bufferLength)
-    {
+    if ((offset + Size) > bufferLength) {
         return 0x1;
     }
 
-    BytesTool::writeBytes(Year, buffer, bufferLength,offset, sizeof(Year), true);
+    BytesTool::writeBytes(Year, buffer, bufferLength, offset, sizeof(Year), true);
     offset += sizeof(Year);
-    BytesTool::writeBytes(Month, buffer, bufferLength,offset, sizeof(Month), true);
+    BytesTool::writeBytes(Month, buffer, bufferLength, offset, sizeof(Month), true);
     offset += sizeof(Month);
-    BytesTool::writeBytes(Day, buffer, bufferLength,offset, sizeof(Day), true);
+    BytesTool::writeBytes(Day, buffer, bufferLength, offset, sizeof(Day), true);
     offset += sizeof(Day);
-
     return 0x0;
 }
 

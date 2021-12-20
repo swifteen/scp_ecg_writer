@@ -7,8 +7,7 @@ namespace ECGConversion.ECGLeadMeasurements
 /// <summary>
 /// Enumration Morphology for lead measurements.
 /// </summary>
-enum Morphology
-{
+enum Morphology {
     Unknown = 0,
     Positive,
     Negative,

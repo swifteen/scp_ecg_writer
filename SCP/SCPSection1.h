@@ -1,7 +1,7 @@
 #ifndef _SCPSECTION1_H_
 #define _SCPSECTION1_H_
 #include "SCPSection.h"
-#include "IDemographic.h"    
+#include "IDemographic.h"
 #include"Drug.h"
 #include "SCPDate.h"
 #include "SCPTime.h"
@@ -22,13 +22,12 @@ class SCPHeaderField;
 class SCPSection1 : public SCPSection, public IDemographic
 {
 public:
-    enum ProtocolCompatibility
-    {
-	    kProtocolCompatibilityCatI = 0x90, 
-		kProtocolCompatibilityCatII = 0xa0, 
-		kProtocolCompatibilityCatIII = 0xb0, 
-		kProtocolCompatibilityCatIV = 0xc0
-	};
+    enum ProtocolCompatibility {
+        kProtocolCompatibilityCatI = 0x90,
+        kProtocolCompatibilityCatII = 0xa0,
+        kProtocolCompatibilityCatIII = 0xb0,
+        kProtocolCompatibilityCatIV = 0xc0
+    };
 public:
     SCPSection1();
     ushort getSectionID();
@@ -114,7 +113,7 @@ public:
     void setRoomDescription(const string& RoomDescription);
     void setStatCode(uchar StatCode);
 protected:
-    int _Write(uchar* buffer,int bufferLength, int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:

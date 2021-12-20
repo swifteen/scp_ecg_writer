@@ -1,15 +1,15 @@
 #ifndef _SCPSECTION8_H_
 #define _SCPSECTION8_H_
 #include "SCPSection.h"
-#include "IDiagnostic.h"    
-#include "Statements.h"    
+#include "IDiagnostic.h"
+#include "Statements.h"
 #include "SCPDate.h"
 #include "SCPTime.h"
 #include <vector>
 #include <string>
 
 
-using namespace ECGConversion::ECGDiagnostic;	
+using namespace ECGConversion::ECGDiagnostic;
 
 namespace ECGConversion
 {
@@ -22,13 +22,13 @@ namespace SCP
 class SCPSection8 : public SCPSection,  public IDiagnostic
 {
 public:
-	 SCPSection8();
+    SCPSection8();
     // setting diagnositc information.
     int setDiagnosticStatements(Statements& stat);
     bool Works();
     ushort getSectionID();
 protected:
-    int _Write(uchar* buffer, int bufferLength,int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
@@ -38,16 +38,16 @@ private:
     // Part of the stored Data Structure.
     uchar _Confirmed ;
 
-	SCPDate _Date;
-	SCPTime _Time;
+    SCPDate _Date;
+    SCPTime _Time;
     uchar _NrStatements ;
     /// <summary>
     /// Class containing SCP diagnostic statement.
     /// </summary>
     class SCPStatement;
-   // SCPStatement *_Statements;
-	std::vector<SCPStatement> _Statements;
+    // SCPStatement *_Statements;
+    std::vector<SCPStatement> _Statements;
 };
 }
 }
-#endif 
+#endif

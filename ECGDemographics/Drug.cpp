@@ -11,15 +11,13 @@ namespace ECGDemographics
 
 Drug::Drug()
 {
-
 }
 
-Drug::Drug(uchar drugClass,uchar classCode,std::string textDesciption)
+Drug::Drug(uchar drugClass, uchar classCode, std::string textDesciption)
 {
     DrugClass = drugClass;
     ClassCode = classCode;
     TextDesciption = textDesciption;
-
 }
 
 }

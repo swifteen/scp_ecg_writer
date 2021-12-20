@@ -1,18 +1,18 @@
 #ifndef _SCPFORMAT_H_
 #define _SCPFORMAT_H_
-#include "IECGFormat.h"    
-#include "ISignal.h"    
-#include "IDemographic.h"    
-#include "IDiagnostic.h"    
-#include "IGlobalMeasurement.h"    
-#include "ILeadMeasurement.h"    
-#include "SCPSection.h"    
+#include "IECGFormat.h"
+#include "ISignal.h"
+#include "IDemographic.h"
+#include "IDiagnostic.h"
+#include "IGlobalMeasurement.h"
+#include "ILeadMeasurement.h"
+#include "SCPSection.h"
 #include "ScpGlobal.h"
 
 using namespace std;
 using namespace ECGConversion::ECGSignals;
 using namespace ECGConversion::ECGDemographics;
-using namespace ECGConversion::ECGDiagnostic;	
+using namespace ECGConversion::ECGDiagnostic;
 using namespace ECGConversion::ECGGlobalMeasurements;
 using namespace ECGConversion::ECGLeadMeasurements;
 
@@ -32,19 +32,18 @@ public:
     /// <remarks>
     /// OptimizedHuffman is same as DefaultHuffman, because it isn't implemented
     /// </remarks>
-    enum EncodingType
-    {
-	    EncodingTypeNone = 0, 
-	    EncodingTypeDefaultHuffman, 
-	    EncodingTypeOptimizedHuffman
+    enum EncodingType {
+        EncodingTypeNone = 0,
+        EncodingTypeDefaultHuffman,
+        EncodingTypeOptimizedHuffman
     };
 public:
     SCPFormat();
-	~SCPFormat();
+    ~SCPFormat();
     //region IECGFormat Members
-	int Write(const string& file);	
+    int Write(const string& file);
 #if 0//todo
-	int Write(Stream output);
+    int Write(Stream output);
 #endif
     int Write(uchar* buffer, int bufferLength, int offset);
     int getFileSize();

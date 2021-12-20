@@ -19,7 +19,7 @@ public:
     ushort getSectionID();
     bool Works();
     //region ILeadMeasurement Members
-	ushort getNrLeads();
+    ushort getNrLeads();
     void setNrLeads(ushort _NrLeads);
     int setLeadMeasurements(LeadMeasurements& mes);
 protected:

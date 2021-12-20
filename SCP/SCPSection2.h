@@ -20,7 +20,7 @@ class SCPHuffmanStruct;
 class SCPSection2 : public SCPSection
 {
 public:
-	SCPSection2();
+    SCPSection2();
     ushort getSectionID();
     bool Works();
 
@@ -32,7 +32,7 @@ public:
     /// <param name="usedTable">table to use for encoding</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-	uchar* Encode(short* data, int dataLength,int time, short usedTable, uchar difference,int* encodeLength);
+    uchar* Encode(short* data, int dataLength, int time, short usedTable, uchar difference, int* encodeLength);
     /// <summary>
     /// Function to encode signal using the default huffman table (using optimized code).
     /// </summary>
@@ -40,7 +40,7 @@ public:
     /// <param name="time">number of samples to use</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>byte array containing encoded data</returns>
-	static uchar* InhouseEncode(short* data, int dataLength,int time, uchar difference,int* encodeLength);
+    static uchar* InhouseEncode(short* data, int dataLength, int time, uchar difference, int* encodeLength);
 #if 0
     /// <summary>
     /// Function to store signal using no compression.

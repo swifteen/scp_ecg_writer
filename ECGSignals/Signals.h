@@ -8,7 +8,8 @@
 using namespace std;
 
 
-namespace ECGConversion {
+namespace ECGConversion
+{
 
 namespace ECGSignals
 {
@@ -23,12 +24,12 @@ public:
     // Overrall Data.
     uchar getNrLeads();
     //void setNrLeads();
-	void setNrLeads(uchar NrLeads);
+    void setNrLeads(uchar NrLeads);
 
     vector<Signal>& getLeads();
     void setLeads(const vector<Signal>& leads);
 
-	Signal& operator[](int i);
+    Signal& operator[](int i);
 
     /// <summary>
     /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
@@ -41,7 +42,7 @@ public:
     /// </summary>
     /// <param name="nStart">returns start</param>
     /// <param name="nEnd">returns end</param>
-    void CalculateStartAndEnd(int &nStart, int &nEnd);
+    void CalculateStartAndEnd(int& nStart, int& nEnd);
 
     /// <summary>
     /// Function to determine the number of simultaneosly.
@@ -98,7 +99,7 @@ public:
 private:
     // Signal Data
     std::vector<Signal> _Lead;
-	uchar NrLeads;
+    uchar NrLeads;
 };
 }
 }

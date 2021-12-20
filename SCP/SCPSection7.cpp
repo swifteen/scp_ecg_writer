@@ -40,24 +40,23 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        BytesTool::writeBytes(VentRate, buffer, bufferLength,offset,sizeof(VentRate), true);
-        offset +=sizeof(VentRate);
-        BytesTool::writeBytes(AtrialRate, buffer, bufferLength,offset,sizeof(AtrialRate), true);
-        offset +=sizeof(AtrialRate);
-        BytesTool::writeBytes(QTc, buffer, bufferLength,offset,sizeof(QTc), true);
-        offset +=sizeof(QTc);
-        BytesTool::writeBytes(FormulaType, buffer, bufferLength,offset,sizeof(FormulaType), true);
-        offset +=sizeof(FormulaType);
-        BytesTool::writeBytes(TaggedFieldSize, buffer, bufferLength,offset,sizeof(TaggedFieldSize), true);
-        offset +=sizeof(TaggedFieldSize);
-
+        BytesTool::writeBytes(VentRate, buffer, bufferLength, offset, sizeof(VentRate), true);
+        offset += sizeof(VentRate);
+        BytesTool::writeBytes(AtrialRate, buffer, bufferLength, offset, sizeof(AtrialRate), true);
+        offset += sizeof(AtrialRate);
+        BytesTool::writeBytes(QTc, buffer, bufferLength, offset, sizeof(QTc), true);
+        offset += sizeof(QTc);
+        BytesTool::writeBytes(FormulaType, buffer, bufferLength, offset, sizeof(FormulaType), true);
+        offset += sizeof(FormulaType);
+        BytesTool::writeBytes(TaggedFieldSize, buffer, bufferLength, offset, sizeof(TaggedFieldSize), true);
+        offset += sizeof(TaggedFieldSize);
 #if 0
-        if (TaggedFields != null)
-        {
+
+        if (TaggedFields != null) {
             offset += BytesTool::copy(buffer, offset, TaggedFields, 0, TaggedFieldSize);
         }
-#endif
 
+#endif
         return 0x0;
     }
     /// <summary>
@@ -80,13 +79,13 @@ public:
     /// <returns>length of extra measurements</returns>
     int getLength()
     {
-        if (Works())
-        {
-            int sum =sizeof(VentRate) +sizeof(AtrialRate);
-            sum +=sizeof(QTc) +sizeof(FormulaType) +sizeof(TaggedFieldSize);
+        if (Works()) {
+            int sum = sizeof(VentRate) + sizeof(AtrialRate);
+            sum += sizeof(QTc) + sizeof(FormulaType) + sizeof(TaggedFieldSize);
             sum += TaggedFieldSize;
             return ((sum % 2) == 0 ? sum : sum + 1);
         }
+
         return 0;
     }
     /// <summary>
@@ -95,16 +94,16 @@ public:
     /// <returns>if writeable is true</returns>
     bool Works()
     {
-        if (TaggedFieldSize == 0)
-        {
+        if (TaggedFieldSize == 0) {
             return true;
         }
+
 #if 0
         else if ((TaggedFields != null)
-                 &&   (TaggedFields.Length >= TaggedFieldSize))
-        {
+                 && (TaggedFields.Length >= TaggedFieldSize)) {
             return true;
         }
+
 #endif
         return false;
     }
@@ -143,20 +142,18 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((offset + Size) > bufferLength)
-        {
+        if ((offset + Size) > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Type, buffer, bufferLength,offset,sizeof(Type), true);
-        offset +=sizeof(Type);
-        BytesTool::writeBytes(Source, buffer, bufferLength,offset,sizeof(Source), true);
-        offset +=sizeof(Source);
-        BytesTool::writeBytes(TriggerIndex, buffer, bufferLength,offset,sizeof(TriggerIndex), true);
-        offset +=sizeof(TriggerIndex);
-        BytesTool::writeBytes(PulseWidth, buffer, bufferLength,offset,sizeof(PulseWidth), true);
-        offset +=sizeof(PulseWidth);
-
+        BytesTool::writeBytes(Type, buffer, bufferLength, offset, sizeof(Type), true);
+        offset += sizeof(Type);
+        BytesTool::writeBytes(Source, buffer, bufferLength, offset, sizeof(Source), true);
+        offset += sizeof(Source);
+        BytesTool::writeBytes(TriggerIndex, buffer, bufferLength, offset, sizeof(TriggerIndex), true);
+        offset += sizeof(TriggerIndex);
+        BytesTool::writeBytes(PulseWidth, buffer, bufferLength, offset, sizeof(PulseWidth), true);
+        offset += sizeof(PulseWidth);
         return 0x0;
     }
 public:
@@ -174,7 +171,7 @@ int SCPSection7::SCPSpikeInfo::Size = 9;
 class SCPSection7::SCPMeasurement
 {
 public:
-   	SCPMeasurement()
+    SCPMeasurement()
     {
         Ponset = GlobalMeasurement::NoValue;
         Poffset = GlobalMeasurement::NoValue;
@@ -194,28 +191,26 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((offset + Size) > bufferLength)
-        {
+        if ((offset + Size) > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Ponset, buffer, bufferLength,offset,sizeof(Ponset), true);
-        offset +=sizeof(Ponset);
-        BytesTool::writeBytes(Poffset, buffer, bufferLength,offset,sizeof(Poffset), true);
-        offset +=sizeof(Poffset);
-        BytesTool::writeBytes(QRSonset, buffer, bufferLength,offset,sizeof(QRSonset), true);
-        offset +=sizeof(QRSonset);
-        BytesTool::writeBytes(QRSoffset, buffer, bufferLength,offset,sizeof(QRSoffset), true);
-        offset +=sizeof(QRSoffset);
-        BytesTool::writeBytes(Toffset, buffer, bufferLength,offset,sizeof(Toffset), true);
-        offset +=sizeof(Toffset);
-        BytesTool::writeBytes(Paxis, buffer, bufferLength,offset,sizeof(Paxis), true);
-        offset +=sizeof(Paxis);
-        BytesTool::writeBytes(QRSaxis, buffer, bufferLength,offset,sizeof(QRSaxis), true);
-        offset +=sizeof(QRSaxis);
-        BytesTool::writeBytes(Taxis, buffer, bufferLength,offset,sizeof(Taxis), true);
-        offset +=sizeof(Taxis);
-
+        BytesTool::writeBytes(Ponset, buffer, bufferLength, offset, sizeof(Ponset), true);
+        offset += sizeof(Ponset);
+        BytesTool::writeBytes(Poffset, buffer, bufferLength, offset, sizeof(Poffset), true);
+        offset += sizeof(Poffset);
+        BytesTool::writeBytes(QRSonset, buffer, bufferLength, offset, sizeof(QRSonset), true);
+        offset += sizeof(QRSonset);
+        BytesTool::writeBytes(QRSoffset, buffer, bufferLength, offset, sizeof(QRSoffset), true);
+        offset += sizeof(QRSoffset);
+        BytesTool::writeBytes(Toffset, buffer, bufferLength, offset, sizeof(Toffset), true);
+        offset += sizeof(Toffset);
+        BytesTool::writeBytes(Paxis, buffer, bufferLength, offset, sizeof(Paxis), true);
+        offset += sizeof(Paxis);
+        BytesTool::writeBytes(QRSaxis, buffer, bufferLength, offset, sizeof(QRSaxis), true);
+        offset += sizeof(QRSaxis);
+        BytesTool::writeBytes(Taxis, buffer, bufferLength, offset, sizeof(Taxis), true);
+        offset += sizeof(Taxis);
         return 0x0;
     }
 public:
@@ -250,16 +245,14 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((offset + Size) > bufferLength)
-        {
+        if ((offset + Size) > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Time, buffer, bufferLength,offset,sizeof(Time), true);
-        offset +=sizeof(Time);
-        BytesTool::writeBytes(Amplitude, buffer, bufferLength,offset,sizeof(Amplitude), true);
-        offset +=sizeof(Amplitude);
-
+        BytesTool::writeBytes(Time, buffer, bufferLength, offset, sizeof(Time), true);
+        offset += sizeof(Time);
+        BytesTool::writeBytes(Amplitude, buffer, bufferLength, offset, sizeof(Amplitude), true);
+        offset += sizeof(Amplitude);
         return 0x0;
     }
 public:
@@ -280,7 +273,6 @@ SCPSection7::SCPSection7()
     _AfterSpikes = false;
     _AfterSpikesInfo = false;
     _AfterQRSType = false;
-
     // Part of the stored Data Structure.
     _NrRefTypeQRS = 0;
     _NrSpikes = 0;
@@ -292,106 +284,102 @@ SCPSection7::SCPSection7()
     _NrQRS = 0;
     _QRSType = null;
     _ExtraMeasurements = new SCPExtraMeasurements;
-
     // Manufactor specific block (Not implemented, because UNIPRO doesn't store this kind of info).
     _Rest = null;
 }
 
 SCPSection7::~SCPSection7()
 {
-	delete[] _QRSType;
-	delete[] _Rest;
-	delete _ExtraMeasurements;
+    delete[] _QRSType;
+    delete[] _Rest;
+    delete _ExtraMeasurements;
 }
 
 int SCPSection7::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    BytesTool::writeBytes(_NrRefTypeQRS, buffer, bufferLength,offset,sizeof(_NrRefTypeQRS), true);
-    offset +=sizeof(_NrRefTypeQRS);
-    BytesTool::writeBytes(_NrSpikes, buffer, bufferLength,offset,sizeof(_NrSpikes), true);
-    offset +=sizeof(_NrSpikes);
-    BytesTool::writeBytes(_AvgRRInterval, buffer, bufferLength,offset,sizeof(_AvgRRInterval), true);
-    offset +=sizeof(_AvgRRInterval);
-    BytesTool::writeBytes(_AvgPPInterval, buffer, bufferLength,offset,sizeof(_AvgPPInterval), true);
-    offset +=sizeof(_AvgPPInterval);
+    BytesTool::writeBytes(_NrRefTypeQRS, buffer, bufferLength, offset, sizeof(_NrRefTypeQRS), true);
+    offset += sizeof(_NrRefTypeQRS);
+    BytesTool::writeBytes(_NrSpikes, buffer, bufferLength, offset, sizeof(_NrSpikes), true);
+    offset += sizeof(_NrSpikes);
+    BytesTool::writeBytes(_AvgRRInterval, buffer, bufferLength, offset, sizeof(_AvgRRInterval), true);
+    offset += sizeof(_AvgRRInterval);
+    BytesTool::writeBytes(_AvgPPInterval, buffer, bufferLength, offset, sizeof(_AvgPPInterval), true);
+    offset += sizeof(_AvgPPInterval);
 
-    if (_NrRefTypeQRS > 0)
-    {
-        for (int loper=0;loper < _NrRefTypeQRS;loper++)
-        {
-            int err = _Measurements[loper].Write(buffer, bufferLength,offset);
-            if (err != 0)
-            {
+    if (_NrRefTypeQRS > 0) {
+        for (int loper = 0; loper < _NrRefTypeQRS; loper++) {
+            int err = _Measurements[loper].Write(buffer, bufferLength, offset);
+
+            if (err != 0) {
                 return 0x1;
             }
+
             offset += SCPMeasurement::Size;
         }
     }
-    if (_NrSpikes > 0)
-    {
-        for (int loper=0;loper < _NrSpikes;loper++)
-        {
-            int err = _Spikes[loper].Write(buffer, bufferLength,offset);
-            if (err != 0)
-            {
+
+    if (_NrSpikes > 0) {
+        for (int loper = 0; loper < _NrSpikes; loper++) {
+            int err = _Spikes[loper].Write(buffer, bufferLength, offset);
+
+            if (err != 0) {
                 return 0x2;
             }
+
             offset += SCPSpike::Size;
         }
-        if (!_AfterSpikes)
-        {
+
+        if (!_AfterSpikes) {
             return 0;
         }
-        for (int loper=0;loper < _NrSpikes;loper++)
-        {
-            int err = _SpikesInfo[loper].Write(buffer, bufferLength,offset);
-            if (err != 0)
-            {
+
+        for (int loper = 0; loper < _NrSpikes; loper++) {
+            int err = _SpikesInfo[loper].Write(buffer, bufferLength, offset);
+
+            if (err != 0) {
                 return 0x4;
             }
+
             offset += SCPSpikeInfo::Size;
         }
     }
 
-    if (!_AfterSpikesInfo)
-    {
+    if (!_AfterSpikesInfo) {
         return 0;
     }
 
-    BytesTool::writeBytes(_NrQRS, buffer, bufferLength,offset,sizeof(_NrQRS), true);
-    offset +=sizeof(_NrQRS);
+    BytesTool::writeBytes(_NrQRS, buffer, bufferLength, offset, sizeof(_NrQRS), true);
+    offset += sizeof(_NrQRS);
 
     if ((_NrQRS > 0)
-            &&  (_QRSType != null))
-    {
-        for (int loper=0;loper < _NrQRS;loper++)
-        {
-            BytesTool::writeBytes(_QRSType[loper], buffer, bufferLength,offset,sizeof(_QRSType[loper]), true);
-            offset +=sizeof(_QRSType[loper]);
+        && (_QRSType != null)) {
+        for (int loper = 0; loper < _NrQRS; loper++) {
+            BytesTool::writeBytes(_QRSType[loper], buffer, bufferLength, offset, sizeof(_QRSType[loper]), true);
+            offset += sizeof(_QRSType[loper]);
         }
     }
 
-    if (!_AfterQRSType)
-    {
+    if (!_AfterQRSType) {
         return 0;
     }
 
-    if (_ExtraMeasurements != null)
-    {
-        int err = _ExtraMeasurements->Write(buffer, bufferLength,offset);
-        if (err != 0)
-        {
+    if (_ExtraMeasurements != null) {
+        int err = _ExtraMeasurements->Write(buffer, bufferLength, offset);
+
+        if (err != 0) {
             return 0x8;
         }
+
         offset += _ExtraMeasurements->getLength();
     }
 
 #if 0 //for read
+
     if ((_Rest != null)
-            &&  ((offset + _Rest.Length) < buffer.Length))
-    {
-        offset += BytesTool::copy(_Rest, 0, buffer, bufferLength,offset, _Rest.Length);
+        && ((offset + _Rest.Length) < buffer.Length)) {
+        offset += BytesTool::copy(_Rest, 0, buffer, bufferLength, offset, _Rest.Length);
     }
+
 #endif
     return 0x0;
 }
@@ -408,36 +396,38 @@ void SCPSection7::_Empty()
     _AfterSpikes = false;
     _NrQRS = 0;
     _AfterQRSType = false;
-	delete[] _QRSType;
-	_QRSType = null;
-	delete[] _Rest;
-	_Rest = null;
+    delete[] _QRSType;
+    _QRSType = null;
+    delete[] _Rest;
+    _Rest = null;
     _ExtraMeasurements->Empty();
 }
 
 int SCPSection7::_getLength()
 {
-    if (Works())
-    {
-        int sum =sizeof(_NrRefTypeQRS) +sizeof(_NrSpikes) +sizeof(_AvgPPInterval) +sizeof(_AvgRRInterval);
+    if (Works()) {
+        int sum = sizeof(_NrRefTypeQRS) + sizeof(_NrSpikes) + sizeof(_AvgPPInterval) + sizeof(_AvgRRInterval);
         sum += _NrRefTypeQRS * SCPMeasurement::Size;
         sum += (_NrSpikes * (SCPSpike::Size + SCPSpikeInfo::Size));
-        if (_AfterSpikes)
-        {
-            sum +=sizeof(_NrQRS) + (_NrQRS *sizeof(uchar));
-            if (_AfterQRSType)
-            {
+
+        if (_AfterSpikes) {
+            sum += sizeof(_NrQRS) + (_NrQRS * sizeof(uchar));
+
+            if (_AfterQRSType) {
                 sum += _ExtraMeasurements->getLength();
 #if 0 //for read
-                if (_Rest != null)
-                {
+
+                if (_Rest != null) {
                     sum += _Rest.Length;
                 }
+
 #endif
             }
         }
+
         return sum;
     }
+
     return 0;
 }
 
@@ -449,49 +439,42 @@ ushort SCPSection7::getSectionID()
 bool SCPSection7::Works()
 {
     if ((_NrRefTypeQRS == 0)
-            ||	(_Measurements.size() == _NrRefTypeQRS))
-    {
+        || (_Measurements.size() == _NrRefTypeQRS)) {
         if ((_NrSpikes == 0)
-                ||  (_Spikes.size() == _NrSpikes))
-        {
-            if (!_AfterSpikes)
-            {
+            || (_Spikes.size() == _NrSpikes)) {
+            if (!_AfterSpikes) {
                 return ((_NrRefTypeQRS != 0) || (_NrSpikes != 0));
             }
 
-            if (_SpikesInfo.size() == _NrSpikes)
-            {
-                if (!_AfterSpikesInfo)
-                {
+            if (_SpikesInfo.size() == _NrSpikes) {
+                if (!_AfterSpikesInfo) {
                     return ((_NrRefTypeQRS != 0) || (_NrSpikes != 0));
                 }
 
                 if ((_NrQRS == 0)
-                        ||   (_QRSType != null))
-                {
+                    || (_QRSType != null)) {
                     return (!_AfterQRSType
-                            ||	(_ExtraMeasurements != null));
+                            || (_ExtraMeasurements != null));
                 }
             }
         }
+
         return true;
     }
+
     return false;
 }
 
 int SCPSection7::setGlobalMeasurements(GlobalMeasurements& mes)
 {
-    if (mes.measurment.size() > 0)
-    {
+    if (mes.measurment.size() > 0) {
         Empty();
-
         _AvgRRInterval = mes.AvgRR;
         _AvgPPInterval = mes.AvgPP;
-
         _NrRefTypeQRS = (uchar) mes.measurment.size();
-		_Measurements.resize(_NrRefTypeQRS);
-        for (int loper=0;loper < _NrRefTypeQRS;loper++)
-        {
+        _Measurements.resize(_NrRefTypeQRS);
+
+        for (int loper = 0; loper < _NrRefTypeQRS; loper++) {
             _Measurements[loper].Ponset = mes.measurment[loper].Ponset;
             _Measurements[loper].Poffset = mes.measurment[loper].Poffset;
             _Measurements[loper].QRSonset = mes.measurment[loper].QRSonset;
@@ -504,42 +487,39 @@ int SCPSection7::setGlobalMeasurements(GlobalMeasurements& mes)
 
         _NrSpikes = 0;
 
-        if (mes.spike.size() > 0)
-        {
+        if (mes.spike.size() > 0) {
             _NrSpikes = (uchar) mes.spike.size();
             _Spikes.resize(_NrSpikes);
             _SpikesInfo.resize(_NrSpikes);
-            for (int loper=0;loper < _NrSpikes;loper++)
-            {
+
+            for (int loper = 0; loper < _NrSpikes; loper++) {
                 _Spikes[loper].Time = mes.spike[loper].Time;
                 _Spikes[loper].Amplitude = mes.spike[loper].Amplitude;
             }
         }
 
         _AfterSpikes = true;
-
         _AfterSpikesInfo = true;
-
         _NrQRS = 0;
-		delete[] _QRSType;
+        delete[] _QRSType;
         _QRSType = null;
-
         _AfterQRSType = true;
-		if(_ExtraMeasurements != null)
-		{
-			_ExtraMeasurements->VentRate = mes.getVentRate();
-			_ExtraMeasurements->QTc = mes.getQTc();
-			
-			uchar temp = (uchar) (mes.getQTcType() + 1);
-			
-			if (temp > 2)
-				temp = 0;
-			
-			_ExtraMeasurements->FormulaType = temp;
-		}
+
+        if (_ExtraMeasurements != null) {
+            _ExtraMeasurements->VentRate = mes.getVentRate();
+            _ExtraMeasurements->QTc = mes.getQTc();
+            uchar temp = (uchar)(mes.getQTcType() + 1);
+
+            if (temp > 2) {
+                temp = 0;
+            }
+
+            _ExtraMeasurements->FormulaType = temp;
+        }
 
         return 0;
     }
+
     return 1;
 }
 }

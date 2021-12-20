@@ -12,10 +12,10 @@ int SCPTime::Size = 3;
 /// Constructor of a SCP time.
 /// </summary>
 SCPTime::SCPTime()
-{	
-	Hour = 0;
-	Min = 0;
-	Sec = 0;
+{
+    Hour = 0;
+    Min = 0;
+    Sec = 0;
 }
 
 /// <summary>
@@ -37,20 +37,18 @@ SCPTime::SCPTime(int hour, int min, int sec)
 /// <param name="buffer">byte array to write into</param>
 /// <param name="offset">position to start writing</param>
 /// <returns>0 on success</returns>
-int SCPTime::Write(uchar* buffer,int bufferLength,int offset)
+int SCPTime::Write(uchar* buffer, int bufferLength, int offset)
 {
-    if ((offset + Size) > bufferLength)
-    {
+    if ((offset + Size) > bufferLength) {
         return 0x1;
     }
 
-    BytesTool::writeBytes(Hour, buffer, bufferLength,offset, sizeof(Hour), true);
+    BytesTool::writeBytes(Hour, buffer, bufferLength, offset, sizeof(Hour), true);
     offset += sizeof(Hour);
-    BytesTool::writeBytes(Min, buffer, bufferLength,offset, sizeof(Min), true);
+    BytesTool::writeBytes(Min, buffer, bufferLength, offset, sizeof(Min), true);
     offset += sizeof(Min);
-    BytesTool::writeBytes(Sec, buffer, bufferLength,offset, sizeof(Sec), true);
+    BytesTool::writeBytes(Sec, buffer, bufferLength, offset, sizeof(Sec), true);
     offset += sizeof(Sec);
-
     return 0x0;
 }
 }

@@ -6,41 +6,41 @@
 namespace ECGConversion
 {
 
- namespace ECGGlobalMeasurements
- {
+namespace ECGGlobalMeasurements
+{
 
 /// <summary>
 /// Class containing measurements of ECG.
 /// </summary>
 class GlobalMeasurements
 {
-	public:
-	    GlobalMeasurements();
-	    GlobalMeasurements Clone();
+public:
+    GlobalMeasurements();
+    GlobalMeasurements Clone();
 
-	    void setVentRate(ushort VentRate);
-		ushort getVentRate();
-	    void setPdur(ushort Pdur);
-		ushort getPdur();
-	    void setPRint(ushort PRint);
-		ushort getPRint();
-	    void setQRSdur(ushort QRSdur);
-		ushort getQRSdur();
-	    void setQTdur(ushort QTdur);
-		ushort getQTdur();
-	    void setQTc(ushort QTc);
-		ushort getQTc();
-	    void setQTcType(GlobalMeasurement::QTcCalcType QTcType);
-		GlobalMeasurement::QTcCalcType getQTcType();
-	public:
-	    ushort AvgRR;
-	    ushort AvgPP;
-	    std::vector<GlobalMeasurement> measurment;
-	    std::vector<Spike> spike;
-	private:
-	    ushort _QTc;
-	    ushort _VentRate;
-	};
- }
+    void setVentRate(ushort VentRate);
+    ushort getVentRate();
+    void setPdur(ushort Pdur);
+    ushort getPdur();
+    void setPRint(ushort PRint);
+    ushort getPRint();
+    void setQRSdur(ushort QRSdur);
+    ushort getQRSdur();
+    void setQTdur(ushort QTdur);
+    ushort getQTdur();
+    void setQTc(ushort QTc);
+    ushort getQTc();
+    void setQTcType(GlobalMeasurement::QTcCalcType QTcType);
+    GlobalMeasurement::QTcCalcType getQTcType();
+public:
+    ushort AvgRR;
+    ushort AvgPP;
+    std::vector<GlobalMeasurement> measurment;
+    std::vector<Spike> spike;
+private:
+    ushort _QTc;
+    ushort _VentRate;
+};
+}
 }
 #endif

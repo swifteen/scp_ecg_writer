@@ -16,16 +16,16 @@ class LeadMeasurement
 public:
     LeadMeasurement();
     LeadMeasurement(LeadType lt);
-	short getMeasurement(MeasurementType mt);	
-	void setMeasurement(MeasurementType mt,short measurementValue);
+    short getMeasurement(MeasurementType mt);
+    void setMeasurement(MeasurementType mt, short measurementValue);
     int getMeasurementCount();
-	bool getMeasurementValid(MeasurementType mt);
+    bool getMeasurementValid(MeasurementType mt);
 public:
     LeadType leadType ;
     static short NoValue ;
 private:
-    short measurementValueArray[MeasurementTypeSum];	
-	bool measurementExistArray[MeasurementTypeSum];	
+    short measurementValueArray[MeasurementTypeSum];
+    bool measurementExistArray[MeasurementTypeSum];
 };
 }
 }

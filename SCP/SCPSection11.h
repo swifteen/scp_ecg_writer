@@ -14,7 +14,7 @@ namespace SCP
 class SCPSection11 : public SCPSection
 {
 public:
-	SCPSection11();
+    SCPSection11();
     ushort getSectionID();
     bool Works();
 protected:

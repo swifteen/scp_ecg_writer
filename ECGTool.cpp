@@ -1,4 +1,4 @@
-#include "ECGTool.h"    
+#include "ECGTool.h"
 
 namespace ECGConversion
 {
@@ -12,25 +12,23 @@ namespace ECGConversion
 /// <returns>0 on success</returns>
 int ECGTool::ChangeMultiplier(short[][] src, double srcmulti, double dstmulti)
 {
-	if ((src != null)
-	&&	(srcmulti == dstmulti))
-	{
-		return 0;
-	}
-	else if ((src != null)
-		&&   (srcmulti > 0)
-		&&   (dstmulti > 0))
-	{
-		for (int loper=0;loper < src.Length;loper++)
-		{
-			if (ChangeMultiplier(src[loper], srcmulti, dstmulti) != 0)
-			{
-				return (0x2 << loper);
-			}
-		}
-		return 0;
-	}
-	return 1;
+    if ((src != null)
+        && (srcmulti == dstmulti)) {
+        return 0;
+    }
+    else if ((src != null)
+             && (srcmulti > 0)
+             && (dstmulti > 0)) {
+        for (int loper = 0; loper < src.Length; loper++) {
+            if (ChangeMultiplier(src[loper], srcmulti, dstmulti) != 0) {
+                return (0x2 << loper);
+            }
+        }
+
+        return 0;
+    }
+
+    return 1;
 }
 #endif
 /// <summary>
@@ -40,28 +38,26 @@ int ECGTool::ChangeMultiplier(short[][] src, double srcmulti, double dstmulti)
 /// <param name="srcmulti">orignal multiplier</param>
 /// <param name="dstmulti">preferred multiplier</param>
 /// <returns>0 on success</returns>
-int ECGTool::ChangeMultiplier(short* src, int srcLength,double srcmulti, double dstmulti)
+int ECGTool::ChangeMultiplier(short* src, int srcLength, double srcmulti, double dstmulti)
 {
-	if ((src != null)
-	&&	(srcmulti == dstmulti))
-	{
-		return 0;
-	}
-	else if ((src != null)
-		&&   (srcmulti > 0)
-		&&   (dstmulti > 0))
-	{
+    if ((src != null)
+        && (srcmulti == dstmulti)) {
+        return 0;
+    }
+    else if ((src != null)
+             && (srcmulti > 0)
+             && (dstmulti > 0)) {
+        short* ps = src;
+        short* psend = ps + srcLength;
 
-		short* ps = src;
-		short* psend = ps + srcLength;
+        while (ps < psend) {
+            *ps = (short)((*ps * srcmulti) / dstmulti);
+            ps++;
+        }
 
-		while (ps < psend)
-		{
-			*ps = (short) ((*ps * srcmulti) / dstmulti);
-			ps++;
-		}
-		return 0;
-	}
-	return 1;
+        return 0;
+    }
+
+    return 1;
 }
 }

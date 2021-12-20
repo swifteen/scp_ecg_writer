@@ -23,21 +23,20 @@ public:
     /// <param name="buffer">byte array to write section into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(uchar* buffer, int bufferLength,int offset)
+    int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((offset + Size) > bufferLength)
-        {
-        	SCP_PE("out of range,offset: %d,Size: %d,bufferLength: %d\n",offset, Size, bufferLength);
+        if ((offset + Size) > bufferLength) {
+            SCP_PE("out of range,offset: %d,Size: %d,bufferLength: %d\n", offset, Size, bufferLength);
             return 0x1;
         }
 
-        BytesTool::writeBytes(Nr, buffer, bufferLength,offset, sizeof(Nr), true);
+        BytesTool::writeBytes(Nr, buffer, bufferLength, offset, sizeof(Nr), true);
         offset += sizeof(Nr);
-        BytesTool::writeBytes(Length, buffer, bufferLength,offset, sizeof(Length), true);
+        BytesTool::writeBytes(Length, buffer, bufferLength, offset, sizeof(Length), true);
         offset += sizeof(Length);
-        BytesTool::writeBytes(Index, buffer, bufferLength,offset, sizeof(Index), true);
+        BytesTool::writeBytes(Index, buffer, bufferLength, offset, sizeof(Index), true);
         offset += sizeof(Index);
-		SCP_PD("write over,offset: %d,Size: %d,bufferLength: %d\n",offset, Size, bufferLength);
+        SCP_PD("write over,offset: %d,Size: %d,bufferLength: %d\n", offset, Size, bufferLength);
         return 0x0;
     }
 public:
@@ -64,22 +63,23 @@ SCPSection0::SCPSection0()
 
 int SCPSection0::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    for (int loper=0;loper < kNrMandatory;loper++)
-    {
+    for (int loper = 0; loper < kNrMandatory; loper++) {
         int err = _MandatoryPointers[loper].Write(buffer, bufferLength, offset);
-        if (err != 0)
-        {
-        	SCP_PE("Write failed,_MandatoryPointers: %d\n",loper);
+
+        if (err != 0) {
+            SCP_PE("Write failed,_MandatoryPointers: %d\n", loper);
             return err;
         }
+
         offset += SCPPointer::Size;
     }
+
     return 0x0;
 }
 
 void SCPSection0::_Empty()
 {
-    BytesTool::copy(Reserved, SCPSection::kReservedLength,0, _Reserved, 6,0, 6);
+    BytesTool::copy(Reserved, SCPSection::kReservedLength, 0, _Reserved, 6, 0, 6);
     _MandatoryPointers.clear();
 }
 
@@ -96,11 +96,11 @@ int SCPSection0::_getLength()
 
 bool SCPSection0::Works()
 {
-    if (_MandatoryPointers.size() > 0)
-    {
+    if (_MandatoryPointers.size() > 0) {
         return true;
     }
-	SCP_PW("not Works\n");
+
+    SCP_PW("not Works\n");
     return false;
 }
 
@@ -120,10 +120,10 @@ int SCPSection0::getNrPointers()
 void SCPSection0::setNrPointers(int nr)
 {
     int current = kNrMandatory;
+
     if ((nr != current)
-            &&  (nr >= kNrMandatory))
-    {
-		_MandatoryPointers.resize(kNrMandatory);
+        && (nr >= kNrMandatory)) {
+        _MandatoryPointers.resize(kNrMandatory);
     }
 }
 
@@ -135,13 +135,12 @@ void SCPSection0::setNrPointers(int nr)
 ushort SCPSection0::getSectionID(int nr)
 {
     if ((nr >= 0)
-            &&  (nr < getNrPointers()))
-    {
-        if (nr < kNrMandatory)
-        {
+        && (nr < getNrPointers())) {
+        if (nr < kNrMandatory) {
             return _MandatoryPointers[nr].Nr;
         }
     }
+
     return 0;
 }
 
@@ -153,13 +152,12 @@ ushort SCPSection0::getSectionID(int nr)
 int SCPSection0::getIndex(int nr)
 {
     if ((nr >= 0)
-            &&  (nr < getNrPointers()))
-    {
-        if (nr < kNrMandatory)
-        {
+        && (nr < getNrPointers())) {
+        if (nr < kNrMandatory) {
             return _MandatoryPointers[nr].Index;
         }
     }
+
     return 0;
 }
 
@@ -170,16 +168,15 @@ int SCPSection0::getIndex(int nr)
 /// <param name="index">index to set pointer to</param>
 void SCPSection0::setIndex(int nr, int index)
 {
-    if ((nr >= 0)  && (nr < getNrPointers()))
-    {
-        if (nr < kNrMandatory)
-        {
+    if ((nr >= 0)  && (nr < getNrPointers())) {
+        if (nr < kNrMandatory) {
             _MandatoryPointers[nr].Index = index;
-			SCP_PD("nr: %d,index: %d\n",nr,index);
-			return;
+            SCP_PD("nr: %d,index: %d\n", nr, index);
+            return;
         }
     }
-	SCP_PW("out of range,nr: %d\n",nr);
+
+    SCP_PW("out of range,nr: %d\n", nr);
 }
 
 /// <summary>
@@ -189,15 +186,14 @@ void SCPSection0::setIndex(int nr, int index)
 /// <returns>length of section</returns>
 int SCPSection0::getLength(int nr)
 {
-    if ((nr >= 0)  && (nr < getNrPointers()))
-    {
-        if (nr < kNrMandatory)
-        {
-			SCP_PD("nr: %d,length: %d\n",nr,_MandatoryPointers[nr].Length);
+    if ((nr >= 0)  && (nr < getNrPointers())) {
+        if (nr < kNrMandatory) {
+            SCP_PD("nr: %d,length: %d\n", nr, _MandatoryPointers[nr].Length);
             return _MandatoryPointers[nr].Length;
         }
     }
-	SCP_PW("out of range,nr: %d\n",nr);
+
+    SCP_PW("out of range,nr: %d\n", nr);
     return 0;
 }
 
@@ -208,12 +204,10 @@ int SCPSection0::getLength(int nr)
 /// <param name="length">length of section</param>
 void SCPSection0::setLength(int nr, int length)
 {
-    if ((nr >= 0)  && (nr < getNrPointers()))
-    {
-        if (nr < kNrMandatory)
-        {
+    if ((nr >= 0)  && (nr < getNrPointers())) {
+        if (nr < kNrMandatory) {
             _MandatoryPointers[nr].Length = length;
-			SCP_PD("nr: %d,length: %d\n",nr,length);
+            SCP_PD("nr: %d,length: %d\n", nr, length);
         }
     }
 }
@@ -225,19 +219,20 @@ void SCPSection0::setLength(int nr, int length)
 /// <param name="id">id of section</param>
 /// <param name="length">length of section</param>
 /// <param name="index">index of section</param>
-void SCPSection0::getPointer(int nr,ushort& id, int& length,int& index)
+void SCPSection0::getPointer(int nr, ushort& id, int& length, int& index)
 {
     id = 0;
-	length = 0;
-	index =0;
-    if ((0 <= nr) && (nr < _MandatoryPointers.size()))
-    {
+    length = 0;
+    index = 0;
+
+    if ((0 <= nr) && (nr < _MandatoryPointers.size())) {
         id = _MandatoryPointers[nr].Nr;
         length = _MandatoryPointers[nr].Length;
         index = _MandatoryPointers[nr].Index;
-		return;
+        return;
     }
-	SCP_PW("out of range,nr: %d\n",nr);
+
+    SCP_PW("out of range,nr: %d\n", nr);
 }
 
 /// <summary>
@@ -249,14 +244,14 @@ void SCPSection0::getPointer(int nr,ushort& id, int& length,int& index)
 /// <param name="index">index of section</param>
 void SCPSection0::setPointer(int nr, ushort id, int length, int index)
 {
-    if ((0 <= nr) && (nr < _MandatoryPointers.size()))
-    {
+    if ((0 <= nr) && (nr < _MandatoryPointers.size())) {
         _MandatoryPointers[nr].Nr = id;
         _MandatoryPointers[nr].Length = length;
         _MandatoryPointers[nr].Index = index;
-		return;
+        return;
     }
-	SCP_PW("out of range,nr: %d\n",nr);
+
+    SCP_PW("out of range,nr: %d\n", nr);
 }
 }
 }

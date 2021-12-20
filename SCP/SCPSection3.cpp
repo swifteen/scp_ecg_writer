@@ -21,10 +21,10 @@ public:
     /// </summary>
     SCPLead()
     {
-		Start = 0;
-		End = 0;
-		ID = 0;
-	}
+        Start = 0;
+        End = 0;
+        ID = 0;
+    }
     /// <summary>
     /// Constructor of SCP lead.
     /// </summary>
@@ -46,18 +46,16 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((offset + Size) > bufferLength)
-        {
+        if ((offset + Size) > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Start, buffer, bufferLength,offset, sizeof(Start), true);
+        BytesTool::writeBytes(Start, buffer, bufferLength, offset, sizeof(Start), true);
         offset += sizeof(Start);
-        BytesTool::writeBytes(End, buffer, bufferLength,offset, sizeof(End), true);
+        BytesTool::writeBytes(End, buffer, bufferLength, offset, sizeof(End), true);
         offset += sizeof(End);
-        BytesTool::writeBytes(ID, buffer, bufferLength,offset,sizeof(ID), true);
+        BytesTool::writeBytes(ID, buffer, bufferLength, offset, sizeof(ID), true);
         offset += sizeof(ID);
-
         return 0x0;
     }
 public:
@@ -76,24 +74,26 @@ SCPSection3::SCPSection3()
     // Part of the stored Data Structure.
     _NrLeads = 0;
     _Flags = 0;
-	_Leads.clear();
+    _Leads.clear();
 }
 
 int SCPSection3::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    BytesTool::writeBytes(_NrLeads, buffer, bufferLength,offset,sizeof(_NrLeads), true);
+    BytesTool::writeBytes(_NrLeads, buffer, bufferLength, offset, sizeof(_NrLeads), true);
     offset += sizeof(_NrLeads);
-    BytesTool::writeBytes(_Flags, buffer, bufferLength,offset, sizeof(_Flags), true);
+    BytesTool::writeBytes(_Flags, buffer, bufferLength, offset, sizeof(_Flags), true);
     offset += sizeof(_Flags);
-    for (int loper=0;loper < _NrLeads;loper++)
-    {
-        int err = _Leads[loper].Write(buffer, bufferLength,offset);
-        if (err != 0)
-        {
+
+    for (int loper = 0; loper < _NrLeads; loper++) {
+        int err = _Leads[loper].Write(buffer, bufferLength, offset);
+
+        if (err != 0) {
             return err << loper;
         }
+
         offset += SCPLead::Size;
     }
+
     return 0x0;
 }
 void SCPSection3::_Empty()
@@ -103,12 +103,12 @@ void SCPSection3::_Empty()
 }
 int SCPSection3::_getLength()
 {
-    if (Works())
-    {
+    if (Works()) {
         int sum = (sizeof(_NrLeads) + sizeof(_Flags));
         sum += (_NrLeads * SCPLead::Size);
         return ((sum % 2) == 0 ? sum : sum + 1);
     }
+
     return 0;
 }
 ushort SCPSection3::getSectionID()
@@ -117,19 +117,19 @@ ushort SCPSection3::getSectionID()
 }
 bool SCPSection3::Works()
 {
-    if ((_Leads.size() > 0) && (_NrLeads == _Leads.size()))
-    {
+    if ((_Leads.size() > 0) && (_NrLeads == _Leads.size())) {
 #if 0
-        for (int loper=0;loper < _NrLeads;loper++)
-        {
-            if (_Leads[loper] == null)
-            {
+
+        for (int loper = 0; loper < _NrLeads; loper++) {
+            if (_Leads[loper] == null) {
                 return false;
             }
         }
+
 #endif
         return true;
     }
+
     return false;
 }
 /// <summary>
@@ -148,11 +148,11 @@ ushort SCPSection3::getNrLeads()
 int SCPSection3::getLeadStart(int nr)
 {
     if ((_Leads.size() > 0)
-            &&  (nr >= 0)
-            &&  (nr < _NrLeads))
-    {
+        && (nr >= 0)
+        && (nr < _NrLeads)) {
         return _Leads[nr].Start;
     }
+
     return Int32_MaxValue;
 }
 /// <summary>
@@ -163,11 +163,11 @@ int SCPSection3::getLeadStart(int nr)
 int SCPSection3::getLeadEnd(int nr)
 {
     if ((_Leads.size() > 0)
-            &&  (nr >= 0)
-            &&  (nr < _NrLeads))
-    {
+        && (nr >= 0)
+        && (nr < _NrLeads)) {
         return _Leads[nr].End;
     }
+
     return Int32_MinValue;
 }
 /// <summary>
@@ -178,11 +178,11 @@ int SCPSection3::getLeadEnd(int nr)
 int SCPSection3::getLeadId(int nr)
 {
     if ((_Leads.size() > 0)
-            &&  (nr >= 0)
-            &&  (nr < _NrLeads))
-    {
+        && (nr >= 0)
+        && (nr < _NrLeads)) {
         return _Leads[nr].ID;
     }
+
     return -1;
 }
 /// <summary>
@@ -193,12 +193,13 @@ int SCPSection3::getLeadId(int nr)
 int SCPSection3::getLeadLength(int nr)
 {
     int length = -1;
+
     if ((_Leads.size() > 0)
-            &&  (nr >= 0)
-            &&  (nr < _NrLeads))
-    {
+        && (nr >= 0)
+        && (nr < _NrLeads)) {
         length = _Leads[nr].End - _Leads[nr].Start + 1;
     }
+
     return length;
 }
 /// <summary>
@@ -208,13 +209,13 @@ int SCPSection3::getLeadLength(int nr)
 int SCPSection3::getMinBegin()
 {
     int min = Int32_MaxValue;
-    if (Works())
-    {
-        for (int x=0;x < _NrLeads;x++)
-        {
+
+    if (Works()) {
+        for (int x = 0; x < _NrLeads; x++) {
             min = (min <= getLeadStart(x) ? min : getLeadStart(x));
         }
     }
+
     return min;
 }
 /// <summary>
@@ -224,13 +225,13 @@ int SCPSection3::getMinBegin()
 int SCPSection3::getMaxEnd()
 {
     int max = Int32_MinValue;
-    if (Works())
-    {
-        for (int x=0;x < _NrLeads;x++)
-        {
+
+    if (Works()) {
+        for (int x = 0; x < _NrLeads; x++) {
             max = (max >= getLeadEnd(x) ? max : getLeadEnd(x));
         }
     }
+
     return max;
 }
 /// <summary>
@@ -255,12 +256,10 @@ bool SCPSection3::isMediansUsed()
 /// <param name="used">true if medians used</param>
 void SCPSection3::setMediansUsed(bool used)
 {
-    if (used)
-    {
+    if (used) {
         _Flags |= 0x01;
     }
-    else
-    {
+    else {
         _Flags &= 0xfe;
     }
 }
@@ -279,40 +278,39 @@ bool SCPSection3::isSimultaneously()
 bool SCPSection3::_isSimultaneously()
 {
     if ((_Leads.size() > 0)
-            &&	(_NrLeads > 1)
-            &&  (_NrLeads <= _Leads.size()))
-    {
-        int loper=1;
-        for (;loper < _NrLeads;loper++)
-        {
+        && (_NrLeads > 1)
+        && (_NrLeads <= _Leads.size())) {
+        int loper = 1;
+
+        for (; loper < _NrLeads; loper++) {
             if ((_Leads[0].Start != _Leads[loper].Start)
-                    ||  (_Leads[0].End != _Leads[loper].End))
-            {
+                || (_Leads[0].End != _Leads[loper].End)) {
                 break;
             }
         }
-        _Flags |= (uchar) (loper << 3);
+
+        _Flags |= (uchar)(loper << 3);
         return (loper == _NrLeads);
     }
-    if ((_Leads.size() > 0) && (_NrLeads == 1))
-    {
+
+    if ((_Leads.size() > 0) && (_NrLeads == 1)) {
         _Flags = 0x8;
     }
+
     return (_Leads.size() > 0) && (_NrLeads == 1);
 }
 int SCPSection3::setSignals(Signals& signals)
 {
     if ((signals.getNrLeads() > 0)
-            &&  (signals.RhythmSamplesPerSecond != 0))
-    {
+        && (signals.RhythmSamplesPerSecond != 0)) {
         _NrLeads = (uchar) signals.getNrLeads();
-		_Leads.resize(_NrLeads);
+        _Leads.resize(_NrLeads);
         _Flags = 0;
-        for (int loper=0;loper< _NrLeads;loper++)
-        {
+
+        for (int loper = 0; loper < _NrLeads; loper++) {
 #if 0//only support rhythm data
-            if (signals.MedianSamplesPerSecond != 0)
-            {
+
+            if (signals.MedianSamplesPerSecond != 0) {
                 _Leads[loper].Start = (signals[loper].RhythmStart * signals.MedianSamplesPerSecond) / signals.RhythmSamplesPerSecond + 1;
                 _Leads[loper].End = (signals[loper].RhythmEnd * signals.MedianSamplesPerSecond) / signals.RhythmSamplesPerSecond;
             }
@@ -322,15 +320,17 @@ int SCPSection3::setSignals(Signals& signals)
                 _Leads[loper].Start = signals[loper].RhythmStart + 1;
                 _Leads[loper].End = signals[loper].RhythmEnd;
             }
+
             _Leads[loper].ID = (uchar) signals[loper].Type;
         }
 
-        if (_isSimultaneously())
-        {
+        if (_isSimultaneously()) {
             _Flags |= 0x4;
         }
+
         return 0;
     }
+
     return 1;
 }
 }

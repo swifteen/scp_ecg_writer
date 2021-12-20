@@ -49,20 +49,18 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if (offset + Size > bufferLength)
-        {
+        if (offset + Size > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Type, buffer, bufferLength,offset, sizeof(Type), true);
+        BytesTool::writeBytes(Type, buffer, bufferLength, offset, sizeof(Type), true);
         offset += sizeof(Type);
-        BytesTool::writeBytes(Start, buffer, bufferLength,offset, sizeof(Start), true);
+        BytesTool::writeBytes(Start, buffer, bufferLength, offset, sizeof(Start), true);
         offset += sizeof(Start);
-        BytesTool::writeBytes(Fiducial, buffer, bufferLength,offset, sizeof(Fiducial), true);
+        BytesTool::writeBytes(Fiducial, buffer, bufferLength, offset, sizeof(Fiducial), true);
         offset += sizeof(Fiducial);
-        BytesTool::writeBytes(End, buffer, bufferLength,offset, sizeof(End), true);
+        BytesTool::writeBytes(End, buffer, bufferLength, offset, sizeof(End), true);
         offset += sizeof(End);
-
         return 0x0;
     }
 public:
@@ -108,16 +106,14 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if (offset + Size > bufferLength)
-        {
+        if (offset + Size > bufferLength) {
             return 0x1;
         }
 
-        BytesTool::writeBytes(Start, buffer, bufferLength,offset, sizeof(Start), true);
+        BytesTool::writeBytes(Start, buffer, bufferLength, offset, sizeof(Start), true);
         offset += sizeof(Start);
-        BytesTool::writeBytes(End, buffer, bufferLength,offset, sizeof(End), true);
+        BytesTool::writeBytes(End, buffer, bufferLength, offset, sizeof(End), true);
         offset += sizeof(End);
-
         return 0x0;
     }
 public:
@@ -145,34 +141,35 @@ SCPSection4::SCPSection4()
 }
 int SCPSection4::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    BytesTool::writeBytes(_MedianDataLength, buffer, bufferLength,offset, sizeof(_MedianDataLength), true);
+    BytesTool::writeBytes(_MedianDataLength, buffer, bufferLength, offset, sizeof(_MedianDataLength), true);
     offset += sizeof(_MedianDataLength);
-    BytesTool::writeBytes(_FirstFiducial, buffer, bufferLength,offset, sizeof(_FirstFiducial), true);
+    BytesTool::writeBytes(_FirstFiducial, buffer, bufferLength, offset, sizeof(_FirstFiducial), true);
     offset += sizeof(_FirstFiducial);
-    BytesTool::writeBytes(_NrQRS, buffer, bufferLength,offset, sizeof(_NrQRS), true);
+    BytesTool::writeBytes(_NrQRS, buffer, bufferLength, offset, sizeof(_NrQRS), true);
     offset += sizeof(_NrQRS);
-    for (int loper=0;loper < _NrQRS;loper++)
-    {
-        int err = _Subtraction[loper].Write(buffer, bufferLength,offset);
-        if (err != 0)
-        {
+
+    for (int loper = 0; loper < _NrQRS; loper++) {
+        int err = _Subtraction[loper].Write(buffer, bufferLength, offset);
+
+        if (err != 0) {
             return err << loper;
         }
+
         offset += SCPQRSSubtraction::Size;
     }
 
-    if (_Protected.size() > 0)
-    {
-        for (int loper=0;loper < _NrQRS;loper++)
-        {
-            int err = _Protected[loper].Write(buffer, bufferLength,offset);
-            if (err != 0)
-            {
+    if (_Protected.size() > 0) {
+        for (int loper = 0; loper < _NrQRS; loper++) {
+            int err = _Protected[loper].Write(buffer, bufferLength, offset);
+
+            if (err != 0) {
                 return err << loper;
             }
+
             offset += SCPQRSProtected::Size;
         }
     }
+
     return 0x0;
 }
 void SCPSection4::_Empty()
@@ -185,16 +182,17 @@ void SCPSection4::_Empty()
 }
 int SCPSection4::_getLength()
 {
-    if (Works())
-    {
+    if (Works()) {
         int sum = (sizeof(_MedianDataLength) + sizeof(_FirstFiducial) + sizeof(_NrQRS));
         sum += (_NrQRS * SCPQRSSubtraction::Size);
-        if (_Protected.size() > 0)
-        {
+
+        if (_Protected.size() > 0) {
             sum += (_NrQRS * SCPQRSProtected::Size);
         }
+
         return ((sum % 2) == 0 ? sum : sum + 1);
     }
+
     return 0;
 }
 ushort SCPSection4::getSectionID()
@@ -204,30 +202,29 @@ ushort SCPSection4::getSectionID()
 bool SCPSection4::Works()
 {
     if ((_Subtraction.size() > 0)
-            &&  (_Protected.size() > 0)
-            &&  (_NrQRS == _Subtraction.size())
-            &&  (_NrQRS == _Protected.size())
-            ||  (_NrQRS == 0))
-    {
+        && (_Protected.size() > 0)
+        && (_NrQRS == _Subtraction.size())
+        && (_NrQRS == _Protected.size())
+        || (_NrQRS == 0)) {
         if ((_Protected.size() > 0)
-                &&  (_Protected.size() != _NrQRS))
-        {
+            && (_Protected.size() != _NrQRS)) {
             return false;
         }
 
 #if 0
-        for (int loper=0;loper < _NrQRS;loper++)
-        {
+
+        for (int loper = 0; loper < _NrQRS; loper++) {
             if ((_Subtraction[loper] == null)
-                    ||  ((_Protected.size() > 0)
-                         &&	 (_Protected[loper] == null)))
-            {
+                || ((_Protected.size() > 0)
+                    && (_Protected[loper] == null))) {
                 return false;
             }
         }
+
 #endif
         return true;
     }
+
     return false;
 }
 #if 0
@@ -253,25 +250,23 @@ int SCPSection4::AddMedians(SCPSection3 definition, short[][] residual, short[][
 {
     // Check if given data makes sense
     if (Works()
-            &&  (definition != null)
-            &&	(residual != null)
-            &&  (median != null)
-            &&  (definition.Works())
-            &&  (median.Length == definition.getNrLeads())
-            &&  (residual.Length == median.Length))
-    {
+        && (definition != null)
+        && (residual != null)
+        && (median != null)
+        && (definition.Works())
+        && (median.Length == definition.getNrLeads())
+        && (residual.Length == median.Length)) {
         int err = 0;
-        for (int qrsnr=0;qrsnr < _NrQRS;qrsnr++)
-        {
-            if ((_Subtraction[qrsnr].Type != 0))
-                continue;
 
-            for (int channel=0;channel < median.Length;channel++)
-            {
+        for (int qrsnr = 0; qrsnr < _NrQRS; qrsnr++) {
+            if ((_Subtraction[qrsnr].Type != 0)) {
+                continue;
+            }
+
+            for (int channel = 0; channel < median.Length; channel++) {
                 if ((residual[channel] == null)
-                        ||  (median[channel] == null)
-                        ||  (residual[channel].Length < definition.getLeadLength(channel)))
-                {
+                    || (median[channel] == null)
+                    || (residual[channel].Length < definition.getLeadLength(channel))) {
                     err |= (0x2 << channel);
                     continue;
                 }
@@ -281,18 +276,18 @@ int SCPSection4::AddMedians(SCPSection3 definition, short[][] residual, short[][
                 int endResidual = _Subtraction[qrsnr].End - definition.getLeadStart(channel);
 
                 if ((loperResidual >= 0)
-                        &&  (loperMedian >= 0))
-                {
+                    && (loperMedian >= 0)) {
                     while ((loperResidual <= endResidual)
-                           && (loperMedian < median[channel].Length))
-                    {
+                           && (loperMedian < median[channel].Length)) {
                         residual[channel][loperResidual++] += median[channel][loperMedian++];
                     }
                 }
             }
         }
+
         return err;
     }
+
     return -1;
 }
 /// <summary>
@@ -317,25 +312,23 @@ int SCPSection4::SubtractMedians(SCPSection3 definition, short[][] rhythm, short
 {
     // Check if given data makes sense
     if (Works()
-            &&  (definition != null)
-            &	(rhythm != null)
-            &&  (median != null)
-            &&  (definition.Works())
-            &&  (median.Length == definition.getNrLeads())
-            &&  (rhythm.Length == median.Length))
-    {
+        && (definition != null)
+        & (rhythm != null)
+        && (median != null)
+        && (definition.Works())
+        && (median.Length == definition.getNrLeads())
+        && (rhythm.Length == median.Length)) {
         int err = 0;
-        for (int qrsnr=0;qrsnr < _NrQRS;qrsnr++)
-        {
-            if ((_Subtraction[qrsnr].Type != 0))
-                continue;
 
-            for (int channel=0;channel < median.Length;channel++)
-            {
+        for (int qrsnr = 0; qrsnr < _NrQRS; qrsnr++) {
+            if ((_Subtraction[qrsnr].Type != 0)) {
+                continue;
+            }
+
+            for (int channel = 0; channel < median.Length; channel++) {
                 if ((rhythm[channel] == null)
-                        ||  (median[channel] == null)
-                        ||  (rhythm[channel].Length < definition.getLeadLength(channel)))
-                {
+                    || (median[channel] == null)
+                    || (rhythm[channel].Length < definition.getLeadLength(channel))) {
                     err |= (0x2 << channel);
                     continue;
                 }
@@ -345,18 +338,18 @@ int SCPSection4::SubtractMedians(SCPSection3 definition, short[][] rhythm, short
                 int endResidual = _Subtraction[qrsnr].End - definition.getLeadStart(channel);
 
                 if ((loperResidual >= 0)
-                        &&  (loperMedian >= 0))
-                {
+                    && (loperMedian >= 0)) {
                     while ((loperResidual <= endResidual)
-                           && (loperMedian < median[channel].Length))
-                    {
+                           && (loperMedian < median[channel].Length)) {
                         rhythm[channel][loperResidual++] -= median[channel][loperMedian++];
                     }
                 }
             }
         }
+
         return err;
     }
+
     return -1;
 }
 #endif
@@ -371,41 +364,33 @@ int SCPSection4::SubtractMedians(SCPSection3 definition, short[][] rhythm, short
 void SCPSection4::setProtected(GlobalMeasurements& global, int medianFreq, int rate, int minbegin, int maxend)
 {
     if ((_Subtraction.size() > 0)
-            &&	(_Protected.size() > 0)
-            &&	(medianFreq != 0))
-    {
+        && (_Protected.size() > 0)
+        && (medianFreq != 0)) {
         // If global measurements are per beat use them.
-        if (global.measurment.size() == (_Protected.size() + 1))
-        {
-            for (int loper=0;loper < _Protected.size();loper++)
-            {
-                _Protected[loper].Start = _Subtraction[loper].Fiducial + (short) ((global.measurment[loper + 1].QRSonset - (_FirstFiducial * 1000)) / medianFreq);
-                _Protected[loper].End = _Subtraction[loper].Fiducial + (short) ((global.measurment[loper + 1].QRSoffset - (_FirstFiducial * 1000)) / medianFreq);
-
+        if (global.measurment.size() == (_Protected.size() + 1)) {
+            for (int loper = 0; loper < _Protected.size(); loper++) {
+                _Protected[loper].Start = _Subtraction[loper].Fiducial + (short)((global.measurment[loper + 1].QRSonset - (_FirstFiducial * 1000)) / medianFreq);
+                _Protected[loper].End = _Subtraction[loper].Fiducial + (short)((global.measurment[loper + 1].QRSoffset - (_FirstFiducial * 1000)) / medianFreq);
                 // Make protected zones work properly
                 _Protected[loper].Start -= ((_Protected[loper].Start % rate) == 0 ? rate : (_Protected[loper].Start % rate));
                 _Protected[loper].Start++;
                 _Protected[loper].End += (rate - (_Protected[loper].End % rate));
 
                 // Keep it all between boundaries of ECG.
-                if (_Protected[loper].Start < minbegin)
-                {
+                if (_Protected[loper].Start < minbegin) {
                     _Protected[loper].Start = minbegin;
                 }
-                if (_Protected[loper].End > maxend)
-                {
+
+                if (_Protected[loper].End > maxend) {
                     _Protected[loper].End = maxend;
                 }
             }
         }
-        else if (global.measurment.size() > 0)
-        {
-            for (int loper=0;loper < _Protected.size();loper++)
-            {
-                if (_Subtraction[loper].Type == 0)
-                {
-                    _Protected[loper].Start = _Subtraction[loper].Fiducial + (short) ((global.measurment[0].QRSonset * medianFreq) / 1000) - _FirstFiducial;
-                    _Protected[loper].End = _Subtraction[loper].Fiducial + (short) ((global.measurment[0].QRSoffset * medianFreq) / 1000) - _FirstFiducial;
+        else if (global.measurment.size() > 0) {
+            for (int loper = 0; loper < _Protected.size(); loper++) {
+                if (_Subtraction[loper].Type == 0) {
+                    _Protected[loper].Start = _Subtraction[loper].Fiducial + (short)((global.measurment[0].QRSonset * medianFreq) / 1000) - _FirstFiducial;
+                    _Protected[loper].End = _Subtraction[loper].Fiducial + (short)((global.measurment[0].QRSoffset * medianFreq) / 1000) - _FirstFiducial;
                 }
 
                 // Make protected zones work properly
@@ -414,12 +399,11 @@ void SCPSection4::setProtected(GlobalMeasurements& global, int medianFreq, int r
                 _Protected[loper].End += (rate - (_Protected[loper].End % rate));
 
                 // Keep it all between boundaries of ECG.
-                if (_Protected[loper].Start < minbegin)
-                {
+                if (_Protected[loper].Start < minbegin) {
                     _Protected[loper].Start = minbegin;
                 }
-                if (_Protected[loper].End > maxend)
-                {
+
+                if (_Protected[loper].End > maxend) {
                     _Protected[loper].End = maxend;
                 }
             }
@@ -428,37 +412,31 @@ void SCPSection4::setProtected(GlobalMeasurements& global, int medianFreq, int r
 }
 int SCPSection4::setSignals(Signals& signals)
 {
-    if (signals.getNrLeads() != 0)
-    {
+    if (signals.getNrLeads() != 0) {
         _MedianDataLength = signals.MedianLength;
         _FirstFiducial = signals.MedianFiducialPoint;
 
-        if (signals.qrsZone.size() == 0)
-        {
+        if (signals.qrsZone.size() == 0) {
             _NrQRS = 0;
             _Subtraction.clear();
             _Protected.clear();
         }
-        else
-        {
+        else {
             _NrQRS = (ushort) signals.qrsZone.size();
-			_Subtraction.resize(_NrQRS);
-			_Protected.resize(_NrQRS);
+            _Subtraction.resize(_NrQRS);
+            _Protected.resize(_NrQRS);
 
-            for (int loper=0;loper < _NrQRS;loper++)
-            {
+            for (int loper = 0; loper < _NrQRS; loper++) {
                 _Subtraction[loper].Type = signals.qrsZone[loper].Type;
                 _Subtraction[loper].Fiducial = signals.qrsZone[loper].Fiducial;
 
-                if (_Subtraction[loper].Type == 0)
-                {
+                if (_Subtraction[loper].Type == 0) {
                     _Subtraction[loper].Start = signals.qrsZone[loper].Start + 1;
                     _Subtraction[loper].End = signals.qrsZone[loper].End;
 
                     if (((_Subtraction[loper].End - _Subtraction[loper].Fiducial) + _FirstFiducial)
-                            >=	((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000))
-                    {
-                        _Subtraction[loper].End = (int) (((((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000) - _FirstFiducial) + _Subtraction[loper].Fiducial - 2) & 0xfffffffe);
+                        >= ((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000)) {
+                        _Subtraction[loper].End = (int)(((((signals.MedianLength * signals.MedianSamplesPerSecond) / 1000) - _FirstFiducial) + _Subtraction[loper].Fiducial - 2) & 0xfffffffe);
                     }
 
                     _Protected[loper].Start = _Subtraction[loper].Start;
@@ -469,6 +447,7 @@ int SCPSection4::setSignals(Signals& signals)
 
         return 0;
     }
+
     return 1;
 }
 }

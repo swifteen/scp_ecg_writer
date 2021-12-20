@@ -3,7 +3,8 @@
 
 #include "ScpGlobal.h"
 
-namespace ECGConversion{
+namespace ECGConversion
+{
 
 namespace ECGSignals
 {
@@ -16,10 +17,10 @@ public:
     QRSZone();
     QRSZone(ushort type, int start, int fiducial, int end);
 public:
-	ushort Type;
-	int Start;
-	int Fiducial;
-	int End;
+    ushort Type;
+    int Start;
+    int Fiducial;
+    int End;
 };
 
 }

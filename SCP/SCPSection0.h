@@ -12,10 +12,9 @@ namespace SCP
 class SCPSection0 : public SCPSection
 {
 private:
-	enum
-	{
-		kNrMandatory = 12,
-	};
+    enum {
+        kNrMandatory = 12,
+    };
 public:
     SCPSection0();
     ushort getSectionID();
@@ -67,7 +66,7 @@ public:
     /// <param name="id">id of section</param>
     /// <param name="length">length of section</param>
     /// <param name="index">index of section</param>
-    void getPointer(int nr,ushort& id, int& length,int& index);
+    void getPointer(int nr, ushort& id, int& length, int& index);
     /// <summary>
     /// Function to set all values of a pointer
     /// </summary>
@@ -76,7 +75,7 @@ public:
     /// <param name="length">length of section</param>
     /// <param name="index">index of section</param>
     void setPointer(int nr, ushort id, int length, int index);
-protected:		
+protected:
     int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();

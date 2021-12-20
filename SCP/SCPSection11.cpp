@@ -34,13 +34,12 @@ public:
     {
         SequenceNr = seqnr;
         Length = length;
-        if(length > 0)
-        {
+
+        if (length > 0) {
             Field = new uchar[length];
-            memcpy(Field,field,length*sizeof(uchar));
+            memcpy(Field, field, length * sizeof(uchar));
         }
-        else
-        {
+        else {
             Field = null;
         }
     }
@@ -52,12 +51,12 @@ public:
     SCPStatement& operator=(const SCPStatement& rhs)
     {
         // Prevent self-assignment
-        if( &rhs != this )
-        {
+        if (&rhs != this) {
             delete[] this->Field;
             this->Field = null;
             deepCopy(rhs);
         }
+
         return *this;
     }
 
@@ -69,12 +68,12 @@ public:
     void deepCopy(const SCPStatement& rhs)
     {
         this->Length = rhs.Length;
-        if((rhs.Length > 0) && (rhs.Field != null))
-        {
+
+        if ((rhs.Length > 0) && (rhs.Field != null)) {
             this->Field = new uchar[rhs.Length];
-            if(this->Field != null)
-            {
-                memcpy(this->Field,rhs.Field,rhs.Length);
+
+            if (this->Field != null) {
+                memcpy(this->Field, rhs.Field, rhs.Length);
             }
         }
     }
@@ -87,33 +86,28 @@ public:
     /// <returns>0 on success</returns>
     int Write(uchar* buffer, int bufferLength, int offset)
     {
-        if ((Field == null))
-        {
+        if ((Field == null)) {
             return 0x1;
         }
 
-        if ((offset + sizeof(SequenceNr) + sizeof(Length)) > bufferLength)
-        {
+        if ((offset + sizeof(SequenceNr) + sizeof(Length)) > bufferLength) {
             return 0x2;
         }
 
-        BytesTool::writeBytes(SequenceNr, buffer, bufferLength,offset, sizeof(SequenceNr), true);
+        BytesTool::writeBytes(SequenceNr, buffer, bufferLength, offset, sizeof(SequenceNr), true);
         offset += sizeof(SequenceNr);
-        BytesTool::writeBytes(Length, buffer, bufferLength,offset, sizeof(Length), true);
+        BytesTool::writeBytes(Length, buffer, bufferLength, offset, sizeof(Length), true);
         offset += sizeof(Length);
 
-        if (Length >= sizeof(TypeID))
-        {
-            if ((offset + Length) > bufferLength)
-            {
+        if (Length >= sizeof(TypeID)) {
+            if ((offset + Length) > bufferLength) {
                 return 0x2;
             }
 
-            BytesTool::writeBytes(TypeID, buffer,bufferLength, offset, sizeof(TypeID), true);
+            BytesTool::writeBytes(TypeID, buffer, bufferLength, offset, sizeof(TypeID), true);
             offset += sizeof(TypeID);
 
-            if (Length > sizeof(TypeID))
-            {
+            if (Length > sizeof(TypeID)) {
                 offset += BytesTool::copy(buffer,
                                           bufferLength,
                                           offset,
@@ -133,11 +127,12 @@ public:
     int getLength()
     {
         int sum = sizeof(SequenceNr) + sizeof(Length);
+
         if ((Length > 0)
-                &&	(Field != null))
-        {
+            && (Field != null)) {
             sum += Length;
         }
+
         return sum;
     }
 public:
@@ -163,19 +158,20 @@ SCPSection11::SCPSection11()
 
 int SCPSection11::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    BytesTool::writeBytes(_Confirmed, buffer,bufferLength, offset, sizeof(_Confirmed), true);
+    BytesTool::writeBytes(_Confirmed, buffer, bufferLength, offset, sizeof(_Confirmed), true);
     offset += sizeof(_Confirmed);
-    _Date.Write(buffer,bufferLength, offset);
+    _Date.Write(buffer, bufferLength, offset);
     offset += SCPDate::Size;
-    _Time.Write(buffer, bufferLength,offset);
+    _Time.Write(buffer, bufferLength, offset);
     offset += SCPTime::Size;
-    BytesTool::writeBytes(_NrStatements, buffer,bufferLength, offset, sizeof(_NrStatements), true);
+    BytesTool::writeBytes(_NrStatements, buffer, bufferLength, offset, sizeof(_NrStatements), true);
     offset += sizeof(_NrStatements);
-    for (int loper=0;loper < _NrStatements;loper++)
-    {
-        _Statements[loper].Write(buffer, bufferLength,offset);
+
+    for (int loper = 0; loper < _NrStatements; loper++) {
+        _Statements[loper].Write(buffer, bufferLength, offset);
         offset += _Statements[loper].getLength();
     }
+
     return 0x0;
 }
 void SCPSection11::_Empty()
@@ -186,15 +182,16 @@ void SCPSection11::_Empty()
 }
 int SCPSection11::_getLength()
 {
-    if (Works())
-    {
+    if (Works()) {
         int sum = sizeof(_Confirmed) + SCPDate::Size + SCPTime::Size + sizeof(_NrStatements);
-        for (int loper=0;loper < _NrStatements;loper++)
-        {
+
+        for (int loper = 0; loper < _NrStatements; loper++) {
             sum += _Statements[loper].getLength();
         }
+
         return ((sum % 2) == 0 ? sum : sum + 1);
     }
+
     return 0;
 }
 ushort SCPSection11::getSectionID()
@@ -204,10 +201,10 @@ ushort SCPSection11::getSectionID()
 bool SCPSection11::Works()
 {
     if ((_NrStatements == 0)
-            ||	 (_NrStatements <= _Statements.size()))
-    {
+        || (_NrStatements <= _Statements.size())) {
         return true;
     }
+
     return false;
 }
 }

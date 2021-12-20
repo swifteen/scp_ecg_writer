@@ -24,7 +24,7 @@ SCPSectionUnknown::SCPSectionUnknown(ushort sectionId)
 
 int SCPSectionUnknown::_Write(uchar* buffer, int bufferLength, int offset)
 {
-    offset += BytesTool::copy(buffer, bufferLength,offset, _Data,_DataLength,0, _DataLength);
+    offset += BytesTool::copy(buffer, bufferLength, offset, _Data, _DataLength, 0, _DataLength);
     return 0x00;
 }
 
@@ -35,10 +35,10 @@ void SCPSectionUnknown::_Empty()
 
 int SCPSectionUnknown::_getLength()
 {
-    if (Works())
-    {
+    if (Works()) {
         return _DataLength;
     }
+
     return 0;
 }
 
@@ -49,21 +49,22 @@ ushort SCPSectionUnknown::getSectionID()
 
 bool SCPSectionUnknown::Works()
 {
-    if (_Data != null)
-    {
+    if (_Data != null) {
         return true;
     }
+
     return false;
 }
 
-void SCPSectionUnknown::setInternalData(uchar* InternalData,int InternalDataLength)
+void SCPSectionUnknown::setInternalData(uchar* InternalData, int InternalDataLength)
 {
-	if((InternalData != null) && (InternalDataLength > 0))
-	{
-		if(_Data != null)
-			delete [] _Data;
-		memcpy(_Data,InternalData,InternalDataLength);
-	}
+    if ((InternalData != null) && (InternalDataLength > 0)) {
+        if (_Data != null) {
+            delete [] _Data;
+        }
+
+        memcpy(_Data, InternalData, InternalDataLength);
+    }
 }
 }
 }

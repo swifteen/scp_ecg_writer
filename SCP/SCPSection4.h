@@ -17,7 +17,7 @@ namespace SCP
 class SCPSection4 : public SCPSection, public ISignal
 {
 public:
-	SCPSection4();
+    SCPSection4();
     ushort getSectionID();
 
     bool Works();

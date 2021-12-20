@@ -31,12 +31,12 @@ public:
     /// <param name="medianLength">contains length of median data in msec</param>
     /// <param name="difference">difference to use durring decoding</param>
     /// <returns>0 on succes</returns>
-    int EncodeData(short* dataArray,    					
-						int nrleads, 
-	    				int dataSingleLength, 
-	    				SCPSection2* tables, 
-	    				ushort medianLength, 
-	    				uchar difference);
+    int EncodeData(short* dataArray,
+                   int nrleads,
+                   int dataSingleLength,
+                   SCPSection2* tables,
+                   ushort medianLength,
+                   uchar difference);
 #endif
     /// <summary>
     /// Function to get AVM.
@@ -59,7 +59,7 @@ public:
     /// <param name="sps">samples per second</param>
     void setSamplesPerSecond(int sps);
 protected:
-    int _Write(uchar* buffer, int bufferLength,int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:
@@ -76,7 +76,7 @@ private:
     uchar _Reserved;
     std::vector<ushort> _DataLength;
     std::vector<uchar*> _Data;
-    std::vector<ushort> _DataRealLength;	
+    std::vector<ushort> _DataRealLength;
 };
 }
 }

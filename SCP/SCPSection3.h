@@ -98,7 +98,7 @@ public:
     /// Class containing SCP lead information.
     /// </summary>
 protected:
-    int _Write(uchar* buffer, int bufferLength,int offset);
+    int _Write(uchar* buffer, int bufferLength, int offset);
     void _Empty();
     int _getLength();
 private:

@@ -5,7 +5,8 @@
 #include <vector>
 using namespace std;
 
-namespace ECGConversion{
+namespace ECGConversion
+{
 
 namespace ECGSignals
 {
@@ -15,10 +16,10 @@ namespace ECGSignals
 class Signal
 {
 public:
-	Signal(); 
-	Signal(const Signal& rhs);		
-	Signal& operator=(const Signal& rhs);		
-	~Signal();
+    Signal();
+    Signal(const Signal& rhs);
+    Signal& operator=(const Signal& rhs);
+    ~Signal();
     /// <summary>
     /// Function to determine if the first eigth leads are as expected (I, II, V1 - V6).
     /// </summary>
@@ -48,16 +49,16 @@ public:
     static void SortOnType(vector<Signal>& data, int first, int last);
 
 private:
-	void deepCopy(const Signal& rhs);
+    void deepCopy(const Signal& rhs);
     static int _PartitionOnType(vector<Signal>& data, int first, int last);
 public:
     LeadType Type ;
     int RhythmStart;
     int RhythmEnd;
 
-	short* Rhythm;
-	int RhythmLength;
-//	std::vector<short> Rhythm;
+    short* Rhythm;
+    int RhythmLength;
+    //  std::vector<short> Rhythm;
     //short[] Median;
 };
 }

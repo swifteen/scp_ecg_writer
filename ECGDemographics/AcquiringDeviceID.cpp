@@ -13,20 +13,19 @@ namespace ECGDemographics
 
 AcquiringDeviceID::AcquiringDeviceID()
 {
-	InstitutionNr = 0;
-	DepartmentNr = 0;
-	DeviceID = 0;
-	DeviceType = 0;
-	ManufactorID = (uchar) kDeviceManufactorUnknown;
-	DeviceCapabilities = 0; // Is defined in SCP Section1 tag 14 byte 18.
-	ACFrequencyEnvironment = 0; // Is defined in SCP Section1 tag 14 byte 19.
-	memset(ModelDescription,0,sizeof(ModelDescription));
+    InstitutionNr = 0;
+    DepartmentNr = 0;
+    DeviceID = 0;
+    DeviceType = 0;
+    ManufactorID = (uchar) kDeviceManufactorUnknown;
+    DeviceCapabilities = 0; // Is defined in SCP Section1 tag 14 byte 18.
+    ACFrequencyEnvironment = 0; // Is defined in SCP Section1 tag 14 byte 19.
+    memset(ModelDescription, 0, sizeof(ModelDescription));
 }
 
 AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
 {
-    if (bNoDeviceId)
-    {
+    if (bNoDeviceId) {
         InstitutionNr = 0;
         DepartmentNr = 11;
         DeviceID = 51;
@@ -36,7 +35,8 @@ AcquiringDeviceID::AcquiringDeviceID(bool bNoDeviceId)
         ACFrequencyEnvironment = 1;
         BytesTool::writeString("MCONV", ModelDescription, sizeof(ModelDescription), 0, sizeof(ModelDescription));
     }
-	memset(ModelDescription,0,sizeof(ModelDescription));
+
+    memset(ModelDescription, 0, sizeof(ModelDescription));
 }
 
 }

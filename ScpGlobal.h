@@ -5,7 +5,7 @@
 #include <string>
 #include <memory.h>
 #include <vector>
-#include <time.h> 
+#include <time.h>
 
 using namespace std;
 
@@ -35,28 +35,27 @@ typedef unsigned long ulong;
 
 #define null             0L
 
-typedef struct
-{
-	int Year;
-	int Month;
-	int Day;
-	int Hour;
-	int Minute;
-	int Second;
-}DateTime;
+typedef struct {
+    int Year;
+    int Month;
+    int Day;
+    int Hour;
+    int Minute;
+    int Second;
+} DateTime;
 
 
 static void scp_print_local_time()
 {
     time_t now;
-    struct tm  *timenow;	
+    struct tm*  timenow;
     char local_time[64];
     memset(local_time, 0, sizeof(local_time));
-    time(&now);						
-    timenow = localtime(&now);	
-    snprintf(local_time, sizeof(local_time),"%04d-%02d-%02d %02d:%02d:%02d", 
-        timenow->tm_year + 1900, timenow->tm_mon + 1, timenow->tm_mday,
-        timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
+    time(&now);
+    timenow = localtime(&now);
+    snprintf(local_time, sizeof(local_time), "%04d-%02d-%02d %02d:%02d:%02d",
+             timenow->tm_year + 1900, timenow->tm_mon + 1, timenow->tm_mday,
+             timenow->tm_hour, timenow->tm_min, timenow->tm_sec);
     printf("[%s]", local_time);
     return;
 }

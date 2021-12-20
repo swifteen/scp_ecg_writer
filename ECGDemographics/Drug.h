@@ -16,7 +16,7 @@ class Drug
 {
 public:
     Drug();
-    Drug(uchar drugClass,uchar ClassCode,std::string TextDesciption);
+    Drug(uchar drugClass, uchar ClassCode, std::string TextDesciption);
 public:
     uchar DrugClass;
     uchar ClassCode;

@@ -15,11 +15,11 @@ int SCPSection::Size = 16;
 /// </summary>
 SCPSection::SCPSection()
 {
-	_Encoding = "ASCII";
+    _Encoding = "ASCII";
     SectionID = 0;
-	memset(Reserved,0,sizeof(Reserved));
-    SectionID = getSectionID();	
-//    Empty();//Usually you get this error when call your virtual function from constructor or destructor.
+    memset(Reserved, 0, sizeof(Reserved));
+    SectionID = getSectionID();
+    //    Empty();//Usually you get this error when call your virtual function from constructor or destructor.
 }
 
 /// <summary>
@@ -44,24 +44,24 @@ void SCPSection::SetEncoding(const string& encoding)
 int SCPSection::Write(out byte[] buffer)
 {
     buffer = null;
-    if (Works())
-    {
+
+    if (Works()) {
         buffer = new byte[_getLength() + Size];
 
-        if (buffer.Length <= Size)
-        {
+        if (buffer.Length <= Size) {
             buffer = null;
-
             return 0;
         }
 
         int err = Write(buffer, 0);
-        if (err != 0)
-        {
+
+        if (err != 0) {
             buffer = null;
         }
+
         return err;
     }
+
     return 0x1;
 }
 #endif
@@ -75,43 +75,44 @@ int SCPSection::Write(out byte[] buffer)
 /// 0x01) section incorrect
 /// 0x02) no buffer provided or buffer to small for header
 /// rest) Section specific error </returns>
-int SCPSection::Write(uchar* buffer, int bufferLength,int offset)
+int SCPSection::Write(uchar* buffer, int bufferLength, int offset)
 {
     Length = _getLength() + Size;
 
-    if (Length == Size)
+    if (Length == Size) {
         return 0;
+    }
 
-    if (Works())
-    {
+    if (Works()) {
         if ((buffer != null)
-                &&	((offset + Length) <= bufferLength))
-        {
+            && ((offset + Length) <= bufferLength)) {
             int crcoffset = offset;
             offset += sizeof(CRC);
             SectionID = getSectionID();
-            BytesTool::writeBytes(SectionID, buffer, bufferLength,offset, sizeof(SectionID), true);
+            BytesTool::writeBytes(SectionID, buffer, bufferLength, offset, sizeof(SectionID), true);
             offset += sizeof(SectionID);
-            BytesTool::writeBytes(Length, buffer, bufferLength,offset, sizeof(Length), true);
+            BytesTool::writeBytes(Length, buffer, bufferLength, offset, sizeof(Length), true);
             offset += sizeof(Length);
-            BytesTool::writeBytes(SectionVersionNr, buffer, bufferLength,offset, sizeof(SectionVersionNr), true);
+            BytesTool::writeBytes(SectionVersionNr, buffer, bufferLength, offset, sizeof(SectionVersionNr), true);
             offset += sizeof(SectionVersionNr);
-            BytesTool::writeBytes(ProtocolVersionNr, buffer, bufferLength,offset, sizeof(ProtocolVersionNr), true);
+            BytesTool::writeBytes(ProtocolVersionNr, buffer, bufferLength, offset, sizeof(ProtocolVersionNr), true);
             offset += sizeof(ProtocolVersionNr);
-            offset += BytesTool::copy(buffer, bufferLength,offset, Reserved, kReservedLength,0, kReservedLength);
+            offset += BytesTool::copy(buffer, bufferLength, offset, Reserved, kReservedLength, 0, kReservedLength);
+            int err = _Write(buffer, bufferLength, offset);
 
-            int err = _Write(buffer, bufferLength,offset);
-            if (err == 0)
-            {
+            if (err == 0) {
                 CRCTool crc;
                 crc.Init(CRCTool::CRC_CCITT);
-                CRC = crc.CalcCRCITT(buffer, bufferLength,crcoffset + sizeof(CRC), Length - sizeof(CRC));
-                BytesTool::writeBytes(CRC, buffer, bufferLength,crcoffset, sizeof(CRC), true);
+                CRC = crc.CalcCRCITT(buffer, bufferLength, crcoffset + sizeof(CRC), Length - sizeof(CRC));
+                BytesTool::writeBytes(CRC, buffer, bufferLength, crcoffset, sizeof(CRC), true);
             }
+
             return err << 2;
         }
+
         return 0x2;
     }
+
     return 0x1;
 }
 /// <summary>
@@ -124,8 +125,12 @@ void SCPSection::Empty()
     Length = 0;
     SectionVersionNr = SCPFormat::DefaultSectionVersion;
     ProtocolVersionNr = SCPFormat::DefaultProtocolVersion;
-    Reserved[0] = 0; Reserved[1] = 0; Reserved[2] = 0;
-    Reserved[3] = 0; Reserved[4] = 0; Reserved[5] = 0;
+    Reserved[0] = 0;
+    Reserved[1] = 0;
+    Reserved[2] = 0;
+    Reserved[3] = 0;
+    Reserved[4] = 0;
+    Reserved[5] = 0;
     _Empty();
 }
 /// <summary>

@@ -12,7 +12,7 @@ namespace SCP
 class SCPTime
 {
 public:
-	SCPTime();
+    SCPTime();
     /// <summary>
     /// Constructor of a SCP time.
     /// </summary>
@@ -27,7 +27,7 @@ public:
     /// <param name="buffer">byte array to write into</param>
     /// <param name="offset">position to start writing</param>
     /// <returns>0 on success</returns>
-    int Write(uchar* buffer,int bufferLength, int offset);
+    int Write(uchar* buffer, int bufferLength, int offset);
 public:
     static int Size;
     uchar Hour ;

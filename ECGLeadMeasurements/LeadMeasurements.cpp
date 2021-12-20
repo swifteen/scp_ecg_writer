@@ -3,17 +3,17 @@
 namespace ECGConversion
 {
 
- namespace ECGLeadMeasurements
- {
+namespace ECGLeadMeasurements
+{
 
-	LeadMeasurements::LeadMeasurements()
-	{
-		//Measurements = null;
-	}
+LeadMeasurements::LeadMeasurements()
+{
+    //Measurements = null;
+}
 
-	LeadMeasurements::LeadMeasurements(int nr)
-	{
-	   Measurements.resize(nr);
-	}
- }
+LeadMeasurements::LeadMeasurements(int nr)
+{
+    Measurements.resize(nr);
+}
+}
 }

@@ -1,6 +1,6 @@
 #ifndef _MEASUREMENTTYPE_H_
 #define _MEASUREMENTTYPE_H_
-    
+
 
 namespace ECGConversion
 {
@@ -10,8 +10,7 @@ namespace ECGLeadMeasurements
 /// <summary>
 /// Enumration MeasurementType for lead measurements.
 /// </summary>
-enum MeasurementType
-{
+enum MeasurementType {
     MeasurementTypeNone = -1,
     MeasurementTypePdur = 0,
     MeasurementTypePRint,

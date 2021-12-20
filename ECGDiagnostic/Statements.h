@@ -16,10 +16,10 @@ class Statements
 public:
     Statements();
 public:
-	bool confirmed;
-	bool interpreted;
-	DateTime time; 
-	std::vector<std::string> statement;
+    bool confirmed;
+    bool interpreted;
+    DateTime time;
+    std::vector<std::string> statement;
 };
 }
 }
